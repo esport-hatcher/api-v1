@@ -4,7 +4,7 @@ services:
   - docker
 
 before_install:
-  - docker build -t agamblin/eh-server-test -f ./server/Dockerfile.dev ./server
+  - docker build -t agamblin/eh-server-test -f ./Dockerfile.dev .
 
 script:
   - docker run -e SQL_HOST=$SQLHOST -e SQL_PORT=3306 -e SQL_USER=root -e SQL_PASSWORD=$SQLPWD -e SQL_DB=eh_test -e JWT_SECRET=somejwtrandom agamblin/eh-server-test yarn test --coverage
