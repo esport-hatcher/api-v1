@@ -14,6 +14,7 @@
 		"build:watch": "tsc -w -p tsconfig.json",
 		"lint": "tslint -t stylish --project \"tsconfig.json\"",
 		"test": "jest",
+		"launch-tests": "sh launch-test.sh",
 		"test:watch": "jest --watch"
 	},
 	"dependencies": {

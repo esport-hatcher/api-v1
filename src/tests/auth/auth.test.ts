@@ -1,6 +1,6 @@
+import * as faker from 'faker';
 import userFactory from '../../factories/userFactory';
 import userType from '../../typings/userType';
-import faker from 'faker';
 
 describe('when a user register', () => {
 	const newUser: userType = {
@@ -12,7 +12,7 @@ describe('when a user register', () => {
 	};
 	it('should create a new account', done => {
 		userFactory.create(newUser).then(user => {
-			expect(user.username).toEqual('test');
+			expect(user.username).toEqual(newUser.username);
 			done();
 		});
 	});
