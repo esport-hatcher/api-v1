@@ -1,12 +1,13 @@
 import userFactory from '../../factories/userFactory';
 import userType from '../../typings/userType';
+import faker from 'faker';
 
 describe('when a user register', () => {
 	const newUser: userType = {
-		email: 'test@test.com',
-		username: 'test',
-		password: 'justatest',
-		avatarUrl: 'none',
+		email: faker.internet.email(),
+		username: faker.internet.userName(),
+		password: faker.internet.password(),
+		avatarUrl: faker.image.avatar(),
 		superAdmin: false
 	};
 	it('should create a new account', done => {
