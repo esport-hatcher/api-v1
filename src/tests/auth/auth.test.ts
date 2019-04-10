@@ -1,15 +1,9 @@
-import * as faker from 'faker';
 import userFactory from '../../factories/userFactory';
-import userType from '../../typings/userType';
+import { generateNormalUser } from '../utils/generate-user';
+
 
 describe('when a user register', () => {
-	const newUser: userType = {
-		email: faker.internet.email(),
-		username: faker.internet.userName(),
-		password: faker.internet.password(),
-		avatarUrl: faker.image.avatar(),
-		superAdmin: false
-	};
+	const newUser = generateNormalUser();
 	void it('should create a new account', done => {
 		userFactory.create(newUser).then(user => {
 			expect(user.username).toEqual(newUser.username);
