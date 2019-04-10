@@ -10,13 +10,13 @@ describe('when a user register', () => {
 		avatarUrl: faker.image.avatar(),
 		superAdmin: false
 	};
-	it('should create a new account', done => {
+	void it('should create a new account', done => {
 		userFactory.create(newUser).then(user => {
 			expect(user.username).toEqual(newUser.username);
 			done();
 		});
 	});
-	it('should not be able to create another account with the same email', done => {
+	void it('should not be able to create another account with the same email', done => {
 		userFactory.create(newUser).then(user => {
 			expect(user).toBeNull();
 			done();
