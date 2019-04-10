@@ -1,8 +1,6 @@
 import * as faker from 'faker';
 import userType from '../../typings/userType';
 
-faker.setLocale('en');
-
 export const generateNormalUser = () => {
     const user: userType = {
         email: faker.internet.email(),
