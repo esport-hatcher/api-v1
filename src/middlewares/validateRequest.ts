@@ -1,5 +1,5 @@
 import { validationResult } from 'express-validator/check';
-import requestType from '../typings/requestType';
+import requestType from '../typings/general/requestType';
 import { Response, NextFunction } from 'express';
 
 // Use express validator to check if all rules are passing, redirecting to error handler otherwise

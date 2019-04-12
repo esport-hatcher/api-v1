@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize';
 import * as bcrypt from 'bcryptjs';
 import sequelize from '../utils/database';
-import userType from '../typings/userType';
+import userType from '../typings/user/userType';
 
 const User: any = sequelize.define('user', {
 	username: {
