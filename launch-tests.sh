@@ -1,3 +1,3 @@
 #! /bin/sh
 
-docker exec -it $(docker ps --filter "name=stack_api" -q | xargs) yarn test
+docker exec -it $(docker ps --filter "name=stack_api" -q | xargs) yarn test $1
