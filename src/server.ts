@@ -19,24 +19,24 @@ app.use('/users', authRoutes);
 
 // Error handler
 app.use(
-	(
-		error: any,
-		req: express.Request,
-		res: express.Response,
-		next: express.NextFunction
-	) => {
-		req;
-		next;
-		const status = error.statusCode || 500;
-		const message = error.message;
-		const data = error.data;
-		res.status(status).json({ message, data });
-	}
+  (
+    error: any,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    req;
+    next;
+    const status = error.statusCode || 500;
+    const message = error.message;
+    const data = error.data;
+    res.status(status).json({ message, data });
+  }
 );
 
-sequelize.sync().then(() => {
-	app.listen(process.env.PORT_API, () => {
-		console.log(process.env.NODE_ENV);
-		console.log(`Server listening on ${process.env.PORT_API}`);
-	});
+sequelize(false).then(() => {
+  app.listen(process.env.PORT_API, () => {
+    console.log(process.env.NODE_ENV);
+    console.log(`Server listening on ${process.env.PORT_API}`);
+  });
 });
