@@ -1,8 +1,8 @@
 import { Response, NextFunction } from 'express';
 import * as jwt from 'jwt-simple';
 import * as keys from '../keys';
-import requestType from '../typings/requestType';
-import userType from '../typings/userType';
+import requestType from '../typings/general/requestType';
+import userType from '../typings/user/userType';
 import userFactory from '../factories/userFactory';
 
 const tokenForUser = (user: any) => {

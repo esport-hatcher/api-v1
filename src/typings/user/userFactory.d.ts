@@ -1,7 +1,7 @@
-import requestType from './requestType';
+import requestType from '../general/requestType';
 import { Response, NextFunction } from 'express';
 import userType from './userType';
 
 export default interface IUserFactory {
-	save?: (data: userType) => userType;
+	create?: (data: userType) => Promise<userType>;
 }

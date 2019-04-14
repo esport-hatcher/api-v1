@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import { body } from 'express-validator/check';
-import * as authController from '../controllers/authController';
+import * as authController from '../controllers/userController';
 import validateRequest from '../middlewares/validateRequest';
 
 const router = Router();
 
 router.post(
-	'/signup',
+	'/',
 	[
 		body('email')
 			.isEmail()
