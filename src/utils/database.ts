@@ -1,7 +1,7 @@
 import { sqlDb, sqlHost, sqlPassword, sqlPort, sqlUser } from '../keys';
 import * as Sequelize from 'sequelize';
 
-export const db = new Sequelize(sqlDb, sqlUser, sqlPassword, {
+export const db = new Sequelize.Sequelize(sqlDb, sqlUser, sqlPassword, {
   dialect: 'mysql',
   host: sqlHost,
   port: sqlPort

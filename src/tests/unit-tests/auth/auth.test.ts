@@ -1,6 +1,9 @@
-import userFactory from '../../factories/userFactory';
-import { generateNormalUser } from '../utils/generate-user';
-import userType from '../../typings/user/userType';
+import userFactory from '../../../factories/userFactory';
+import {
+  generateNormalUser,
+  generateBadEmail,
+  generateBadPwd
+} from '../../utils/generate-user';
 
 describe('when a user register', () => {
   const newUser = generateNormalUser();
@@ -17,26 +20,14 @@ describe('when a user register', () => {
   });
 
   void it('should not be able to create an account with an incorrect email', async () => {
-    const incorrectEmail: userType = {
-      username: 'test',
-      email: 'test',
-      password: 'test12345',
-      avatarUrl: 'test',
-      superAdmin: false
-    };
+    const incorrectEmail = generateBadEmail();
     await expect(userFactory.create(incorrectEmail)).rejects.toMatch(
       "Validation doesn't pass"
     );
   });
 
   void it('should not be able to create an account with an incorrect password', async () => {
-    const incorrectPwd: userType = {
-      username: 'test',
-      email: 'test@test.com',
-      password: 'test',
-      avatarUrl: 'test',
-      superAdmin: false
-    };
+    const incorrectPwd = generateBadPwd();
     await expect(userFactory.create(incorrectPwd)).rejects.toMatch(
       "Validation doesn't pass"
     );
