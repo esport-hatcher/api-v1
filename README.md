@@ -1,8 +1,7 @@
 # EH-API
 --
 
-## Version 1.0.0
-
+![Bintray](https://img.shields.io/static/v1.svg?label=Vers&message=1.0.0&color=9cf)
 ![Bintray](https://img.shields.io/static/v1.svg?label=Build&message=Passing&color=<green>)
 
 ### Setup
