@@ -1,23 +1,26 @@
 import { Router } from 'express';
 import { body } from 'express-validator/check';
-import * as authController from '../controllers/userController';
+import * as userController from '../controllers/userController';
 import validateRequest from '../middlewares/validateRequest';
+import requireAuth from '../middlewares/requireAuth';
 
 const router = Router();
 
 router.post(
-	'/',
-	[
-		body('email')
-			.isEmail()
-			.withMessage('Please enter a valid email'),
-		body('password')
-			.trim()
-			.isLength({ min: 5, max: 20 })
-			.withMessage('Please enter a password between 5 and 20 characters')
-	],
-	validateRequest,
-	authController.register
+  '/',
+  [
+    body('email')
+      .isEmail()
+      .withMessage('Please enter a valid email'),
+    body('password')
+      .trim()
+      .isLength({ min: 5, max: 20 })
+      .withMessage('Please enter a password between 5 and 20 characters')
+  ],
+  validateRequest,
+  userController.register
 );
+
+router.get('/', requireAuth, userController.getUserInfo);
 
 export default router;
