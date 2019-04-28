@@ -3,7 +3,7 @@ import * as cors from 'cors';
 import * as bodyParser from 'body-parser';
 
 // Routes
-import authRoutes from './routes/userRoutes';
+import userRoutes from './routes/userRoutes';
 
 const app = express();
 
@@ -12,7 +12,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Redirect every url beginning by auth to authRoutes
-app.use('/users', authRoutes);
+app.use('/users', userRoutes);
 
 app.get('/', (req, res) => {
   req;
