@@ -1,10 +1,10 @@
-import IUserFactory from '../typings/user/userFactory';
-import userType from '../typings/user/userType';
-import User from '../models/User';
-import { checkIfEmail, checkIfMinAndMax } from '../utils/validators';
+import User from '@models/User';
+import { checkIfEmail, checkIfMinAndMax } from '@utils/validators';
+import IUserFactory from '@typings/user/IUserFactory';
+import IUser from '@typings/user/IUser';
 
 class userFactory implements IUserFactory {
-  async create(data: userType) {
+  async create(data: IUser) {
     try {
       if (
         !checkIfEmail(data.email) ||
@@ -12,13 +12,13 @@ class userFactory implements IUserFactory {
       ) {
         return Promise.reject("Validation doesn't pass");
       }
-      const user: userType = await User.findOne({
+      const user: IUser = await User.findOne({
         where: { email: data.email }
       });
       if (user) {
         return Promise.reject('User already exist');
       }
-      const newUser: userType = await User.create({
+      const newUser: IUser = await User.create({
         email: data.email,
         username: data.username,
         avatarUrl: data.avatarUrl,

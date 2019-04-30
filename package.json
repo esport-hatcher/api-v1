@@ -42,6 +42,7 @@
 		"jwt-simple": "^0.5.5",
 		"lint-staged": "^8.1.5",
 		"lodash": "^4.17.11",
+		"module-alias": "^2.2.0",
 		"mysql2": "^1.6.5",
 		"nodemon": "^1.18.10",
 		"passport": "^0.4.0",
@@ -68,5 +69,17 @@
 		"jest": "^24.5.0",
 		"ts-jest": "^24.0.1",
 		"ts-node": "^8.0.3"
+	},
+	"_moduleAliases": {
+		"@controllers": "build/controllers",
+		"@factories": "build/factories",
+		"@middlewares": "build/middlewares",
+		"@routes": "build/routes",
+		"@services": "build/services",
+		"@models": "build/models",
+		"@utils": "build/utils",
+		"@config": "build/config",
+		"@tests": "build/tests",
+		"@app": "build/app.js"
 	}
 }

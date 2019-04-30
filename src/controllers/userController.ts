@@ -1,9 +1,9 @@
 import { Response, NextFunction } from 'express';
 import * as jwt from 'jwt-simple';
-import * as keys from '../keys';
-import requestType from '../typings/general/requestType';
-import userType from '../typings/user/userType';
-import userFactory from '../factories/userFactory';
+import * as keys from '@config/keys';
+import requestType from '@typings/general/IRequest';
+import userType from '@typings/user/IUser';
+import userFactory from '@factories/userFactory';
 
 const tokenForUser = (user: any) => {
   const timestamp = new Date().getTime();

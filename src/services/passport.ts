@@ -1,7 +1,7 @@
 import * as passport from 'passport';
 import * as passportJwt from 'passport-jwt';
-import User from '../models/User';
-import * as keys from '../keys';
+import User from '@models/User';
+import * as keys from '@config/keys';
 
 const jwtOptions: passportJwt.StrategyOptions = {
   jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
