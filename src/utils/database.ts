@@ -1,4 +1,4 @@
-import { sqlDb, sqlHost, sqlPassword, sqlPort, sqlUser } from '../keys';
+import { sqlDb, sqlHost, sqlPassword, sqlPort, sqlUser } from '@config/keys';
 import * as Sequelize from 'sequelize';
 
 export const db = new Sequelize.Sequelize(sqlDb, sqlUser, sqlPassword, {

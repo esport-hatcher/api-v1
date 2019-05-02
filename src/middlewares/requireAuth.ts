@@ -1,5 +1,5 @@
 import * as passport from 'passport';
-require('../services/passport');
+require('@services/passport');
 
 // Middleware to check if the user is logged in or not
 

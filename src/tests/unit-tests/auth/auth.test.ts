@@ -1,9 +1,9 @@
-import userFactory from '../../../factories/userFactory';
+import userFactory from '@factories/userFactory';
 import {
   generateNormalUser,
   generateBadEmail,
   generateBadPwd
-} from '../../utils/generate-user';
+} from '@tests/utils/generate-user';
 
 describe('when a user register', () => {
   const newUser = generateNormalUser();

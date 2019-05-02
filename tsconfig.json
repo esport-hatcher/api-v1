@@ -1,4 +1,5 @@
 {
+	"compileOnSave": false,
 	"compilerOptions": {
 		"target": "es6",
 		"module": "commonjs",
@@ -18,10 +19,21 @@
 		"noImplicitThis": false,
 		"strictNullChecks": false,
 		"outDir": "./build",
-		"baseUrl": ".",
+		"typeRoots": ["node_modules/@types"],
+		"baseUrl": "./src",
 		"paths": {
-			"*": ["node_modules/*", "src/types/*"]
+			"@typings/*": ["typings/*"],
+			"@controllers/*": ["controllers/*"],
+			"@factories/*": ["factories/*"],
+			"@models/*": ["models/*"],
+			"@services/*": ["services/*"],
+			"@utils/*": ["utils/*"],
+			"@routes/*": ["routes/*"],
+			"@middlewares/*": ["middlewares/*"],
+			"@config/*": ["config/*"],
+			"@tests/*": ["tests/*"],
+			"@app": ["app.ts"]
 		}
 	},
-	"include": ["src/**/*", "__tests__/**/*"]
+	"include": ["./src/**/*"]
 }

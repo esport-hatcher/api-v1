@@ -2,9 +2,9 @@ import {
   generateNormalUser,
   generateBadEmail,
   generateBadPwd
-} from '../../utils/generate-user';
+} from '@tests/utils/generate-user';
 import * as request from 'supertest';
-import app from '../../../app';
+import app from '@app';
 
 describe('when a user register', () => {
   const newUser = generateNormalUser();

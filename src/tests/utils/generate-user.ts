@@ -1,5 +1,5 @@
 import * as faker from 'faker';
-import userType from '../../typings/user/userType';
+import userType from '@typings/user/IUser';
 
 export const generateNormalUser = () => {
   const user: userType = {

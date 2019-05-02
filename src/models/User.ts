@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize';
 import * as bcrypt from 'bcryptjs';
-import { db } from '../utils/database';
-import userType from '../typings/user/userType';
+import { db } from '@utils/database';
+import IUser from '@typings/user/IUser';
 
 const User: any = db.define('user', {
   username: {
@@ -29,7 +29,7 @@ const User: any = db.define('user', {
   }
 });
 
-User.beforeCreate(async (user: userType) => {
+User.beforeCreate(async (user: IUser) => {
   const hash = await bcrypt.hash(user.password, 10);
   user.password = hash;
   return Promise.resolve();

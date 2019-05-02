@@ -1,5 +1,6 @@
-import app from './app';
-import sequelize from './utils/database';
+import 'module-alias/register';
+import app from '@app';
+import sequelize from '@utils/database';
 
 sequelize(false).then(() => {
   app.listen(process.env.PORT_API, () => {
