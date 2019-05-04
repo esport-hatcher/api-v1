@@ -1,8 +1,8 @@
 import * as faker from 'faker';
-import { IUserValues } from '@typings/user/IUser';
+import { IUserAttributes } from '@typings/user/IUser';
 
 export const generateNormalUser = () => {
-  const user: IUserValues = {
+  const user: IUserAttributes = {
     email: faker.internet.email(),
     username: faker.internet.userName(),
     password: faker.internet.password(),
@@ -13,7 +13,7 @@ export const generateNormalUser = () => {
 };
 
 export const generateBadEmail = () => {
-  const badEmailUser: IUserValues = {
+  const badEmailUser: IUserAttributes = {
     email: 'test',
     username: faker.internet.userName(),
     password: faker.internet.password(),
@@ -24,7 +24,7 @@ export const generateBadEmail = () => {
 };
 
 export const generateBadPwd = () => {
-  const badPwdUser: IUserValues = {
+  const badPwdUser: IUserAttributes = {
     email: faker.internet.email(),
     username: faker.internet.userName(),
     password: 'test',

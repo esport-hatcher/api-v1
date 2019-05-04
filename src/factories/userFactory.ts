@@ -1,10 +1,10 @@
 import User from '@models/User';
 import { checkIfEmail, checkIfMinAndMax } from '@utils/validators';
 import IUserFactory from '@typings/user/IUserFactory';
-import { IUserValues } from '@typings/user/IUser';
+import { IUserAttributes } from '@typings/user/IUser';
 
 class userFactory implements IUserFactory {
-  async create(data: IUserValues) {
+  async create(data: IUserAttributes) {
     try {
       if (
         !checkIfEmail(data.email) ||

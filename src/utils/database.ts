@@ -7,16 +7,11 @@ export const db = new Sequelize.Sequelize(sqlDb, sqlUser, sqlPassword, {
   port: sqlPort
 });
 
-export default async (force?: boolean) => {
+export default async (force: boolean = false) => {
   try {
     await db.authenticate();
     console.log('Connected to database successfully...');
-
-    if (force) {
-      await db.sync({ force: true });
-    } else {
-      await db.sync();
-    }
+    await db.sync({ force });
   } catch (error) {
     throw new Error('Unable to connect to database...');
   }
