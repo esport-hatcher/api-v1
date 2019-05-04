@@ -4,10 +4,16 @@ import { db } from '@utils/database';
 import IUser from '@typings/user/IUser';
 
 type UserModelStatic = typeof Sequelize.Model & {
-  new (values?: object, options?: Sequelize.BuildOptions): IUser;
+  new (values?: Object, options?: Sequelize.BuildOptions): IUser;
 };
 
 const User = <UserModelStatic>db.define('user', {
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true
+  },
   username: {
     type: Sequelize.STRING,
     unique: true,
