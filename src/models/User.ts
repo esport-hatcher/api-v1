@@ -71,8 +71,8 @@ User.init(
     }
   },
   {
-    tableName: 'users',
-    sequelize: db // this bit is important
+    tableName: 'Users',
+    sequelize: db
   }
 );
 

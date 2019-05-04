@@ -1,12 +1,4 @@
-import { Model } from 'sequelize';
-
-export default interface IUser extends IUserAttributes, Model {
-  readonly id;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface IUserAttributes {
+export default interface IUser {
   username: string;
   email: string;
   avatarUrl: string;
