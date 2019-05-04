@@ -2,6 +2,8 @@ import { Model } from 'sequelize';
 
 export default interface IUser extends IUserValues, Model {
   readonly id;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IUserValues {
