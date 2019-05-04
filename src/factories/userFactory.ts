@@ -15,7 +15,7 @@ class userFactory implements IUserFactory {
           message: "Validation doesn't pass"
         });
       }
-      const user: IUser = await User.findOne({
+      const user = await User.findOne({
         where: { email: data.email }
       });
       if (user) {
@@ -24,7 +24,7 @@ class userFactory implements IUserFactory {
           message: 'User already exist'
         });
       }
-      const newUser: IUser = await User.create({
+      const newUser = await User.create({
         email: data.email,
         username: data.username,
         avatarUrl: data.avatarUrl,

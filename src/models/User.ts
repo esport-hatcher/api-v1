@@ -3,7 +3,11 @@ import * as bcrypt from 'bcryptjs';
 import { db } from '@utils/database';
 import IUser from '@typings/user/IUser';
 
-const User: any = db.define('user', {
+type UserModelStatic = typeof Sequelize.Model & {
+  new (values?: object, options?: Sequelize.BuildOptions): IUser;
+};
+
+const User = <UserModelStatic>db.define('user', {
   username: {
     type: Sequelize.STRING,
     unique: true,
@@ -29,7 +33,7 @@ const User: any = db.define('user', {
   }
 });
 
-User.beforeCreate(async (user: IUser) => {
+User.beforeCreate(async user => {
   const hash = await bcrypt.hash(user.password, 10);
   user.password = hash;
   return Promise.resolve();

@@ -2,7 +2,6 @@ import { Response, NextFunction } from 'express';
 import * as jwt from 'jwt-simple';
 import * as keys from '@config/keys';
 import requestType from '@typings/general/IRequest';
-import userType from '@typings/user/IUser';
 import userFactory from '@factories/userFactory';
 
 const tokenForUser = (user: any) => {
@@ -16,7 +15,7 @@ export const register = async (
   next: NextFunction
 ) => {
   try {
-    const user: userType = await userFactory.create(req.body);
+    const user = await userFactory.create(req.body);
     return res.status(201).json({ token: tokenForUser(user) });
   } catch (err) {
     return next(err);
