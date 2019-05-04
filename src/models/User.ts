@@ -1,5 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import { db } from '@utils/database';
+import * as bcrypt from 'bcryptjs';
 // import {
 // 	HasManyGetAssociationsMixin,
 // 	HasManyAddAssociationMixin,
@@ -74,3 +75,9 @@ User.init(
     sequelize: db // this bit is important
   }
 );
+
+User.beforeCreate(async user => {
+  const hash = await bcrypt.hash(user.password, 10);
+  user.password = hash;
+  return Promise.resolve();
+});
