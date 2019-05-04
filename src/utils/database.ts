@@ -1,11 +1,14 @@
 import { sqlDb, sqlHost, sqlPassword, sqlPort, sqlUser } from '@config/keys';
-import * as Sequelize from 'sequelize';
+import { Sequelize } from 'sequelize-typescript';
+import User from '@models/User';
 
-export const db = new Sequelize.Sequelize(sqlDb, sqlUser, sqlPassword, {
+export const db = new Sequelize(sqlDb, sqlUser, sqlPassword, {
   dialect: 'mysql',
   host: sqlHost,
   port: sqlPort
 });
+
+db.addModels([User]);
 
 export default async (force: boolean = false) => {
   try {

@@ -1,5 +1,6 @@
-import IUser from '@typings/user/IUser';
+import IUser, { IUserAttributes } from '@typings/user/IUser';
+import User from '@models/User';
 
 export default interface IUserFactory {
-  create?: (data: IUser) => Promise<IUser>;
+  create?: (data: IUserAttributes) => Promise<User>;
 }
