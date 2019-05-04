@@ -17,12 +17,12 @@ describe('when a user register', () => {
     expect(res.status).toBe(201);
   });
 
-  void it('should return 500 when creating a user that already exist', async () => {
+  void it('should return 410 when creating a user that already exist', async () => {
     const res = await request(app)
       .post('/users')
       .send(newUser)
       .set('Content-Type', 'application/json');
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(410);
   });
 
   void it('should return 422 with bad email', async () => {

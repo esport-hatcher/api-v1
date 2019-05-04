@@ -17,11 +17,6 @@ export const register = async (
 ) => {
   try {
     const user: userType = await userFactory.create(req.body);
-    if (!user) {
-      const error: any = new Error('User already exist');
-      error.statusCode = 422;
-      return next(error);
-    }
     return res.status(201).json({ token: tokenForUser(user) });
   } catch (err) {
     return next(err);
