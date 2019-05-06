@@ -23,16 +23,17 @@
 		"baseUrl": "./src",
 		"paths": {
 			"@typings/*": ["typings/*"],
-			"@controllers/*": ["controllers/*"],
-			"@factories/*": ["factories/*"],
-			"@models/*": ["models/*"],
-			"@services/*": ["services/*"],
-			"@utils/*": ["utils/*"],
-			"@routes/*": ["routes/*"],
-			"@middlewares/*": ["middlewares/*"],
+			"@controllers/*": ["lib/controllers/*"],
+			"@factories/*": ["lib/factories/*"],
+			"@models/*": ["db/models/*"],
+			"@services/*": ["lib/services/*"],
+			"@utils/*": ["lib/utils/*"],
+			"@routes/*": ["lib/routes/*"],
+			"@middlewares/*": ["lib/middlewares/*"],
 			"@config/*": ["config/*"],
 			"@tests/*": ["tests/*"],
-			"@app": ["app.ts"]
+			"@app": ["lib/app.ts"],
+			"@db": ["db/index.ts"]
 		}
 	},
 	"include": ["./src/**/*"]

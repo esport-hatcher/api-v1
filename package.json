@@ -77,15 +77,16 @@
     "typescript": "^3.4.5"
   },
   "_moduleAliases": {
-    "@controllers": "build/controllers",
-    "@factories": "build/factories",
-    "@middlewares": "build/middlewares",
-    "@routes": "build/routes",
-    "@services": "build/services",
-    "@models": "build/models",
-    "@utils": "build/utils",
+    "@controllers": "build/lib/controllers",
+    "@factories": "build/lib/factories",
+    "@middlewares": "build/lib/middlewares",
+    "@routes": "build/lib/routes",
+    "@services": "build/lib/services",
+    "@models": "build/db/models",
+    "@utils": "build/lib/utils",
     "@config": "build/config",
     "@tests": "build/tests",
-    "@app": "build/app.js"
+    "@app": "build/lib/app.js",
+    "@db": "build/db/index.js"
   }
 }

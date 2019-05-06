@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import { db } from '@utils/database';
+import { db } from '@db';
 import { hash } from 'bcryptjs';
 // import {
 // 	HasManyGetAssociationsMixin,

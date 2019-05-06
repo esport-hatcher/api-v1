@@ -1,7 +1,7 @@
 // tslint:disable-next-line: no-import-side-effect
 import 'module-alias/register';
 import app from '@app';
-import sequelize from '@utils/database';
+import sequelize from '@db';
 
 sequelize(false)
     .then(() => {

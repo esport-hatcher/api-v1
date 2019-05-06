@@ -1,4 +1,4 @@
-import sequelize, { db } from '@utils/database';
+import sequelize, { db } from '@db';
 
 jest.setTimeout(30000);
 
