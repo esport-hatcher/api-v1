@@ -14,22 +14,25 @@ describe('when a user register', () => {
   });
 
   void it('should not be able to create another account with the same email', async () => {
-    await expect(userFactory.create(newUser)).rejects.toMatch(
-      'User already exist'
-    );
+    await expect(userFactory.create(newUser)).rejects.toEqual({
+      statusCode: 410,
+      message: 'User already exist'
+    });
   });
 
   void it('should not be able to create an account with an incorrect email', async () => {
     const incorrectEmail = generateBadEmail();
-    await expect(userFactory.create(incorrectEmail)).rejects.toMatch(
-      "Validation doesn't pass"
-    );
+    await expect(userFactory.create(incorrectEmail)).rejects.toEqual({
+      statusCode: 422,
+      message: "Validation doesn't pass"
+    });
   });
 
   void it('should not be able to create an account with an incorrect password', async () => {
     const incorrectPwd = generateBadPwd();
-    await expect(userFactory.create(incorrectPwd)).rejects.toMatch(
-      "Validation doesn't pass"
-    );
+    await expect(userFactory.create(incorrectPwd)).rejects.toEqual({
+      statusCode: 422,
+      message: "Validation doesn't pass"
+    });
   });
 });

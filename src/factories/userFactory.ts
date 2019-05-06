@@ -10,15 +10,21 @@ class userFactory implements IUserFactory {
         !checkIfEmail(data.email) ||
         !checkIfMinAndMax(data.password, { min: 5, max: 20 })
       ) {
-        return Promise.reject("Validation doesn't pass");
+        return Promise.reject({
+          statusCode: 422,
+          message: "Validation doesn't pass"
+        });
       }
-      const user: IUser = await User.findOne({
+      const user = await User.findOne({
         where: { email: data.email }
       });
       if (user) {
-        return Promise.reject('User already exist');
+        return Promise.reject({
+          statusCode: 410,
+          message: 'User already exist'
+        });
       }
-      const newUser: IUser = await User.create({
+      const newUser = await User.create({
         email: data.email,
         username: data.username,
         avatarUrl: data.avatarUrl,

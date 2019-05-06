@@ -1,22 +1,17 @@
 import { sqlDb, sqlHost, sqlPassword, sqlPort, sqlUser } from '@config/keys';
-import * as Sequelize from 'sequelize';
+import { Sequelize } from 'sequelize';
 
-export const db = new Sequelize.Sequelize(sqlDb, sqlUser, sqlPassword, {
+export const db = new Sequelize(sqlDb, sqlUser, sqlPassword, {
   dialect: 'mysql',
   host: sqlHost,
   port: sqlPort
 });
 
-export default async (force?: boolean) => {
+export default async (force: boolean = false) => {
   try {
     await db.authenticate();
     console.log('Connected to database successfully...');
-
-    if (force) {
-      await db.sync({ force: true });
-    } else {
-      await db.sync();
-    }
+    await db.sync({ force });
   } catch (error) {
     throw new Error('Unable to connect to database...');
   }
