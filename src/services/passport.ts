@@ -1,5 +1,10 @@
 import { use } from 'passport';
-import { StrategyOptions, ExtractJwt, Strategy } from 'passport-jwt';
+import {
+    StrategyOptions,
+    ExtractJwt,
+    Strategy,
+    VerifiedCallback,
+} from 'passport-jwt';
 import User from '@models/User';
 import * as keys from '@config/keys';
 
@@ -8,13 +13,17 @@ const jwtOptions: StrategyOptions = {
     secretOrKey: keys.jwtSecret,
 };
 
-const jwtLogin = new Strategy(jwtOptions, async (payload: any, done: any) => {
-    const user = await User.findByPk(payload.sub);
-    if (!user) {
-        return done(null, false);
+const jwtLogin = new Strategy(
+    jwtOptions,
+    // tslint:disable-next-line: no-any
+    async (payload: any, done: VerifiedCallback) => {
+        const user = await User.findByPk(payload.sub);
+        if (!user) {
+            return done(null, false);
+        }
+        return done(null, user);
     }
-    return done(null, user);
-});
+);
 
 /*
 Equivalent to passport.use

@@ -4,6 +4,8 @@ import * as express from 'express';
 
 // Routes
 import userRoutes from '@routes/userRoutes';
+import IError from '@typings/general/IError';
+import IRequest from '@typings/general/IRequest';
 
 // Express app creation
 const app = express();
@@ -27,8 +29,8 @@ app.get('/', (req, res) => {
 // Error handler
 app.use(
     (
-        error: any,
-        req: express.Request,
+        error: IError,
+        req: IRequest,
         res: express.Response,
         next: express.NextFunction
     ) => {
