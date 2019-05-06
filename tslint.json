@@ -5,6 +5,7 @@
         "prettier": true,
         "no-console": true,
         "class-name": true,
+        "await-promise": [true, "Bluebird"],
         "interface-name": true,
         "curly": true,
         "import-blacklist": true,
