@@ -6,9 +6,9 @@ jest.setTimeout(30000);
 require('iconv-lite').encodingExists('foo');
 
 beforeAll(async () => {
-  await sequelize(true);
+    await sequelize(true);
 });
 
 afterAll(async () => {
-  await db.close();
+    await db.close();
 });
