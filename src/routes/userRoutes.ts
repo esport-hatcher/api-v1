@@ -4,9 +4,9 @@ import * as userController from '@controllers/userController';
 import validateRequest from '@middlewares/validateRequest';
 import requireAuth from '@middlewares/requireAuth';
 
-const router = Router();
+const userRoutes = Router();
 
-router.post(
+userRoutes.post(
     '/',
     [
         body('email')
@@ -21,6 +21,6 @@ router.post(
     userController.register
 );
 
-router.get('/', requireAuth, userController.getUserInfo);
+userRoutes.get('/', requireAuth, userController.getUserInfo);
 
-export default router;
+export default userRoutes;
