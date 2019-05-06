@@ -1,12 +1,12 @@
 import { Response, NextFunction } from 'express';
-import * as jwt from 'jwt-simple';
-import * as keys from '@config/keys';
+import { encode } from 'jwt-simple';
+import { jwtSecret } from '@config/keys';
 import requestType from '@typings/general/IRequest';
 import userFactory from '@factories/userFactory';
 
 const tokenForUser = (user: any) => {
     const timestamp = new Date().getTime();
-    return jwt.encode({ sub: user.id, iat: timestamp }, keys.jwtSecret);
+    return encode({ sub: user.id, iat: timestamp }, jwtSecret);
 };
 
 export const register = async (

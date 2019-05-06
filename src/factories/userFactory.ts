@@ -3,7 +3,7 @@ import { checkIfEmail, checkIfMinAndMax } from '@utils/validators';
 import IUserFactory from '@typings/user/IUserFactory';
 import IUser from '@typings/user/IUser';
 
-class userFactory implements IUserFactory {
+class UserFactory implements IUserFactory {
     async create(data: IUser) {
         try {
             if (
@@ -37,4 +37,4 @@ class userFactory implements IUserFactory {
     }
 }
 
-export default new userFactory();
+export default new UserFactory();

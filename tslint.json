@@ -2,7 +2,17 @@
     "extends": ["tslint-plugin-prettier", "tslint-config-prettier"],
     //   "rulesDirectory": ["path/to/custom/rules/directory/", "another/path/"],
     "rules": {
-        "prettier": true
+        "prettier": true,
+        "no-console": true,
+        "class-name": true,
+        "interface-name": true,
+        "curly": true,
+        "import-blacklist": true,
+        "no-import-side-effect": true,
+        "no-require-imports": true,
+        "no-duplicate-imports": true,
+        "import-spacing": true
+
     },
     "jsRules": {
         "prettier": true
