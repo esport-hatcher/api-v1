@@ -61,17 +61,15 @@ describe('when a user register', () => {
     void it('should return 401 with bad credentials', async () => {
         const res = await request(app)
             .post('/users/token')
-            .send(generateBadEmail)
             .send({ ...pick(newUser, 'email'), password: 'test123' })
             .set('Content-Type', 'application/json');
         expect(res.status).toBe(401);
     });
 
-    void it('should return 404 with bad credentials', async () => {
-        const badEmailUser = generateBadEmail();
+    void it('should return 404 with unknown email', async () => {
         const res = await request(app)
             .post('/users/token')
-            .send(pick(badEmailUser, 'email', 'password'))
+            .send({ ...pick(newUser, 'password'), email: 'test@test.com' })
             .set('Content-Type', 'application/json');
         expect(res.status).toBe(404);
     });
