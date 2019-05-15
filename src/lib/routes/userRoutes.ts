@@ -28,6 +28,7 @@ userRoutes.post(
             .isEmail()
             .withMessage('Please enter a valid email'),
     ],
+    validateRequest,
     userController.getToken
 );
 
