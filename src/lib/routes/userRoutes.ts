@@ -21,6 +21,17 @@ userRoutes.post(
     userController.register
 );
 
+userRoutes.post(
+    '/token',
+    [
+        body('email')
+            .isEmail()
+            .withMessage('Please enter a valid email'),
+    ],
+    validateRequest,
+    userController.getToken
+);
+
 userRoutes.get('/', requireAuth, userController.getUserInfo);
 
 export default userRoutes;
