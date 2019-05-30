@@ -26,7 +26,7 @@ describe('when a user register', () => {
             .post('/users')
             .send(newUser)
             .set('Content-Type', 'application/json');
-        expect(res.status).toBe(410);
+        expect(res.status).toBe(409);
     });
 
     void it('should return 422 with bad email', async () => {
