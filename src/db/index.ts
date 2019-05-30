@@ -1,6 +1,6 @@
 import { sqlDb, sqlHost, sqlPassword, sqlPort, sqlUser } from '@config/keys';
 import { Sequelize } from 'sequelize';
-import User from '@models/User';
+// import User from '@models/User';
 
 export const db = new Sequelize(sqlDb, sqlUser, sqlPassword, {
     dialect: 'mysql',
@@ -11,17 +11,6 @@ export const db = new Sequelize(sqlDb, sqlUser, sqlPassword, {
 export default async (force: boolean = false) => {
     try {
         await db.authenticate();
-        const user = await User.findOne({
-            where: { email: 'admin@esport-hatcher.com' },
-        });
-        if (!user) {
-            await User.create({
-                username: 'admin',
-                password: 'admin',
-                email: 'admin@esport-hatcher.com',
-                superAdmin: true,
-            });
-        }
         // tslint:disable-next-line: no-console
         console.log('Connected to database successfully...');
         await db.sync({ force });
