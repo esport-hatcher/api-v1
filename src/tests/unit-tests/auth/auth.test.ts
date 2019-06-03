@@ -15,7 +15,7 @@ describe('when a user register', () => {
 
     void it('should not be able to create another account with the same email', async () => {
         await expect(userFactory.create(newUser)).rejects.toEqual({
-            statusCode: 410,
+            statusCode: 409,
             message: 'User already exist',
         });
     });
