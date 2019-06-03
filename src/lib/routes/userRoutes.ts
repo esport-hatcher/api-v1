@@ -33,7 +33,7 @@ userRoutes.post(
     userController.getToken
 );
 
-userRoutes.get('/', requireAuth, requireAdmin, userController.findAll); // NEED TO BE ADMIN
-userRoutes.get('/:userID', requireAuth, userController.findById); // NEED TO BE LOOGED
+userRoutes.get('/', requireAuth, requireAdmin, userController.findAll);
+userRoutes.get('/:userID', requireAuth, userController.findById);
 
 export default userRoutes;

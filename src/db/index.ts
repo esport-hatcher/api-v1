@@ -1,6 +1,5 @@
 import { sqlDb, sqlHost, sqlPassword, sqlPort, sqlUser } from '@config/keys';
 import { Sequelize } from 'sequelize';
-// import User from '@models/User';
 
 export const db = new Sequelize(sqlDb, sqlUser, sqlPassword, {
     dialect: 'mysql',
