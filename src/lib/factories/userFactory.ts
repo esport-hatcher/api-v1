@@ -20,7 +20,7 @@ class UserFactory implements IUserFactory {
             });
             if (user) {
                 return Promise.reject({
-                    statusCode: 410,
+                    statusCode: 409,
                     message: 'User already exist',
                 });
             }
