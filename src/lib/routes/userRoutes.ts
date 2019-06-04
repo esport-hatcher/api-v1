@@ -3,6 +3,7 @@ import { body } from 'express-validator/check';
 import * as userController from '@controllers/userController';
 import validateRequest from '@middlewares/validateRequest';
 import requireAuth from '@middlewares/requireAuth';
+import requireAdmin from '@middlewares/requireAdmin';
 
 const userRoutes = Router();
 
@@ -32,6 +33,7 @@ userRoutes.post(
     userController.getToken
 );
 
-userRoutes.get('/', requireAuth, userController.getUserInfo);
+userRoutes.get('/', requireAuth, requireAdmin, userController.findAll);
+userRoutes.get('/:userID', requireAuth, userController.findById);
 
 export default userRoutes;

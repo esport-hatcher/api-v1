@@ -25,10 +25,6 @@ export const register = async (
     }
 };
 
-export const getUserInfo = async (req: IRequest, res: Response) => {
-    return res.status(200).json({ name: req.user.username });
-};
-
 export const getToken = async (
     req: IRequest,
     res: Response,
@@ -51,4 +47,41 @@ export const getToken = async (
         return next(error);
     }
     return res.status(200).json({ token: tokenForUser(user) });
+};
+
+export const findAll = async (
+    // tslint:disable-next-line: variable-name
+    _req: IRequest,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const users = await User.findAll();
+        return res.status(200).json(users);
+    } catch (err) {
+        return next(err);
+    }
+};
+
+// export const updateUserInfo = async (
+//     req: IRequest,
+//     res: Response,
+//     next: NextFunction
+// ) => {
+
+// };
+
+export const findById = async (
+    req: IRequest,
+    res: Response,
+    next: NextFunction
+) => {
+    const { userID } = req.params;
+
+    try {
+        const user = await User.findByPk(userID);
+        return res.status(200).json(user);
+    } catch (err) {
+        return next(err);
+    }
 };

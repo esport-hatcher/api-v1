@@ -1,9 +1,9 @@
-import sequelize, { db } from '@db';
+import { db } from '@db';
 
 jest.setTimeout(30000);
 
 beforeAll(async () => {
-    await sequelize(true);
+    await db.authenticate();
 });
 
 afterAll(async () => {
