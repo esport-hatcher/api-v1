@@ -36,4 +36,11 @@ userRoutes.post(
 userRoutes.get('/', requireAuth, requireAdmin, userController.findAll);
 userRoutes.get('/:userID', requireAuth, userController.findById);
 
+userRoutes.post(
+    '/email',
+    [body('email').isEmail()],
+    validateRequest,
+    userController.checkIfEmailIsDisponible
+);
+
 export default userRoutes;
