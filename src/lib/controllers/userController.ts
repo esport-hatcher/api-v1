@@ -86,7 +86,7 @@ export const findById = async (
     }
 };
 
-export const checkIfEmailIsDisponible = async (
+export const checkIfEmailIsAvailable = async (
     req: IRequest,
     res: Response,
     next: NextFunction

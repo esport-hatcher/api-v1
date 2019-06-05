@@ -40,7 +40,7 @@ userRoutes.post(
     '/email',
     [body('email').isEmail()],
     validateRequest,
-    userController.checkIfEmailIsDisponible
+    userController.checkIfEmailIsAvailable
 );
 
 export default userRoutes;
