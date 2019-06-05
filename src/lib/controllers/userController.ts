@@ -85,3 +85,24 @@ export const findById = async (
         return next(err);
     }
 };
+
+export const checkIfEmailIsAvailable = async (
+    req: IRequest,
+    res: Response,
+    next: NextFunction
+) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ where: { email } });
+        if (!user) {
+            return res.status(200).json({ status: 'ok' });
+        }
+        const err: IError = new Error('email already taken');
+        err.statusCode = 409;
+        err.message = 'email already taken';
+        return next(err);
+    } catch (err) {
+        return next(err);
+    }
+};
