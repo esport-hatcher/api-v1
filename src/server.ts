@@ -9,9 +9,10 @@ const executeMigration = async () => {
         where: { email: 'admin@esport-hatcher.com' },
     });
     if (!user) {
+        const { BO_ADMIN_PWD } = process.env;
         await User.create({
             username: 'admin',
-            password: 'admin',
+            password: BO_ADMIN_PWD,
             email: 'admin@esport-hatcher.com',
             superAdmin: true,
         });
