@@ -22,7 +22,7 @@ export function logRequest(
     ) {
         // tslint:disable-next-line: no-invalid-this
         const response = await originalMethod.apply(this, [req, res, next]);
-        if (process.env.NODE_ENV !== 'CI') {
+        if (process.env.NODE_ENV !== 'CI' && process.env.NODE_ENV !== 'test') {
             // tslint:disable-next-line: no-console
             console.log(
                 bgYellow,

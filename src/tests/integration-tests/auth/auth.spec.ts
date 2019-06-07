@@ -7,12 +7,9 @@ import * as request from 'supertest';
 import app from '@app';
 import { pick } from 'lodash';
 
-describe('when a user register', () => {
-    const newUser = generateNormalUser();
+const newUser = generateNormalUser();
 
-    /**
-     * REGISTER
-     */
+describe('when a user register', () => {
     void it('should return 201 with the right informations', async () => {
         const res = await request(app)
             .post('/users')
@@ -46,10 +43,9 @@ describe('when a user register', () => {
             .set('Content-Type', 'application/json');
         expect(res.status).toBe(422);
     });
+});
 
-    /**
-     * LOGIN
-     */
+describe('when a user login', () => {
     void it('should return 200 with right credentials', async () => {
         const res = await request(app)
             .post('/users/token')

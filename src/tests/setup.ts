@@ -1,16 +1,19 @@
-import { db } from '@db';
+import db from '@db';
+import { initUser } from '../db/models/User';
 
 jest.setTimeout(30000);
 const OLD_ENV = process.env;
 
 beforeAll(async () => {
-    await db.authenticate();
-    jest.resetModules(); // this is important - it clears the cache
+    initUser(true);
     process.env = { ...OLD_ENV };
-    process.env.NODE_ENV = 'CI';
+    if (process.env.NODE_ENV !== 'CI') {
+        process.env.NODE_ENV = 'test';
+    }
+    await db.init(true, true);
 });
 
 afterAll(async () => {
-    await db.close();
+    await db.close(true);
     process.env.NODE_ENV = 'DEV';
 });
