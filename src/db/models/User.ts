@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import { db } from '@db';
+import db from '@db';
 import { hash } from 'bcryptjs';
 // import {
 // 	HasManyGetAssociationsMixin,
@@ -41,43 +41,82 @@ export default class User extends Model {
     // };
 }
 
-User.init(
-    {
-        id: {
-            type: DataTypes.INTEGER.UNSIGNED,
-            autoIncrement: true,
-            primaryKey: true,
+export const initUser = (test: boolean = false) => {
+    User.init(
+        {
+            id: {
+                type: DataTypes.INTEGER.UNSIGNED,
+                autoIncrement: true,
+                primaryKey: true,
+            },
+            username: {
+                type: new DataTypes.STRING(128),
+                allowNull: false,
+            },
+            password: {
+                type: new DataTypes.STRING(128),
+                allowNull: false,
+            },
+            email: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            avatarUrl: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                defaultValue: 'https://google.com',
+            },
+            superAdmin: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
         },
-        username: {
-            type: new DataTypes.STRING(128),
-            allowNull: false,
-        },
-        password: {
-            type: new DataTypes.STRING(128),
-            allowNull: false,
-        },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        avatarUrl: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            defaultValue: 'https://google.com',
-        },
-        superAdmin: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false,
-        },
-    },
-    {
-        tableName: 'Users',
-        sequelize: db,
-    }
-);
+        {
+            tableName: 'Users',
+            sequelize: db.getDb(test),
+        }
+    );
 
-User.beforeCreate(async user => {
-    const hashed = await hash(user.password, 10);
-    user.password = hashed;
-    return Promise.resolve();
-});
+    User.beforeCreate(async user => {
+        const hashed = await hash(user.password, 10);
+        user.password = hashed;
+        return Promise.resolve();
+    });
+};
+
+initUser();
+// }
+// User.init(
+//     {
+//         id: {
+//             type: DataTypes.INTEGER.UNSIGNED,
+//             autoIncrement: true,
+//             primaryKey: true,
+//         },
+//         username: {
+//             type: new DataTypes.STRING(128),
+//             allowNull: false,
+//         },
+//         password: {
+//             type: new DataTypes.STRING(128),
+//             allowNull: false,
+//         },
+//         email: {
+//             type: DataTypes.STRING,
+//             allowNull: false,
+//         },
+//         avatarUrl: {
+//             type: DataTypes.STRING,
+//             allowNull: false,
+//             defaultValue: 'https://google.com',
+//         },
+//         superAdmin: {
+//             type: DataTypes.BOOLEAN,
+//             defaultValue: false,
+//         },
+//     },
+//     {
+//         tableName: 'Users',
+//         sequelize: NODE_ENV === 'test' ? db.getDb(true) : db.getDb(),
+//     }
+// );

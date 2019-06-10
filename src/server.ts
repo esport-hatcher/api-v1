@@ -1,7 +1,7 @@
 // tslint:disable-next-line: no-import-side-effect
 import 'module-alias/register';
 import app from '@app';
-import sequelize from '@db';
+import db from '@db';
 import User from '@models/User';
 
 const executeMigration = async () => {
@@ -19,7 +19,7 @@ const executeMigration = async () => {
     }
 };
 
-sequelize(false)
+db.init()
     .then(() => {
         app.listen(process.env.PORT_API, () => {
             executeMigration()
