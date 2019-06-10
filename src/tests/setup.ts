@@ -14,6 +14,6 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+    process.env.NODE_ENV = 'dev';
     await db.close(true);
-    process.env.NODE_ENV = 'DEV';
 });

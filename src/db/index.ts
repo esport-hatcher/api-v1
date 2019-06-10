@@ -16,7 +16,7 @@ class SequelizeDb {
             host: sqlHost,
             port: sqlPort,
             logging:
-                NODE_ENV === 'PROD' || NODE_ENV === 'CI'
+                NODE_ENV === 'prod' || NODE_ENV === 'CI'
                     ? false
                     : SEQUELIZE_LOGS === 'false'
                     ? false
@@ -37,7 +37,7 @@ class SequelizeDb {
     }
 
     async close(test: ConstrainBoolean) {
-        return test ? this.dbTest.authenticate() : this.db.close();
+        return test ? this.dbTest.close() : this.db.close();
     }
 
     async sync(force: boolean, test: boolean) {
