@@ -7,8 +7,6 @@ const OLD_ENV = process.env;
 beforeAll(async () => {
     process.env = { ...OLD_ENV };
     if (process.env.NODE_ENV !== 'CI') {
-        // tslint:disable-next-line: no-console
-        console.log('BEFORE ALL: NOT CI');
         process.env.NODE_ENV = 'test';
         initUser(process.env.NODE_ENV === 'test');
         return db.init(true, process.env.NODE_ENV === 'test');
@@ -18,8 +16,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
     if (process.env.NODE_ENV !== 'CI') {
-        // tslint:disable-next-line: no-console
-        console.log('AFTER ALL: NOT CI');
         return db.close(process.env.NODE_ENV === 'test');
     }
     return db.close();
