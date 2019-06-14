@@ -13,6 +13,7 @@ beforeAll(async () => {
         initUser(process.env.NODE_ENV === 'test');
         return db.init(true, process.env.NODE_ENV === 'test');
     }
+    return db.init(true);
 });
 
 afterAll(async () => {
