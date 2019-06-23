@@ -2,8 +2,12 @@ import { json } from 'body-parser';
 import * as cors from 'cors';
 import * as express from 'express';
 
+import User from '@models/User';
+import Teams from '@models/Teams';
+
 // Routes
 import userRoutes from '@routes/userRoutes';
+import teamsRoutes from '@routes/teamsRoutes';
 import IError from '@typings/general/IError';
 import IRequest from '@typings/general/IRequest';
 
@@ -16,6 +20,7 @@ app.use(json());
 
 // Redirect every url beginning by auth to authRoutes
 app.use('/users', userRoutes);
+app.use('/teams', teamsRoutes);
 
 // Healthcheck route
 app.get('/', (req, res) => {
@@ -42,5 +47,8 @@ app.use(
         res.status(status).json({ message, data });
     }
 );
+
+User.hasOne(Teams);
+Teams.belongsTo(User);
 
 export default app;
