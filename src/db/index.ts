@@ -6,7 +6,8 @@ class SequelizeDb {
     private dbTest: Sequelize;
 
     constructor() {
-        this.credentials();
+        this.db = null;
+        this.dbTest = null;
     }
 
     createInstance(db: string) {
@@ -23,28 +24,36 @@ class SequelizeDb {
                     : true,
         });
     }
-    credentials() {
-        this.db = this.createInstance(sqlDb);
-        this.dbTest = this.createInstance('eh_test');
-    }
 
     getDb(test: boolean = false) {
+        if (!this.db && !test) {
+            this.db = this.createInstance(sqlDb);
+        }
+        if (!this.dbTest && test) {
+            this.dbTest = this.createInstance('eh_test');
+        }
         return test ? this.dbTest : this.db;
     }
 
-    async connect(test: boolean) {
+    async connect(test: boolean = false) {
         return test ? this.dbTest.authenticate() : this.db.authenticate();
     }
 
-    async close(test: ConstrainBoolean) {
+    async close(test: ConstrainBoolean = false) {
         return test ? this.dbTest.close() : this.db.close();
     }
 
-    async sync(force: boolean, test: boolean) {
+    async sync(force: boolean = false, test: boolean = false) {
         return test ? this.dbTest.sync({ force }) : this.db.sync({ force });
     }
 
     async init(force: boolean = false, test: boolean = false) {
+        if (!test && this.dbTest) {
+            await this.dbTest.close();
+        }
+        if (test && this.db) {
+            await this.db.close();
+        }
         await this.connect(test);
         await this.sync(force, test);
     }
