@@ -16,6 +16,9 @@ export default class User extends Model {
     public username!: string;
     public email!: string; // for nullable fields
     public avatarUrl: string;
+    public country: string;
+    public city: string;
+    public phoneNumber: string;
     public password: string;
     public superAdmin: boolean;
     public hashtag: string;
