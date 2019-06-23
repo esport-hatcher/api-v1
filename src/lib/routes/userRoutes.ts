@@ -43,4 +43,8 @@ userRoutes.post(
     userController.checkIfEmailIsAvailable
 );
 
+userRoutes.patch('/:userID', requireAuth, userController.updateById);
+
+userRoutes.delete('/:userID', requireAuth, userController.deleteById);
+
 export default userRoutes;
