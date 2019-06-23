@@ -27,7 +27,6 @@ class UserFactory implements IUserFactory {
             const newUser = await User.create({
                 email: data.email,
                 username: data.username,
-                avatarUrl: data.avatarUrl,
                 password: data.password,
             });
             return newUser;

@@ -1,6 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import db from '@db';
 import { hash } from 'bcryptjs';
+import { createHashtag } from '@utils/hashtagGenerator';
 // import {
 // 	HasManyGetAssociationsMixin,
 // 	HasManyAddAssociationMixin,
@@ -17,6 +18,7 @@ export default class User extends Model {
     public avatarUrl: string;
     public password: string;
     public superAdmin: boolean;
+    public hashtag: string;
 
     // timestamps!
     public readonly createdAt!: Date;
@@ -64,11 +66,27 @@ export const initUser = (test: boolean = false) => {
             avatarUrl: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                defaultValue: 'https://google.com',
+                defaultValue:
+                    'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png',
+            },
+            hashtag: {
+                type: DataTypes.STRING,
             },
             superAdmin: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
+            },
+            country: {
+                type: DataTypes.STRING,
+                defaultValue: '',
+            },
+            city: {
+                type: DataTypes.STRING,
+                defaultValue: '',
+            },
+            phoneNumber: {
+                type: DataTypes.STRING,
+                defaultValue: 'XX.XX.XX.XX.XX',
             },
         },
         {
@@ -82,41 +100,11 @@ export const initUser = (test: boolean = false) => {
         user.password = hashed;
         return Promise.resolve();
     });
+    User.afterCreate(async user => {
+        user.hashtag = createHashtag(user.id);
+        await user.save();
+        return Promise.resolve();
+    });
 };
 
 initUser();
-// }
-// User.init(
-//     {
-//         id: {
-//             type: DataTypes.INTEGER.UNSIGNED,
-//             autoIncrement: true,
-//             primaryKey: true,
-//         },
-//         username: {
-//             type: new DataTypes.STRING(128),
-//             allowNull: false,
-//         },
-//         password: {
-//             type: new DataTypes.STRING(128),
-//             allowNull: false,
-//         },
-//         email: {
-//             type: DataTypes.STRING,
-//             allowNull: false,
-//         },
-//         avatarUrl: {
-//             type: DataTypes.STRING,
-//             allowNull: false,
-//             defaultValue: 'https://google.com',
-//         },
-//         superAdmin: {
-//             type: DataTypes.BOOLEAN,
-//             defaultValue: false,
-//         },
-//     },
-//     {
-//         tableName: 'Users',
-//         sequelize: NODE_ENV === 'test' ? db.getDb(true) : db.getDb(),
-//     }
-// );
