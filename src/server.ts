@@ -22,7 +22,7 @@ const executeMigration = async () => {
     }
 };
 
-db.init()
+db.init(process.env.NODE_ENV === 'CI' || process.env.NODE_ENV === 'prod')
     .then(() => {
         app.listen(process.env.PORT_API, () => {
             executeMigration()
