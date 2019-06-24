@@ -15,11 +15,14 @@ const executeMigration = async () => {
             password: BO_ADMIN_PWD,
             email: 'admin@esport-hatcher.com',
             superAdmin: true,
+            country: 'France',
+            city: 'Paris',
+            phoneNumber: '3300000000',
         });
     }
 };
 
-db.init()
+db.init(process.env.NODE_ENV === 'CI' || process.env.NODE_ENV === 'prod')
     .then(() => {
         app.listen(process.env.PORT_API, () => {
             executeMigration()
