@@ -76,13 +76,11 @@ class UserController {
         const { userID } = req.params;
         try {
             const user = await User.findByPk(userID);
-            user.username = req.body.username;
-            if (req.body.avatarUrl) {
-                user.avatarUrl = req.body.avatarUrl;
-            }
-            user.country = req.body.country;
-            user.city = req.body.city;
-            user.phoneNumber = req.body.phoneNumber;
+            user.username = req.body.username || user.username;
+            user.avatarUrl = req.body.avatarUrl || user.avatarUrl;
+            user.country = req.body.country || user.country;
+            user.city = req.body.city || user.city;
+            user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
             user.save();
             return res.status(200).json({ updated: user.id });
         } catch (err) {
@@ -93,9 +91,10 @@ class UserController {
     @logRequest
     async deleteById(req: IRequest, res: Response, next: NextFunction) {
         const { userID } = req.params;
+
         try {
             const user = await User.findByPk(userID);
-            user.destroy();
+            await user.destroy();
             return res.status(200).json({ deleted: user.username });
         } catch (err) {
             return next(err);
