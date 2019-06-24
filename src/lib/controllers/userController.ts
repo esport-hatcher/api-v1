@@ -81,7 +81,7 @@ class UserController {
             user.country = req.body.country || user.country;
             user.city = req.body.city || user.city;
             user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
-            user.save();
+            await user.save();
             return res.status(200).json({ updated: user.id });
         } catch (err) {
             return next(err);
