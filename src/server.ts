@@ -15,6 +15,9 @@ const executeMigration = async () => {
             password: BO_ADMIN_PWD,
             email: 'admin@esport-hatcher.com',
             superAdmin: true,
+            country: 'France',
+            city: 'Paris',
+            phoneNumber: '3300000000',
         });
     }
 };

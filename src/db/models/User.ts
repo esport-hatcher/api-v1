@@ -74,6 +74,7 @@ export const initUser = (test: boolean = false) => {
             },
             hashtag: {
                 type: DataTypes.STRING,
+                allowNull: false,
             },
             superAdmin: {
                 type: DataTypes.BOOLEAN,
@@ -81,15 +82,15 @@ export const initUser = (test: boolean = false) => {
             },
             country: {
                 type: DataTypes.STRING,
-                defaultValue: '',
+                allowNull: true,
             },
             city: {
                 type: DataTypes.STRING,
-                defaultValue: '',
+                allowNull: true,
             },
             phoneNumber: {
                 type: DataTypes.STRING,
-                defaultValue: 'XX.XX.XX.XX.XX',
+                allowNull: true,
             },
         },
         {
