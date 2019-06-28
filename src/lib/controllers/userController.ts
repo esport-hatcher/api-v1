@@ -82,7 +82,7 @@ class UserController {
             user.city = req.body.city || user.city;
             user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
             await user.save();
-            return res.status(200).json({ updated: user.id });
+            return res.sendStatus(200);
         } catch (err) {
             return next(err);
         }
@@ -95,7 +95,7 @@ class UserController {
         try {
             const user = await User.findByPk(userID);
             await user.destroy();
-            return res.status(200).json({ deleted: user.username });
+            return res.sendStatus(200);
         } catch (err) {
             return next(err);
         }
@@ -112,7 +112,7 @@ class UserController {
         try {
             const user = await User.findOne({ where: { email } });
             if (!user) {
-                return res.status(200).json({ status: 'ok' });
+                return res.sendStatus(200);
             }
             const err: IError = new Error('email already taken');
             err.statusCode = 409;
