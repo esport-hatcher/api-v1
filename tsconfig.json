@@ -34,7 +34,7 @@
 			"@services/*": ["lib/services/*"],
 			"@utils/*": ["lib/utils/*"],
 			"@routes/*": ["lib/routes/*"],
-			"@middlewares/*": ["lib/middlewares/*"],
+			"@middlewares": ["lib/middlewares"],
 			"@config/*": ["config/*"],
 			"@tests/*": ["tests/*"],
 			"@app": ["lib/app.ts"],

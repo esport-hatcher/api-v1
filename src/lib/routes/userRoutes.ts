@@ -6,7 +6,7 @@ import {
     requireScopeOrAdmin,
     requireAdmin,
     requireAuth,
-} from '@middlewares/index';
+} from '@middlewares';
 
 const userRoutes = Router();
 
