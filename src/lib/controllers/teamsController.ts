@@ -17,13 +17,12 @@ class TeamsController {
                 error.message = 'invalide jwt token';
                 return next(error);
             }
-            const team = user.createTeam({
+            user.createTeam({
                 game: req.body.game,
                 name: req.body.name,
                 region: req.body.region,
             });
-            //user.joinTeam()
-            return res.status(201).json({ create: team });
+            return res.status(201).json({ create: 'ok' });
         } catch (err) {
             return next(err);
         }

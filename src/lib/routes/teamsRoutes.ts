@@ -7,7 +7,6 @@ const teamsRoutes = Router();
 
 teamsRoutes.post(
     '/create',
-    requireAuth,
     [
         body('name')
             .trim()
