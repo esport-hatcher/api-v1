@@ -49,13 +49,9 @@ class SequelizeDb {
 
     async init(force: boolean = false, test: boolean = false) {
         if (!test && this.dbTest) {
-            // tslint:disable-next-line: no-console
-            console.log('Sequelize: closing test db due to normal mod');
             await this.dbTest.close();
         }
         if (test && this.db) {
-            // tslint:disable-next-line: no-console
-            console.log('Sequelize: closing db due to test mod');
             await this.db.close();
         }
         await this.connect(test);
