@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import { body } from 'express-validator/check';
 import userController from '@controllers/userController';
-import validateRequest from '@middlewares/validateRequest';
-import requireAuth from '@middlewares/requireAuth';
-import requireAdmin from '@middlewares/requireAdmin';
+import {
+    requireValidation,
+    requireScopeOrAdmin,
+    requireAdmin,
+    requireAuth,
+} from '@middlewares';
 
 const userRoutes = Router();
 
@@ -21,7 +24,7 @@ userRoutes.post(
             .trim()
             .isLength({ min: 2, max: 25 }),
     ],
-    validateRequest,
+    requireValidation,
     userController.register
 );
 
@@ -32,7 +35,7 @@ userRoutes.post(
             .isEmail()
             .withMessage('Please enter a valid email'),
     ],
-    validateRequest,
+    requireValidation,
     userController.getToken
 );
 
@@ -42,12 +45,22 @@ userRoutes.get('/:userID', requireAuth, userController.findById);
 userRoutes.post(
     '/email',
     [body('email').isEmail()],
-    validateRequest,
+    requireValidation,
     userController.checkIfEmailIsAvailable
 );
 
-userRoutes.patch('/:userID', requireAuth, userController.updateById);
+userRoutes.patch(
+    '/:userID',
+    requireAuth,
+    requireScopeOrAdmin,
+    userController.updateById
+);
 
-userRoutes.delete('/:userID', requireAuth, userController.deleteById);
+userRoutes.delete(
+    '/:userID',
+    requireAuth,
+    requireScopeOrAdmin,
+    userController.deleteById
+);
 
 export default userRoutes;
