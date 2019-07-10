@@ -18,8 +18,17 @@ export const initMembers = (test: boolean = false) => {
                 autoIncrement: true,
                 primaryKey: true,
             },
+            teamId: {
+                type: DataTypes.INTEGER.UNSIGNED,
+                allowNull: false,
+            },
+
+            teamStatus: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
             role: {
-                type: new DataTypes.STRING(128),
+                type: DataTypes.STRING,
                 allowNull: false,
             },
         },
