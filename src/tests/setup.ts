@@ -8,15 +8,11 @@ beforeAll(async () => {
     process.env = { ...OLD_ENV };
     if (process.env.NODE_ENV !== 'CI') {
         process.env.NODE_ENV = 'test';
-        initUser(process.env.NODE_ENV === 'test');
-        return db.init(true, process.env.NODE_ENV === 'test');
     }
-    return db.init(true);
+    initUser(true);
+    await db.init(true, true);
 });
 
 afterAll(async () => {
-    if (process.env.NODE_ENV !== 'CI') {
-        return db.close(process.env.NODE_ENV === 'test');
-    }
-    return db.close();
+    await db.close(true);
 });
