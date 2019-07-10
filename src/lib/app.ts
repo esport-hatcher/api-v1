@@ -4,6 +4,7 @@ import * as express from 'express';
 
 import User from '@models/User';
 import Teams from '@models/Teams';
+import Members from '@models/Members';
 
 // Routes
 import userRoutes from '@routes/userRoutes';
@@ -48,7 +49,19 @@ app.use(
     }
 );
 
-User.hasOne(Teams);
-Teams.belongsTo(User);
+User.hasMany(Teams, {
+    sourceKey: 'id',
+    foreignKey: 'ownerId',
+    as: 'teams',
+});
+
+Teams.hasMany(Members, {
+    sourceKey: 'id',
+    foreignKey: 'teamId',
+    as: 'menber',
+});
+
+// User.belongsToMany(Teams, { through: Members });
+// Teams.belongsToMany(User, { through: Members });
 
 export default app;

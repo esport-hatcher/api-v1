@@ -1,7 +1,8 @@
-import { Model, DataTypes } from 'sequelize';
+import { Model, DataTypes, HasManyCreateAssociationMixin } from 'sequelize';
 import db from '@db';
 import { hash } from 'bcryptjs';
 import { createHashtag } from '@utils/hashtagGenerator';
+import Teams from '@models/Teams';
 // import {
 // 	HasManyGetAssociationsMixin,
 // 	HasManyAddAssociationMixin,
@@ -26,6 +27,7 @@ export default class User extends Model {
     // timestamps!
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+    public createTeam!: HasManyCreateAssociationMixin<Teams>;
 
     // Since TS cannot determine model association at compile time
     // we have to declare them here purely virtually
