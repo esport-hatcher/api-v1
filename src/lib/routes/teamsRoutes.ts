@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { body } from 'express-validator/check';
-import validateRequest from '@middlewares/validateRequest';
-import requireAuth from '@middlewares/requireAuth';
+import { requireAuth } from '@middlewares';
 import teamsController from '@controllers/teamsController';
 
 const teamsRoutes = Router();
@@ -17,7 +16,7 @@ teamsRoutes.post(
         body('game').trim(),
         body('region').trim(),
     ],
-    validateRequest,
+    requireAuth,
     teamsController.createTeams
 );
 

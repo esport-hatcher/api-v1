@@ -10,7 +10,7 @@ import { pick } from 'lodash';
 const newUser = generateNormalUser();
 
 describe('when a user register', () => {
-    void it('should return 201 with the right informations', async () => {
+    void it('should return 201 with the right information', async () => {
         const res = await request(app)
             .post('/users')
             .send(newUser)
