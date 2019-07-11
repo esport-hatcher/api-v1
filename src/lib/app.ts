@@ -2,16 +2,14 @@ import { json } from 'body-parser';
 import * as cors from 'cors';
 import * as express from 'express';
 
-import User from '@models/User';
-import Teams from '@models/Teams';
-import Members from '@models/Members';
-
 // Routes
 import userRoutes from '@routes/userRoutes';
 import teamsRoutes from '@routes/teamsRoutes';
 import IError from '@typings/general/IError';
 import IRequest from '@typings/general/IRequest';
-
+import User from '@models/User';
+import TeamUser from '@models/teamUser';
+import Team from '@models/Team';
 // Express app creation
 const app = express();
 
@@ -49,19 +47,7 @@ app.use(
     }
 );
 
-User.hasMany(Teams, {
-    sourceKey: 'id',
-    foreignKey: 'ownerId',
-    as: 'teams',
-});
-
-Teams.hasMany(Members, {
-    sourceKey: 'id',
-    foreignKey: 'teamId',
-    as: 'menber',
-});
-
-// User.belongsToMany(Teams, { through: Members });
-// Teams.belongsToMany(User, { through: Members });
+User.belongsToMany(Team, { through: TeamUser });
+Team.belongsToMany(User, { through: TeamUser });
 
 export default app;

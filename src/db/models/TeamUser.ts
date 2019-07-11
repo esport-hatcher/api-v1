@@ -1,31 +1,32 @@
 import { Model, DataTypes } from 'sequelize';
 import db from '@db';
 
-export default class Members extends Model {
+export default class TeamUser extends Model {
     public id!: number;
-    public nameMember!: string;
     public playerStatus!: boolean;
     public teamStatus!: boolean;
+    public role!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
 
-export const initMembers = (test: boolean = false) => {
-    Members.init(
+export const initTeamUser = (test: boolean = false) => {
+    TeamUser.init(
         {
             id: {
                 type: DataTypes.INTEGER.UNSIGNED,
                 autoIncrement: true,
                 primaryKey: true,
             },
-            teamId: {
-                type: DataTypes.INTEGER.UNSIGNED,
+            playerStatus: {
+                type: DataTypes.BOOLEAN,
                 allowNull: false,
+                defaultValue: false,
             },
-
             teamStatus: {
                 type: DataTypes.STRING,
                 allowNull: false,
+                defaultValue: false,
             },
             role: {
                 type: DataTypes.STRING,
@@ -33,10 +34,10 @@ export const initMembers = (test: boolean = false) => {
             },
         },
         {
-            tableName: 'Members',
+            tableName: 'TeamUsers',
             sequelize: db.getDb(test),
         }
     );
 };
 
-initMembers();
+initTeamUser();

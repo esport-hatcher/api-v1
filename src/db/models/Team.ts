@@ -1,28 +1,28 @@
-import { Model, DataTypes } from 'sequelize';
+import { Model, DataTypes, BelongsToManyAddAssociationMixin } from 'sequelize';
 import db from '@db';
+import User from '@models/User';
+import TeamUser from '@models/TeamUser';
 
-export default class Teams extends Model {
+export default class Team extends Model {
     public id!: number;
-    public teamName!: string;
+    public name!: string;
     public game!: string;
     public region!: string;
     public avatarTeamUrl: string;
-    public annierUrl: string;
+    public bannerUrl: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+
+    public addUser!: BelongsToManyAddAssociationMixin<User, TeamUser>;
 }
 
-export const initTeams = (test: boolean = false) => {
-    Teams.init(
+export const initTeam = (test: boolean = false) => {
+    Team.init(
         {
             id: {
                 type: DataTypes.INTEGER.UNSIGNED,
                 autoIncrement: true,
                 primaryKey: true,
-            },
-            ownerId: {
-                type: DataTypes.INTEGER.UNSIGNED,
-                allowNull: false,
             },
             name: {
                 type: new DataTypes.STRING(128),
@@ -42,7 +42,7 @@ export const initTeams = (test: boolean = false) => {
                 defaultValue:
                     'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png',
             },
-            bannierUrl: {
+            bannerUrl: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 defaultValue:
@@ -54,6 +54,8 @@ export const initTeams = (test: boolean = false) => {
             sequelize: db.getDb(test),
         }
     );
+
+    // Teams.belongsToMany(User, { through: TeamUser });
 };
 
-initTeams();
+initTeam();

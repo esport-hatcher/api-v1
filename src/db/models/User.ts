@@ -1,8 +1,10 @@
-import { Model, DataTypes, HasManyCreateAssociationMixin } from 'sequelize';
+import { Model, DataTypes, BelongsToManyAddAssociationMixin } from 'sequelize';
 import db from '@db';
 import { hash } from 'bcryptjs';
 import { createHashtag } from '@utils/hashtagGenerator';
-import Teams from '@models/Teams';
+import Team from '@models/Team';
+import TeamUser from '@models/teamUser';
+
 // import {
 // 	HasManyGetAssociationsMixin,
 // 	HasManyAddAssociationMixin,
@@ -27,7 +29,7 @@ export default class User extends Model {
     // timestamps!
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
-    public createTeam!: HasManyCreateAssociationMixin<Teams>;
+    public addTeam!: BelongsToManyAddAssociationMixin<Team, TeamUser>;
 
     // Since TS cannot determine model association at compile time
     // we have to declare them here purely virtually
@@ -112,5 +114,4 @@ export const initUser = (test: boolean = false) => {
         return Promise.resolve();
     });
 };
-
 initUser();

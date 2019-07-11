@@ -6,7 +6,7 @@ import teamsController from '@controllers/teamsController';
 const teamsRoutes = Router();
 
 teamsRoutes.post(
-    '/create',
+    '/',
     [
         body('name')
             .trim()
