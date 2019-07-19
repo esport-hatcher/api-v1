@@ -41,12 +41,22 @@ class UserController {
     @logRequest
     async findAll(
         // tslint:disable-next-line: variable-name
-        _req: IRequest,
+        req: IRequest,
         res: Response,
         next: NextFunction
     ) {
+        let users;
         try {
-            const users = await User.findAll();
+            if (req.query.page) {
+                const { page } = req.query || 1;
+                const perPage = 15;
+                users = await User.findAll({
+                    limit: perPage,
+                    offset: (page - 1) * perPage,
+                });
+            } else {
+                users = await User.findAll();
+            }
             return res.status(200).json(users);
         } catch (err) {
             return next(err);
