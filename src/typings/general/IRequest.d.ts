@@ -1,6 +1,6 @@
 import { Request } from 'express';
-import IUser from '@typings/user/IUser';
+import User from '@models/User';
 
 export default interface IRequest extends Request {
-    user: IUser;
+    user: User;
 }

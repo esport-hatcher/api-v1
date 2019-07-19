@@ -1,5 +1,6 @@
 import * as faker from 'faker';
 import IUser from '@typings/user/IUser';
+import userFactory from '@factories/userFactory';
 
 export const generateNormalUser = () => {
     const user: IUser = {
@@ -32,4 +33,10 @@ export const generateBadPwd = () => {
         superAdmin: false,
     };
     return badPwdUser;
+};
+
+export const getAccessTokenNormalUser = async () => {
+    const user = generateNormalUser();
+    const storedUser = await userFactory.create(user);
+    return storedUser.getAccessToken();
 };
