@@ -1,23 +1,17 @@
 import { Response, NextFunction } from 'express';
-import { encode } from 'jwt-simple';
 import { compare } from 'bcryptjs';
-import { jwtSecret } from '@config/keys';
 import IRequest from '@typings/general/IRequest';
 import userFactory from '@factories/userFactory';
 import User from '@models/User';
 import IError from '@typings/general/IError';
 import { logRequest } from '@utils/decorators';
 
-const tokenForUser = (user: User) => {
-    const timestamp = new Date().getTime();
-    return encode({ sub: user.id, iat: timestamp }, jwtSecret);
-};
 class UserController {
     @logRequest
     async register(req: IRequest, res: Response, next: NextFunction) {
         try {
             const user = await userFactory.create(req.body);
-            return res.status(201).json({ token: tokenForUser(user) });
+            return res.status(201).json({ token: user.getAccessToken() });
         } catch (err) {
             return next(err);
         }
@@ -41,7 +35,7 @@ class UserController {
             error.message = 'Bad credentials';
             return next(error);
         }
-        return res.status(200).json({ token: tokenForUser(user) });
+        return res.status(200).json({ token: user.getAccessToken() });
     }
 
     @logRequest

@@ -1,5 +1,4 @@
-import { Model, DataTypes } from 'sequelize';
-import db from '@db';
+import { Model, DataTypes, Sequelize } from 'sequelize';
 
 export default class TeamUser extends Model {
     public id!: number;
@@ -10,7 +9,7 @@ export default class TeamUser extends Model {
     public readonly updatedAt!: Date;
 }
 
-export const initTeamUser = (test: boolean = false) => {
+export const initTeamUser = (db: Sequelize) => {
     TeamUser.init(
         {
             id: {
@@ -35,9 +34,7 @@ export const initTeamUser = (test: boolean = false) => {
         },
         {
             tableName: 'TeamUsers',
-            sequelize: db.getDb(test),
+            sequelize: db,
         }
     );
 };
-
-initTeamUser();

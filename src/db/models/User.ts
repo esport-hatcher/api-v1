@@ -1,7 +1,8 @@
-import { Model, DataTypes } from 'sequelize';
-import db from '@db';
+import { Model, DataTypes, Sequelize } from 'sequelize';
 import { hash } from 'bcryptjs';
 import { createHashtag } from '@utils/hashtagGenerator';
+import { jwtSecret } from '@config/keys';
+import { encode } from 'jwt-simple';
 
 // import {
 // 	HasManyGetAssociationsMixin,
@@ -28,6 +29,12 @@ export default class User extends Model {
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
+    // tslint:disable-next-line: no-any
+    getAccessToken() {
+        const timestamp = new Date().getTime();
+        return encode({ sub: this.id, iat: timestamp }, jwtSecret);
+    }
+
     // Since TS cannot determine model association at compile time
     // we have to declare them here purely virtually
     // these will not exist until `Model.init` was called.
@@ -47,7 +54,7 @@ export default class User extends Model {
     // };
 }
 
-export const initUser = (test: boolean = false) => {
+export const initUser = (db: Sequelize) => {
     User.init(
         {
             id: {
@@ -96,7 +103,7 @@ export const initUser = (test: boolean = false) => {
         },
         {
             tableName: 'Users',
-            sequelize: db.getDb(test),
+            sequelize: db,
         }
     );
 
@@ -111,4 +118,3 @@ export const initUser = (test: boolean = false) => {
         return Promise.resolve();
     });
 };
-initUser();

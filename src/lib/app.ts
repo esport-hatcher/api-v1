@@ -7,9 +7,6 @@ import userRoutes from '@routes/userRoutes';
 import teamsRoutes from '@routes/teamsRoutes';
 import IError from '@typings/general/IError';
 import IRequest from '@typings/general/IRequest';
-import User from '@models/User';
-import TeamUser from '@models/TeamUser';
-import Team from '@models/Team';
 // Express app creation
 const app = express();
 
@@ -46,8 +43,5 @@ app.use(
         res.status(status).json({ message, data });
     }
 );
-
-User.belongsToMany(Team, { through: TeamUser });
-Team.belongsToMany(User, { through: TeamUser });
 
 export default app;

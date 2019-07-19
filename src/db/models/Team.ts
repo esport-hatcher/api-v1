@@ -1,5 +1,9 @@
-import { Model, DataTypes, BelongsToManyAddAssociationMixin } from 'sequelize';
-import db from '@db';
+import {
+    Model,
+    DataTypes,
+    BelongsToManyAddAssociationMixin,
+    Sequelize,
+} from 'sequelize';
 import User from '@models/User';
 import TeamUser from '@models/TeamUser';
 
@@ -16,7 +20,7 @@ export default class Team extends Model {
     public addUser!: BelongsToManyAddAssociationMixin<User, TeamUser>;
 }
 
-export const initTeam = (test: boolean = false) => {
+export const initTeam = (db: Sequelize) => {
     Team.init(
         {
             id: {
@@ -51,11 +55,7 @@ export const initTeam = (test: boolean = false) => {
         },
         {
             tableName: 'Teams',
-            sequelize: db.getDb(test),
+            sequelize: db,
         }
     );
-
-    // Teams.belongsToMany(User, { through: TeamUser });
 };
-
-initTeam();
