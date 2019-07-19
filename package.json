@@ -13,7 +13,7 @@
     "build": "tsc -p tsconfig.json",
     "build:watch": "tsc -w -p tsconfig.json",
     "lint": "tslint -t stylish --project tsconfig.json --config tslint.json",
-    "launch-tests": "NODE_ENV=test jest -i",
+    "launch-tests": "jest -i",
     "test": "sh launch-tests.sh",
     "test:watch": "jest --watch",
     "shell": "sh launch-shell.sh"
