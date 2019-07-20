@@ -39,7 +39,7 @@ teamsRoutes.patch(
     '/:teamID',
     requireAuth,
     requireScopeOrAdmin,
-    teamsRoutes.updateById
+    teamsController.updateById
 );
 
 export default teamsRoutes;
