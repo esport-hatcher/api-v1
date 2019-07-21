@@ -113,7 +113,7 @@ export const initUser = (db: Sequelize) => {
         return Promise.resolve();
     });
     User.afterCreate(async user => {
-        user.hashtag = createHashtag(user.id);
+        user.hashtag = createHashtag();
         await user.save();
         return Promise.resolve();
     });
