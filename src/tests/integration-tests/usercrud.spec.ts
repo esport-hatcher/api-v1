@@ -1,26 +1,21 @@
-import {
-    getAccessTokenNormalUser,
-    // generateNormalUser,
-} from '@tests/utils/generate-user';
+import { getNormalUser } from '@tests/utils/generate-user';
 import app from '@app';
 import logger from '@utils/logger';
 import * as request from 'supertest';
 
-// const newUser = generateNormalUser();
-
 describe('when a user read, update or delete', () => {
-    let accessToken: string;
+    let user;
 
     beforeAll(async () => {
         logger('Tests', 'Generating access token...');
-        accessToken = await getAccessTokenNormalUser();
+        user = await getNormalUser();
     });
 
     void it('GET all users', async () => {
         const res = await request(app)
             .get('/')
             .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${accessToken}`);
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(200);
     });
 
@@ -29,25 +24,25 @@ describe('when a user read, update or delete', () => {
             .get('/')
             .query({ page: 1 })
             .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${accessToken}`);
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(200);
     });
 
-    // void it('PATCH an user', async () => {
-    //     const patchedUser = { username: 'Yun Yun' };
-    //     const res = await request(app)
-    //         .patch('/' + newUser.id)
-    //         .send(patchedUser)
-    //         .set('Content-Type', 'application/json')
-    //         .set('Authorization', `Bearer ${accessToken}`);
-    //     expect(res.status).toBe(200);
-    // });
+    void it('PATCH an user', async () => {
+        const patchedUser = { username: 'Yun Yun' };
+        const res = await request(app)
+            .patch(`/${user.id}`)
+            .send(patchedUser)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(200);
+    });
 
-    // void it('DELETE an user', async () => {
-    //     const res = await request(app)
-    //         .delete('/' + newUser.id)
-    //         .set('Content-Type', 'application/json')
-    //         .set('Authorization', `Bearer ${accessToken}`);
-    //     expect(res.status).toBe(200);
-    // });
+    void it('DELETE an user', async () => {
+        const res = await request(app)
+            .delete(`/${user.id}`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(200);
+    });
 });

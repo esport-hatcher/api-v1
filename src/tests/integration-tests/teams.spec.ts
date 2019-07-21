@@ -1,14 +1,14 @@
-import { getAccessTokenNormalUser } from '@tests/utils/generate-user';
+import { getNormalUser } from '@tests/utils/generate-user';
 import * as request from 'supertest';
 import app from '@app';
 import logger from '@utils/logger';
 
 describe('when a user try to create a team', () => {
-    let accessToken: string;
+    let user;
 
     beforeAll(async () => {
         logger('Tests', 'Generating access token...');
-        accessToken = await getAccessTokenNormalUser();
+        user = await getNormalUser();
     });
 
     void it('should return 401 when does not have a token', async () => {
@@ -34,7 +34,7 @@ describe('when a user try to create a team', () => {
             .post('/teams')
             .send(team)
             .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${accessToken}`);
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(201);
     });
 
@@ -48,7 +48,7 @@ describe('when a user try to create a team', () => {
             .post('/teams')
             .send(team)
             .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${accessToken}`);
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(422);
     });
 
@@ -61,7 +61,7 @@ describe('when a user try to create a team', () => {
             .post('/teams')
             .send(team)
             .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${accessToken}`);
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(422);
     });
 
@@ -75,7 +75,7 @@ describe('when a user try to create a team', () => {
             .post('/teams')
             .send(team)
             .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${accessToken}`);
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(422);
     });
 });

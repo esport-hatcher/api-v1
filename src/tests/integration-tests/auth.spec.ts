@@ -1,5 +1,5 @@
 import {
-    generateNormalUser,
+    getUserTemplate,
     generateBadEmail,
     generateBadPwd,
 } from '@tests/utils/generate-user';
@@ -7,7 +7,7 @@ import * as request from 'supertest';
 import app from '@app';
 import { pick } from 'lodash';
 
-const newUser = generateNormalUser();
+const newUser = getUserTemplate();
 
 describe('when a user register', () => {
     void it('should return 201 with the right information', async () => {
