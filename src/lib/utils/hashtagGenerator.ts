@@ -1,4 +1,6 @@
+import { randomBytes } from 'crypto';
+
 export const createHashtag = () => {
-    const res = Math.floor(1000 + Math.random() * 9000);
-    return `#${res}`;
+    const buf = randomBytes(3);
+    return `#${buf.toString('hex').toUpperCase()}`;
 };
