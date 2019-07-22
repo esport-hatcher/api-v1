@@ -1,14 +1,16 @@
-import sequelize from '../utils/database';
-import { db } from '../utils/database';
+import db from '@db';
 
 jest.setTimeout(30000);
-
-require('iconv-lite').encodingExists('foo');
+const OLD_ENV = process.env;
 
 beforeAll(async () => {
-  await sequelize(true);
+    process.env = { ...OLD_ENV };
+    if (process.env.NODE_ENV !== 'CI') {
+        process.env.NODE_ENV = 'test';
+    }
+    return db.init(true, true);
 });
 
 afterAll(async () => {
-  await db.close();
+    return db.close(true);
 });
