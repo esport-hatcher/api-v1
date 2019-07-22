@@ -22,10 +22,12 @@ class SequelizeDb {
             port: sqlPort,
             logging:
                 SEQUELIZE_LOGS === 'true'
-                    ? true
+                    ? // tslint:disable-next-line: no-console
+                      console.log
                     : NODE_ENV === 'production' || NODE_ENV === 'CI'
                     ? false
-                    : true,
+                    : // tslint:disable-next-line: no-console
+                      console.log,
         });
     }
 
