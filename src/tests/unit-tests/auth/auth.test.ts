@@ -1,12 +1,12 @@
 import userFactory from '@factories/userFactory';
 import {
-    getUserTemplate,
+    getNormalUserTemplate,
     generateBadEmail,
     generateBadPwd,
 } from '@tests/utils/generate-user';
 
 describe('when a user register', () => {
-    const newUser = getUserTemplate();
+    const newUser = getNormalUserTemplate();
 
     void it('should create a new account', async () => {
         const user = await userFactory.create(newUser);

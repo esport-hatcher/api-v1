@@ -2,7 +2,7 @@ import * as faker from 'faker';
 import IUser from '@typings/user/IUser';
 import userFactory from '@factories/userFactory';
 
-export const getUserTemplate = () => {
+export const getNormalUserTemplate = () => {
     const user: IUser = {
         email: faker.internet.email(),
         username: faker.internet.userName(),
@@ -36,7 +36,7 @@ export const generateBadPwd = () => {
 };
 
 export const getNormalUser = async () => {
-    const user = getUserTemplate();
+    const user = getNormalUserTemplate();
     const storedUser = await userFactory.create(user);
     return storedUser;
 };
