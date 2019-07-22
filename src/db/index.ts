@@ -21,8 +21,8 @@ class SequelizeDb {
             host: sqlHost,
             port: sqlPort,
             logging:
-                SEQUELIZE_LOGS === 'false'
-                    ? false
+                SEQUELIZE_LOGS === 'true'
+                    ? true
                     : NODE_ENV === 'production' || NODE_ENV === 'CI'
                     ? false
                     : true,
