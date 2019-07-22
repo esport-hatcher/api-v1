@@ -21,11 +21,13 @@ class SequelizeDb {
             host: sqlHost,
             port: sqlPort,
             logging:
-                NODE_ENV === 'prod' || NODE_ENV === 'CI'
+                SEQUELIZE_LOGS === 'true'
+                    ? // tslint:disable-next-line: no-console
+                      console.log
+                    : NODE_ENV === 'production' || NODE_ENV === 'CI'
                     ? false
-                    : SEQUELIZE_LOGS === 'false'
-                    ? false
-                    : true,
+                    : // tslint:disable-next-line: no-console
+                      console.log,
         });
     }
 
