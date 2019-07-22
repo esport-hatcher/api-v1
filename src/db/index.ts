@@ -21,11 +21,13 @@ class SequelizeDb {
             host: sqlHost,
             port: sqlPort,
             logging:
-                NODE_ENV === 'prod' || NODE_ENV === 'CI'
+                SEQUELIZE_LOGS === 'true'
+                    ? // tslint:disable-next-line: no-console
+                      console.log
+                    : NODE_ENV === 'production' || NODE_ENV === 'CI'
                     ? false
-                    : SEQUELIZE_LOGS === 'false'
-                    ? false
-                    : true,
+                    : // tslint:disable-next-line: no-console
+                      console.log,
         });
     }
 
@@ -36,7 +38,7 @@ class SequelizeDb {
         }
         if (!this.dbTest && test) {
             logger('Database', 'Creating test instance...');
-            this.dbTest = this.createInstance('eh_test');
+            this.dbTest = this.createInstance('eh_testing');
         }
         return test ? this.dbTest : this.db;
     }
@@ -55,7 +57,7 @@ class SequelizeDb {
 
     /**
      * @param force : Do you want to reset the database on each instance
-     * @param test : Is it test mode (eh_test or eh)
+     * @param test : Is it test mode (eh_testing or eh)
      * Main function to initialize the database
      */
     async init(force: boolean = false, test: boolean = false) {
