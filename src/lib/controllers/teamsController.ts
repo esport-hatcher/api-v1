@@ -1,7 +1,9 @@
 import { Response, NextFunction } from 'express';
 import IRequest from '@typings/general/IRequest';
 import { logRequest } from '@utils/decorators';
+import IError from '@typings/general/IError';
 import Team from '@models/Team';
+import User from '@models/User';
 
 class TeamsController {
     @logRequest
@@ -17,8 +19,41 @@ class TeamsController {
             });
             await newTeam.addUser(user, {
                 through: {
-                    role: 'admin',
+                    role: 'Owner',
                     playerStatus: true,
+                    teamStatus: true,
+                },
+            });
+            return res.sendStatus(201);
+        } catch (err) {
+            return next(err);
+        }
+    }
+    @logRequest
+    async addTeamUser(req: IRequest, res: Response, next: NextFunction) {
+        try {
+            const { user } = req;
+            const { userEmail, role, name } = req.body;
+            const myteam = await user.getTeams({ where: { name } });
+            if (myteam.length === 0) {
+                const error: IError = new Error('Team not found');
+                error.statusCode = 422;
+                error.message = 'Team not found';
+                return next(error);
+            }
+            const inviteUser = await User.findOne({
+                where: { email: userEmail },
+            });
+            if (!inviteUser) {
+                const error: IError = new Error('User not found');
+                error.statusCode = 422;
+                error.message = 'User not found';
+                return next(error);
+            }
+            await myteam[0].addUser(inviteUser, {
+                through: {
+                    role: role,
+                    playerStatus: false,
                     teamStatus: true,
                 },
             });

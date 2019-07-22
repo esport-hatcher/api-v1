@@ -2,6 +2,7 @@ import {
     Model,
     DataTypes,
     BelongsToManyAddAssociationMixin,
+    BelongsToManyGetAssociationsMixin,
     Sequelize,
 } from 'sequelize';
 import User from '@models/User';
@@ -18,6 +19,7 @@ export default class Team extends Model {
     public readonly updatedAt!: Date;
 
     public addUser!: BelongsToManyAddAssociationMixin<User, TeamUser>;
+    public getUser!: BelongsToManyGetAssociationsMixin<User>;
 }
 
 export const initTeam = (db: Sequelize) => {

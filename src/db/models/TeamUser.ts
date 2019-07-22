@@ -1,4 +1,4 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+import { Model, DataTypes, Sequelize, ENUM } from 'sequelize';
 
 export default class TeamUser extends Model {
     public id!: number;
@@ -28,7 +28,7 @@ export const initTeamUser = (db: Sequelize) => {
                 defaultValue: false,
             },
             role: {
-                type: DataTypes.STRING,
+                type: ENUM('Admin', 'Staff', 'Player', 'Owner'),
                 allowNull: false,
             },
         },

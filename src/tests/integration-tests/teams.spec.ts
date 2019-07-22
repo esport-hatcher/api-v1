@@ -79,3 +79,67 @@ describe('when a user try to create a team', () => {
         expect(res.status).toBe(422);
     });
 });
+
+describe('when a user try invite an another user in a team', () => {
+    let accessToken: string;
+    const inviteUser = {
+        email: 'test@esport-hatcher.com',
+        password: 'admin',
+        username: 'loto',
+    };
+    const team = {
+        name: 'test123',
+        region: 'FR',
+        game: 'Counter Strike',
+    };
+    beforeAll(async () => {
+        logger('Tests', 'Generating access token...');
+        accessToken = await getAccessTokenNormalUser();
+        await request(app)
+            .post('/users')
+            .send(inviteUser)
+            .set('Content-Type', 'application/json');
+        await request(app)
+            .post('/teams')
+            .send(team)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${accessToken}`);
+    });
+
+    void it('should return 201 when user invit a another user', async () => {
+        const res = await request(app)
+            .post('/teams/addUser')
+            .send({
+                userEmail: 'test@esport-hatcher.com',
+                role: 'Admin',
+                name: 'test123',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${accessToken}`);
+        expect(res.status).toBe(201);
+    });
+    void it('should return 422 when user dont have team', async () => {
+        const res = await request(app)
+            .post('/teams/addUser')
+            .send({
+                userEmail: 'test@esport-hatcher.com',
+                role: 'Admin',
+                name: 'noteam',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${accessToken}`);
+        expect(res.status).toBe(422);
+    });
+    void it('should return 422 when user doesnt exist', async () => {
+        const res = await request(app)
+            .post('/teams/addUser')
+            .send({
+                userEmail: 'noUser@esport-hatcher.com',
+                role: 'Admin',
+                name: 'test123',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${accessToken}`);
+        expect(res.status).toBe(422);
+    });
+});

@@ -1,8 +1,14 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+import {
+    Model,
+    DataTypes,
+    Sequelize,
+    BelongsToManyGetAssociationsMixin,
+} from 'sequelize';
 import { hash } from 'bcryptjs';
 import { createHashtag } from '@utils/hashtagGenerator';
 import { jwtSecret } from '@config/keys';
 import { encode } from 'jwt-simple';
+import Team from '@models/Team';
 
 // import {
 // 	HasManyGetAssociationsMixin,
@@ -28,6 +34,7 @@ export default class User extends Model {
     // timestamps!
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+    public getTeams!: BelongsToManyGetAssociationsMixin<Team>;
 
     // tslint:disable-next-line: no-any
     getAccessToken() {
