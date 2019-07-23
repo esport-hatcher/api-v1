@@ -2,7 +2,7 @@ import {
     getNormalUserTemplate,
     generateBadEmail,
     generateBadPwd,
-} from '@tests/utils/generate-user';
+} from '@tests/utils/generate-models';
 import * as request from 'supertest';
 import app from '@app';
 import { pick } from 'lodash';

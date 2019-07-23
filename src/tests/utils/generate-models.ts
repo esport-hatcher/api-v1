@@ -1,6 +1,9 @@
 import * as faker from 'faker';
+import app from '@app';
 import IUser from '@typings/user/IUser';
 import userFactory from '@factories/userFactory';
+import * as request from 'supertest';
+import User from '@models/User';
 
 export const getAdminUserTemplate = () => {
     const user: IUser = {
@@ -46,6 +49,14 @@ export const generateBadPwd = () => {
     return badPwdUser;
 };
 
+export const getTeamTemplate = () => {
+    return {
+        region: 'FR',
+        name: faker.name.jobTitle(),
+        game: faker.name.jobType(),
+    };
+};
+
 export const getNormalUser = async () => {
     const user = getNormalUserTemplate();
     return userFactory.create(user);
@@ -54,4 +65,13 @@ export const getNormalUser = async () => {
 export const getAdminUser = async () => {
     const user = getAdminUserTemplate();
     return userFactory.create(user);
+};
+
+export const getTeam = async (user: User) => {
+    const { body } = await request(app)
+        .post('/teams')
+        .send(getTeamTemplate())
+        .set('Content-Type', 'application/json')
+        .set('Authorization', `Bearer ${user.getAccessToken()}`);
+    return body;
 };

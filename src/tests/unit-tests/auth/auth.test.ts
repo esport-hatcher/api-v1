@@ -3,7 +3,7 @@ import {
     getNormalUserTemplate,
     generateBadEmail,
     generateBadPwd,
-} from '@tests/utils/generate-user';
+} from '@tests/utils/generate-models';
 
 describe('when a user register', () => {
     const newUser = getNormalUserTemplate();

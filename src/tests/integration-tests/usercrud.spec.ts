@@ -1,4 +1,4 @@
-import { getNormalUser, getAdminUser } from '@tests/utils/generate-user';
+import { getNormalUser, getAdminUser } from '@tests/utils/generate-models';
 import app from '@app';
 import logger from '@utils/logger';
 import * as request from 'supertest';
