@@ -25,18 +25,6 @@ teamsRoutes.post(
     teamsController.createTeams
 );
 
-teamsRoutes.post(
-    '/:teamId/members/:userId',
-    [
-        body('role')
-            .trim()
-            .withMessage('Please enter a role'),
-    ],
-    requireValidation,
-    requireAuth,
-    teamsController.addTeamUser
-);
-
 teamsRoutes.get('/', requireAuth, requireAdmin, teamsController.findAll);
 teamsRoutes.get('/:teamID', requireAuth, teamsController.findById);
 
@@ -52,6 +40,18 @@ teamsRoutes.patch(
     requireAuth,
     requireScopeOrAdmin,
     teamsController.updateById
+);
+
+teamsRoutes.post(
+    '/:teamId/members/:userId',
+    [
+        body('role')
+            .trim()
+            .withMessage('Please enter a role'),
+    ],
+    requireValidation,
+    requireAuth,
+    teamsController.addTeamUser
 );
 
 export default teamsRoutes;
