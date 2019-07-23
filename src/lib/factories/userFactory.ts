@@ -28,6 +28,7 @@ class UserFactory implements IUserFactory {
                 email: data.email,
                 username: data.username,
                 password: data.password,
+                superAdmin: data.superAdmin,
             });
             return newUser;
         } catch (err) {

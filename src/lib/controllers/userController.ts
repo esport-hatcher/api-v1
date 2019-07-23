@@ -4,6 +4,7 @@ import IRequest from '@typings/general/IRequest';
 import userFactory from '@factories/userFactory';
 import User from '@models/User';
 import IError from '@typings/general/IError';
+import { pick } from 'lodash';
 import { logRequest } from '@utils/decorators';
 
 class UserController {
@@ -45,7 +46,7 @@ class UserController {
         res: Response,
         next: NextFunction
     ) {
-        let users;
+        let users: User[];
         try {
             if (req.query.page) {
                 const { page } = req.query || 1;
@@ -57,7 +58,26 @@ class UserController {
             } else {
                 users = await User.findAll();
             }
-            return res.status(200).json(users);
+            return res
+                .status(200)
+                .json(
+                    users.map(user =>
+                        pick(
+                            user,
+                            'id',
+                            'username',
+                            'email',
+                            'avatarUrl',
+                            'country',
+                            'city',
+                            'hashtag',
+                            'phoneNumber',
+                            'superAdmin',
+                            'createdAt',
+                            'updatedAt'
+                        )
+                    )
+                );
         } catch (err) {
             return next(err);
         }
@@ -69,7 +89,24 @@ class UserController {
 
         try {
             const user = await User.findByPk(userID);
-            return res.status(200).json(user);
+            return res
+                .status(200)
+                .json(
+                    pick(
+                        user,
+                        'id',
+                        'username',
+                        'email',
+                        'avatarUrl',
+                        'country',
+                        'city',
+                        'hashtag',
+                        'phoneNumber',
+                        'superAdmin',
+                        'createdAt',
+                        'updatedAt'
+                    )
+                );
         } catch (err) {
             return next(err);
         }
@@ -78,8 +115,15 @@ class UserController {
     @logRequest
     async updateById(req: IRequest, res: Response, next: NextFunction) {
         const { userID } = req.params;
+
         try {
             const user = await User.findByPk(userID);
+            if (!user) {
+                const error: IError = new Error('User not found');
+                error.statusCode = 404;
+                error.message = 'User not found';
+                return next(error);
+            }
             user.username = req.body.username || user.username;
             user.avatarUrl = req.body.avatarUrl || user.avatarUrl;
             user.country = req.body.country || user.country;
@@ -98,6 +142,12 @@ class UserController {
 
         try {
             const user = await User.findByPk(userID);
+            if (!user) {
+                const error: IError = new Error('User not found');
+                error.statusCode = 404;
+                error.message = 'User not found';
+                return next(error);
+            }
             await user.destroy();
             return res.sendStatus(200);
         } catch (err) {
