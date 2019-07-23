@@ -26,18 +26,11 @@ teamsRoutes.post(
 );
 
 teamsRoutes.post(
-    '/addUser',
+    '/:teamId/members/:userId',
     [
         body('role')
             .trim()
             .withMessage('Please enter a role'),
-        body('userEmail')
-            .isEmail()
-            .withMessage('Please enter a valid User email'),
-        body('name')
-            .trim()
-            .isLength({ min: 2, max: 40 })
-            .withMessage('Please a enter a teams wich exist'),
     ],
     requireValidation,
     requireAuth,

@@ -23,7 +23,7 @@ export const initTeamUser = (db: Sequelize) => {
                 defaultValue: false,
             },
             teamStatus: {
-                type: DataTypes.STRING,
+                type: DataTypes.BOOLEAN,
                 allowNull: false,
                 defaultValue: false,
             },

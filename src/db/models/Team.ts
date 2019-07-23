@@ -19,7 +19,7 @@ export default class Team extends Model {
     public readonly updatedAt!: Date;
 
     public addUser!: BelongsToManyAddAssociationMixin<User, TeamUser>;
-    public getUser!: BelongsToManyGetAssociationsMixin<User>;
+    public getUsers!: BelongsToManyGetAssociationsMixin<User>;
 }
 
 export const initTeam = (db: Sequelize) => {

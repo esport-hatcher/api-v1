@@ -24,37 +24,49 @@ class TeamsController {
                     teamStatus: true,
                 },
             });
-            return res.sendStatus(201);
+            return res.status(201).json(newTeam);
         } catch (err) {
             return next(err);
         }
     }
+
     @logRequest
     async addTeamUser(req: IRequest, res: Response, next: NextFunction) {
         try {
             const { user } = req;
-            const { userEmail, role, name } = req.body;
-            const myteam = await user.getTeams({ where: { name } });
-            if (myteam.length === 0) {
+            const { userId, teamId } = req.params;
+
+            const team = await Team.findByPk(teamId);
+            if (!team) {
                 const error: IError = new Error('Team not found');
-                error.statusCode = 422;
+                error.statusCode = 404;
                 error.message = 'Team not found';
                 return next(error);
             }
-            const inviteUser = await User.findOne({
-                where: { email: userEmail },
-            });
-            if (!inviteUser) {
+            const users = await team.getUsers();
+            const teamUser = users.find(teamUser => teamUser.id === user.id);
+            if (
+                !teamUser ||
+                (teamUser.TeamUser.role !== 'Owner' &&
+                    teamUser.TeamUser.role !== 'Admin')
+            ) {
+                const error: IError = new Error('Unauthorized');
+                error.statusCode = 401;
+                error.message = 'Unauthorized';
+                return next(error);
+            }
+            const invitedUser = await User.findByPk(userId);
+            if (!invitedUser) {
                 const error: IError = new Error('User not found');
-                error.statusCode = 422;
+                error.statusCode = 404;
                 error.message = 'User not found';
                 return next(error);
             }
-            await myteam[0].addUser(inviteUser, {
+            team.addUser(invitedUser, {
                 through: {
-                    role: role,
-                    playerStatus: false,
+                    role: req.body.role,
                     teamStatus: true,
+                    playerStatus: false,
                 },
             });
             return res.sendStatus(201);

@@ -9,6 +9,7 @@ import { createHashtag } from '@utils/hashtagGenerator';
 import { jwtSecret } from '@config/keys';
 import { encode } from 'jwt-simple';
 import Team from '@models/Team';
+import TeamUser from '@models/TeamUser';
 
 // import {
 // 	HasManyGetAssociationsMixin,
@@ -35,6 +36,9 @@ export default class User extends Model {
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public getTeams!: BelongsToManyGetAssociationsMixin<Team>;
+
+    // tslint:disable-next-line: variable-name
+    public TeamUser: TeamUser;
 
     // tslint:disable-next-line: no-any
     getAccessToken() {

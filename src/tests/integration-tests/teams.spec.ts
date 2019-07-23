@@ -1,10 +1,11 @@
-import { getNormalUser } from '@tests/utils/generate-user';
 import * as request from 'supertest';
+import { getNormalUser, getTeam } from '@tests/utils/generate-models';
 import app from '@app';
 import logger from '@utils/logger';
+import User from '@models/User';
 
 describe('when a user try to create a team', () => {
-    let user;
+    let user: User;
 
     beforeAll(async () => {
         logger('Tests', 'Generating access token...');
@@ -81,65 +82,85 @@ describe('when a user try to create a team', () => {
 });
 
 describe('when a user try invite an another user in a team', () => {
-    let accessToken: string;
-    const inviteUser = {
-        email: 'test@esport-hatcher.com',
-        password: 'admin',
-        username: 'loto',
-    };
-    const team = {
-        name: 'test123',
-        region: 'FR',
-        game: 'Counter Strike',
-    };
-    beforeAll(async () => {
-        logger('Tests', 'Generating access token...');
-        accessToken = await getAccessTokenNormalUser();
-        await request(app)
-            .post('/users')
-            .send(inviteUser)
-            .set('Content-Type', 'application/json');
-        await request(app)
-            .post('/teams')
-            .send(team)
-            .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${accessToken}`);
+    let user;
+    let invitedUser;
+    let team;
+
+    beforeEach(async () => {
+        user = await getNormalUser();
+        invitedUser = await getNormalUser();
+        team = await getTeam(user);
     });
 
-    void it('should return 201 when user invit a another user', async () => {
+    void it('should return 201 when user invite another user', async () => {
         const res = await request(app)
-            .post('/teams/addUser')
+            .post(`/teams/${team.id}/members/${invitedUser.id}`)
             .send({
-                userEmail: 'test@esport-hatcher.com',
                 role: 'Admin',
-                name: 'test123',
             })
             .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${accessToken}`);
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(201);
     });
-    void it('should return 422 when user dont have team', async () => {
+
+    void it('should return 404 when team does not exist', async () => {
         const res = await request(app)
-            .post('/teams/addUser')
+            .post(`/teams/42/members/${invitedUser.id}`)
             .send({
-                userEmail: 'test@esport-hatcher.com',
                 role: 'Admin',
-                name: 'noteam',
             })
             .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${accessToken}`);
-        expect(res.status).toBe(422);
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(404);
     });
-    void it('should return 422 when user doesnt exist', async () => {
+
+    void it('should return 404 when invited user does not exist', async () => {
         const res = await request(app)
-            .post('/teams/addUser')
+            .post(`/teams/${team.id}/members/42`)
             .send({
-                userEmail: 'noUser@esport-hatcher.com',
                 role: 'Admin',
-                name: 'test123',
             })
             .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${accessToken}`);
-        expect(res.status).toBe(422);
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(404);
+    });
+
+    void it('should return 401 when user requesting the invitation is not part of the team', async () => {
+        const res = await request(app)
+            .post(`/teams/${team.id}/members/${invitedUser.id}`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
+        expect(res.status).toBe(401);
+    });
+
+    void it('should return 401 when user requesting the invitation is not admin or owner', async () => {
+        /**
+         * Inviting inviteUser as player in the team
+         */
+        await request(app)
+            .post(`/teams/${team.id}/members/${invitedUser.id}`)
+            .send({
+                role: 'Player',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        /**
+         * Creating a third user
+         */
+        const thirdUser = await getNormalUser();
+        /**
+         * Making inviteUser invite thirdUser
+         */
+        const res = await request(app)
+            .post(`/teams/${team.id}/members/${thirdUser.id}`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
+        expect(res.status).toBe(401);
     });
 });
