@@ -21,9 +21,9 @@ class SequelizeDb {
             host: sqlHost,
             port: sqlPort,
             logging:
-                SEQUELIZE_LOGS === 'true'
+                SEQUELIZE_LOGS === 'false'
                     ? // tslint:disable-next-line: no-console
-                      console.log
+                      false
                     : NODE_ENV === 'production' || NODE_ENV === 'CI'
                     ? false
                     : // tslint:disable-next-line: no-console

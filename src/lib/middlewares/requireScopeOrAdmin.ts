@@ -11,7 +11,7 @@ export const requireScopeOrAdmin = (
     const { userID } = req.params;
     const { user } = req;
 
-    if (!user.superAdmin && user.id !== userID) {
+    if (!user.superAdmin && user.id.toString() !== userID.toString()) {
         const err: IError = new Error('Unauthorized');
         err.statusCode = 401;
         err.message = 'Unauthorized';
