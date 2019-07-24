@@ -1,7 +1,7 @@
 import { validationResult } from 'express-validator/check';
 import { Response, NextFunction } from 'express';
 import IRequest from '@typings/general/IRequest';
-import IError from '@typings/general/IError';
+import { validationError } from '../utils/errors';
 
 // Use express validator to check if all rules are passing, redirecting to error handler otherwise
 
@@ -13,10 +13,7 @@ export const requireValidation = (
     const errors = validationResult(req);
     res;
     if (!errors.isEmpty()) {
-        const error: IError = new Error('Validation failed');
-        error.statusCode = 422;
-        error.data = errors.array();
-        return next(error);
+        return next(validationError(errors));
     }
     next();
 };

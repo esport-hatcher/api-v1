@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import IRequest from '@typings/general/IRequest';
-import IError from '@typings/general/IError';
+import { unauthorizedError } from '../utils/errors';
 
 export const requireAdmin = (
     req: IRequest,
@@ -12,8 +12,5 @@ export const requireAdmin = (
         return next(); // user is admin so go the next function / middleware
     }
     // USER NOT ADMIN
-    const error: IError = new Error('Needs to be admin');
-    error.statusCode = 401;
-    error.message = 'Needs to be admin';
-    return next(error); // Go to error handling
+    return next(unauthorizedError()); // Go to error handling
 };

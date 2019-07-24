@@ -1,9 +1,10 @@
 import { Response, NextFunction } from 'express';
 import IRequest from '@typings/general/IRequest';
 import { logRequest } from '@utils/decorators';
-import IError from '@typings/general/IError';
 import Team from '@models/Team';
 import User from '@models/User';
+import { unauthorizedError } from '@utils/errors';
+import { notFoundError } from '../utils/errors';
 
 class TeamsController {
     @logRequest
@@ -38,10 +39,11 @@ class TeamsController {
 
             const team = await Team.findByPk(teamId);
             if (!team) {
-                const error: IError = new Error('Team not found');
-                error.statusCode = 404;
-                error.message = 'Team not found';
-                return next(error);
+                return next(notFoundError('Team'));
+            }
+            const invitedUser = await User.findByPk(userId);
+            if (!invitedUser) {
+                return next(notFoundError('Invited user'));
             }
             const users = await team.getUsers();
             const teamUser = users.find(teamUser => teamUser.id === user.id);
@@ -50,17 +52,7 @@ class TeamsController {
                 (teamUser.TeamUser.role !== 'Owner' &&
                     teamUser.TeamUser.role !== 'Admin')
             ) {
-                const error: IError = new Error('Unauthorized');
-                error.statusCode = 401;
-                error.message = 'Unauthorized';
-                return next(error);
-            }
-            const invitedUser = await User.findByPk(userId);
-            if (!invitedUser) {
-                const error: IError = new Error('User not found');
-                error.statusCode = 404;
-                error.message = 'User not found';
-                return next(error);
+                return next(unauthorizedError());
             }
             team.addUser(invitedUser, {
                 through: {
@@ -106,6 +98,10 @@ class TeamsController {
 
         try {
             const team = await Team.findByPk(teamID);
+
+            if (!team) {
+                return next(notFoundError('Team'));
+            }
             return res.status(200).json(team);
         } catch (err) {
             return next(err);
@@ -118,6 +114,9 @@ class TeamsController {
 
         try {
             const team = await Team.findByPk(teamID);
+            if (!team) {
+                return next(notFoundError('Team'));
+            }
             await team.destroy();
             return res.sendStatus(200);
         } catch (err) {
@@ -130,6 +129,9 @@ class TeamsController {
         const { teamID } = req.params;
         try {
             const team = await Team.findByPk(teamID);
+            if (!team) {
+                return next(notFoundError('Team'));
+            }
             team.name = req.body.username || team.name;
             team.game = req.body.avatarUrl || team.game;
             team.region = req.body.country || team.region;
