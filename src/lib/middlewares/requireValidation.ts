@@ -1,7 +1,7 @@
 import { validationResult } from 'express-validator/check';
 import { Response, NextFunction } from 'express';
 import IRequest from '@typings/general/IRequest';
-import { validationError } from '../utils/errors';
+import { validationError } from '@utils/errors';
 
 // Use express validator to check if all rules are passing, redirecting to error handler otherwise
 

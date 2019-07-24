@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import IRequest from '@typings/general/IRequest';
-import { unauthorizedError } from '../utils/errors';
+import { unauthorizedError } from '@utils/errors';
 
 export const requireAdmin = (
     req: IRequest,

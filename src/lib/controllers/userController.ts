@@ -5,8 +5,7 @@ import userFactory from '@factories/userFactory';
 import User from '@models/User';
 import { pick } from 'lodash';
 import { logRequest } from '@utils/decorators';
-import { notFoundError } from '@utils/errors';
-import { unauthorizedError, conflictError } from '../utils/errors';
+import { notFoundError, unauthorizedError, conflictError } from '@utils/errors';
 
 class UserController {
     @logRequest

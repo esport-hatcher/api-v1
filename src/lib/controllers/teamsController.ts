@@ -3,8 +3,7 @@ import IRequest from '@typings/general/IRequest';
 import { logRequest } from '@utils/decorators';
 import Team from '@models/Team';
 import User from '@models/User';
-import { unauthorizedError } from '@utils/errors';
-import { notFoundError } from '../utils/errors';
+import { unauthorizedError, notFoundError } from '@utils/errors';
 
 class TeamsController {
     @logRequest
