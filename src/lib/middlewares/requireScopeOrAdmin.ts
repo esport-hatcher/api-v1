@@ -1,6 +1,6 @@
 import IRequest from '@typings/general/IRequest';
 import { Response, NextFunction } from 'express';
-import IError from '@typings/general/IError';
+import { unauthorizedError } from '@utils/errors';
 
 export const requireScopeOrAdmin = (
     req: IRequest,
@@ -12,10 +12,7 @@ export const requireScopeOrAdmin = (
     const { user } = req;
 
     if (!user.superAdmin && user.id.toString() !== userID.toString()) {
-        const err: IError = new Error('Unauthorized');
-        err.statusCode = 401;
-        err.message = 'Unauthorized';
-        return next(err);
+        return next(unauthorizedError());
     }
     return next();
 };

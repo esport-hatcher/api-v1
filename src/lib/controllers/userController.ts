@@ -3,9 +3,9 @@ import { compare } from 'bcryptjs';
 import IRequest from '@typings/general/IRequest';
 import userFactory from '@factories/userFactory';
 import User from '@models/User';
-import IError from '@typings/general/IError';
 import { pick } from 'lodash';
 import { logRequest } from '@utils/decorators';
+import { notFoundError, unauthorizedError, conflictError } from '@utils/errors';
 
 class UserController {
     @logRequest
@@ -24,17 +24,11 @@ class UserController {
 
         const user = await User.findOne({ where: { email } });
         if (!user) {
-            const error: IError = new Error('Email not found');
-            error.statusCode = 404;
-            error.message = 'Email not found';
-            return next(error);
+            return next(notFoundError('User'));
         }
         const equal = await compare(password, user.password);
         if (!equal) {
-            const error: IError = new Error('Bad credentials');
-            error.statusCode = 401;
-            error.message = 'Bad credentials';
-            return next(error);
+            return next(unauthorizedError());
         }
         return res.status(200).json({ token: user.getAccessToken() });
     }
@@ -89,6 +83,10 @@ class UserController {
 
         try {
             const user = await User.findByPk(userID);
+
+            if (!user) {
+                return next(notFoundError('User'));
+            }
             return res
                 .status(200)
                 .json(
@@ -119,10 +117,7 @@ class UserController {
         try {
             const user = await User.findByPk(userID);
             if (!user) {
-                const error: IError = new Error('User not found');
-                error.statusCode = 404;
-                error.message = 'User not found';
-                return next(error);
+                return next(notFoundError('User'));
             }
             user.username = req.body.username || user.username;
             user.avatarUrl = req.body.avatarUrl || user.avatarUrl;
@@ -143,10 +138,7 @@ class UserController {
         try {
             const user = await User.findByPk(userID);
             if (!user) {
-                const error: IError = new Error('User not found');
-                error.statusCode = 404;
-                error.message = 'User not found';
-                return next(error);
+                return next(notFoundError('User'));
             }
             await user.destroy();
             return res.sendStatus(200);
@@ -168,10 +160,7 @@ class UserController {
             if (!user) {
                 return res.sendStatus(200);
             }
-            const err: IError = new Error('email already taken');
-            err.statusCode = 409;
-            err.message = 'email already taken';
-            return next(err);
+            return next(conflictError());
         } catch (err) {
             return next(err);
         }
