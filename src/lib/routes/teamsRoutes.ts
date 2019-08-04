@@ -43,7 +43,7 @@ teamsRoutes.patch(
 );
 
 teamsRoutes.post(
-    '/:teamId/members/:userId',
+    '/:teamID/members/:userID',
     [
         body('role')
             .trim()
@@ -52,6 +52,18 @@ teamsRoutes.post(
     requireValidation,
     requireAuth,
     teamsController.addTeamUser
+);
+
+teamsRoutes.post(
+    '/userJoinTeam/:teamID',
+    [
+        body('role')
+            .trim()
+            .withMessage('Please enter a role'),
+    ],
+    requireValidation,
+    requireAuth,
+    teamsController.userJoinTeam
 );
 
 export default teamsRoutes;

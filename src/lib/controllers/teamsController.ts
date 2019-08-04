@@ -34,13 +34,13 @@ class TeamsController {
     async addTeamUser(req: IRequest, res: Response, next: NextFunction) {
         try {
             const { user } = req;
-            const { userId, teamId } = req.params;
+            const { userID, teamID } = req.params;
 
-            const team = await Team.findByPk(teamId);
+            const team = await Team.findByPk(teamID);
             if (!team) {
                 return next(notFoundError('Team'));
             }
-            const invitedUser = await User.findByPk(userId);
+            const invitedUser = await User.findByPk(userID);
             if (!invitedUser) {
                 return next(notFoundError('Invited user'));
             }
@@ -60,6 +60,35 @@ class TeamsController {
                     playerStatus: false,
                 },
             });
+            return res.sendStatus(201);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async userJoinTeam(req: IRequest, res: Response, next: NextFunction) {
+        try {
+            const { user } = req;
+            const { teamID } = req.params;
+
+            const team = await Team.findByPk(teamID);
+            if (!team) {
+                return next(notFoundError('Team'));
+            }
+            const users = await team.getUsers();
+            const teamUser = users.find(teamUser => teamUser.id === user.id);
+            if (!teamUser) {
+                team.addUser(user, {
+                    through: {
+                        role: req.body.role,
+                        teamStatus: false,
+                        playerStatus: true,
+                    },
+                });
+                return res.sendStatus(201);
+            }
+            teamUser.TeamUser.playerStatus = true;
             return res.sendStatus(201);
         } catch (err) {
             return next(err);

@@ -163,4 +163,37 @@ describe('when a user try invite an another user in a team', () => {
             .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
         expect(res.status).toBe(401);
     });
+
+    //userJoinTeam
+    void it('should return 201 when a user join a team', async () => {
+        const res = await request(app)
+            .post(`/teams/userJoinTeam/${team.id}`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(201);
+    });
+
+    void it("should return 404 when user try to join a team which doesn't exist", async () => {
+        const res = await request(app)
+            .post(`/teams/userJoinTeam/fake`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(404);
+    });
+
+    void it('should return 401 when user have not the rights to join the team requested', async () => {
+        const res = await request(app)
+            .post(`/teams/userJoinTeam/${team.id}`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json');
+        expect(res.status).toBe(401);
+    });
 });
