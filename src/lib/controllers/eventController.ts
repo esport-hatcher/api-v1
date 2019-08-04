@@ -8,11 +8,12 @@ class EventController {
     async createEvent(req: IRequest, res: Response, next: NextFunction) {
         try {
             const { team } = req;
-            const { title, description, from, to } = req.body;
+            const { title, description, place, from, to } = req.body;
 
             const newEvent = await Event.create({
                 title,
                 description,
+                place,
                 from,
                 to,
             });

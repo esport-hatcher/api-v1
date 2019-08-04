@@ -12,6 +12,7 @@ export default class Event extends Model {
     public id!: number;
     public title!: string;
     public description!: string;
+    public place!: string;
     public from!: Date;
     public to!: Date;
     public readonly createdAt!: Date;
@@ -34,6 +35,10 @@ export const initEvent = (db: Sequelize) => {
                 allowNull: false,
             },
             description: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            place: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
