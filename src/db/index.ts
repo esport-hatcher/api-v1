@@ -1,7 +1,9 @@
 import { sqlDb, sqlHost, sqlPassword, sqlPort, sqlUser } from '@config/keys';
 import User, { initUser } from '@models/User';
 import Team, { initTeam } from '@models/Team';
+import Event, { initEvent } from '@models/Event';
 import TeamUser, { initTeamUser } from '@models/TeamUser';
+import TeamEvent, { initTeamEvent } from '@models/TeamEvent';
 import { Sequelize } from 'sequelize';
 import logger from '@utils/logger';
 
@@ -88,7 +90,9 @@ class SequelizeDb {
         logger('Database', 'Initializing models');
         initUser(db);
         initTeam(db);
+        initEvent(db);
         initTeamUser(db);
+        initTeamEvent(db);
     }
 
     /**
@@ -102,6 +106,8 @@ class SequelizeDb {
         logger('Database', 'Initializing relations');
         User.belongsToMany(Team, { through: TeamUser });
         Team.belongsToMany(User, { through: TeamUser });
+        Team.belongsToMany(Event, { through: TeamEvent });
+        Event.belongsToMany(Team, { through: TeamEvent });
     }
 }
 

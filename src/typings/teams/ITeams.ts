@@ -1,5 +1,5 @@
-export default interface IUser {
-    // tslint:disable-next-line:no-any
+export default interface ITeam {
+    id?: number;
     name: string;
     game: string;
     region: string;
