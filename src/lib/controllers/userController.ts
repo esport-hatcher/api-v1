@@ -6,6 +6,9 @@ import User from '@models/User';
 import { pick } from 'lodash';
 import { logRequest } from '@utils/decorators';
 import { notFoundError, unauthorizedError, conflictError } from '@utils/errors';
+import Sequelize from 'sequelize';
+
+const Op = Sequelize.Op;
 
 class UserController {
     @logRequest
@@ -104,6 +107,31 @@ class UserController {
                         'createdAt',
                         'updatedAt'
                     )
+                );
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async findByName(req: IRequest, res: Response, next: NextFunction) {
+        const { userName } = req.params;
+        try {
+            const user = await User.findAll({
+                where: {
+                    username: {
+                        [Op.like]: '%' + userName + '%',
+                    },
+                },
+            });
+
+            if (!user) {
+                return next(notFoundError('User'));
+            }
+            return res
+                .status(200)
+                .json(
+                    user.map(user => pick(user, 'id', 'username', 'avatarUrl'))
                 );
         } catch (err) {
             return next(err);
