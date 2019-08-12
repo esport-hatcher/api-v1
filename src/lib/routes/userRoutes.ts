@@ -39,13 +39,8 @@ userRoutes.post(
     userController.getToken
 );
 
-userRoutes.get('/', requireAuth, requireAdmin, userController.findAll);
+userRoutes.get('/', requireAuth, userController.findAll);
 userRoutes.get('/:userID', requireAuth, userController.findById);
-
-/*
- ** route pour le smart-select côte front
- */
-userRoutes.get('/findName/:userName', requireAuth, userController.findByName);
 
 userRoutes.post(
     '/email',

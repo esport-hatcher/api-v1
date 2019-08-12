@@ -52,6 +52,15 @@ class UserController {
                     limit: perPage,
                     offset: (page - 1) * perPage,
                 });
+            } else if (req.query.username || req.query.email) {
+                const param = req.query.username || req.query.email;
+                users = await User.findAll({
+                    where: {
+                        username: {
+                            [Op.like]: '%' + param + '%',
+                        },
+                    },
+                });
             } else {
                 users = await User.findAll();
             }
