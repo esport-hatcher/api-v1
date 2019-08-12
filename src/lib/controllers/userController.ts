@@ -123,31 +123,6 @@ class UserController {
     }
 
     @logRequest
-    async findByName(req: IRequest, res: Response, next: NextFunction) {
-        const { userName } = req.params;
-        try {
-            const user = await User.findAll({
-                where: {
-                    username: {
-                        [Op.like]: '%' + userName + '%',
-                    },
-                },
-            });
-
-            if (!user) {
-                return next(notFoundError('User'));
-            }
-            return res
-                .status(200)
-                .json(
-                    user.map(user => pick(user, 'id', 'username', 'avatarUrl'))
-                );
-        } catch (err) {
-            return next(err);
-        }
-    }
-
-    @logRequest
     async updateById(req: IRequest, res: Response, next: NextFunction) {
         const { userID } = req.params;
 

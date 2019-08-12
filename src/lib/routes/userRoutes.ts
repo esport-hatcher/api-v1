@@ -4,7 +4,6 @@ import userController from '@controllers/userController';
 import {
     requireValidation,
     requireScopeOrAdmin,
-    requireAdmin,
     requireAuth,
 } from '@middlewares';
 
