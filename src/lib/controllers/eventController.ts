@@ -9,9 +9,23 @@ class EventController {
     @logRequest
     async createEvent(req: IRequest, res: Response, next: NextFunction) {
         try {
-            const { team } = req;
+            const { user } = req;
+            const { teamId } = req.params;
             const { title, description, place, from, to } = req.body;
 
+            const team = await Team.findByPk(teamId);
+            if (!team) {
+                return next(notFoundError('Team'));
+            }
+            const users = await team.getUsers();
+            const teamUser = users.find(teamUser => teamUser.id === user.id);
+            if (
+                !teamUser ||
+                (teamUser.TeamUser.role !== 'Owner' &&
+                    teamUser.TeamUser.role !== 'Admin')
+            ) {
+                return next(unauthorizedError());
+            }
             const newEvent = await Event.create({
                 title,
                 description,
@@ -19,13 +33,7 @@ class EventController {
                 from,
                 to,
             });
-            await newEvent.addTeam(team, {
-                through: {
-                    role: 'Owner',
-                    teamStatus: true,
-                    eventStatus: true,
-                },
-            });
+            await newEvent.addTeam(team);
             return res.status(201).json(newEvent);
         } catch (err) {
             return next(err);
@@ -35,7 +43,7 @@ class EventController {
     @logRequest
     async addEventTeam(req: IRequest, res: Response, next: NextFunction) {
         try {
-            const { team } = req;
+            const { user } = req;
             const { teamId, eventId } = req.params;
 
             const event = await Event.findByPk(eventId);
@@ -46,22 +54,16 @@ class EventController {
             if (!invitedTeam) {
                 return next(notFoundError('Invited team'));
             }
-            const teams = await event.getTeams();
-            const eventTeam = teams.find(eventTeam => eventTeam.id === team.id);
+            const users = await invitedTeam.getUsers();
+            const teamUser = users.find(teamUser => teamUser.id === user.id);
             if (
-                !eventTeam ||
-                (eventTeam.EventTeam.role !== 'Owner' &&
-                    eventTeam.EventTeam.role !== 'Admin')
+                !teamUser ||
+                (teamUser.TeamUser.role !== 'Owner' &&
+                    teamUser.TeamUser.role !== 'Admin')
             ) {
                 return next(unauthorizedError());
             }
-            event.addTeam(invitedTeam, {
-                through: {
-                    role: req.body.role,
-                    eventStatus: true,
-                    teamStatus: false,
-                },
-            });
+            event.addTeam(invitedTeam);
             return res.sendStatus(201);
         } catch (err) {
             return next(err);

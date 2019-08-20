@@ -7,7 +7,7 @@ import { requireValidation } from '../middlewares/requireValidation';
 const eventRoutes = Router();
 
 eventRoutes.post(
-    '/',
+    '/:teamId',
     [
         body('title')
             .trim()
