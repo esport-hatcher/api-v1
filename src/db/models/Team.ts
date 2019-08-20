@@ -7,6 +7,8 @@ import {
 } from 'sequelize';
 import User from '@models/User';
 import TeamUser from '@models/TeamUser';
+import EventTeam from '@models/EventTeam';
+import Event from '@models/Event';
 
 export default class Team extends Model {
     public id!: number;
@@ -20,6 +22,10 @@ export default class Team extends Model {
 
     public addUser!: BelongsToManyAddAssociationMixin<User, TeamUser>;
     public getUsers!: BelongsToManyGetAssociationsMixin<User>;
+    public getEvents!: BelongsToManyGetAssociationsMixin<Event>;
+
+    // tslint:disable-next-line: variable-name
+    public EventTeam: EventTeam;
 }
 
 export const initTeam = (db: Sequelize) => {

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { body } from 'express-validator/check';
-import { requireAuth, requireAdmin } from '@middlewares';
+import { requireAuth, requireAdmin, requireScopeOrAdmin } from '@middlewares';
 import eventController from '@controllers/eventController';
 import { requireValidation } from '../middlewares/requireValidation';
 
@@ -28,5 +28,32 @@ eventRoutes.post(
 );
 
 eventRoutes.get('/', requireAuth, requireAdmin, eventController.findAll);
+eventRoutes.get('/:eventId', requireAuth, eventController.findById);
+
+eventRoutes.delete(
+    '/:eventId',
+    requireAuth,
+    requireScopeOrAdmin,
+    eventController.deleteById
+);
+
+eventRoutes.patch(
+    '/:eventId',
+    requireAuth,
+    requireScopeOrAdmin,
+    eventController.updateById
+);
+
+eventRoutes.post(
+    '/:eventId/teams/:teamId',
+    [
+        body('role')
+            .trim()
+            .withMessage('Please enter a role'),
+    ],
+    requireValidation,
+    requireAuth,
+    eventController.addEventTeam
+);
 
 export default eventRoutes;

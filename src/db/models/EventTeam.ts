@@ -1,15 +1,16 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+import { Model, DataTypes, Sequelize, ENUM } from 'sequelize';
 
-export default class TeamEvent extends Model {
+export default class EventTeam extends Model {
     public id!: number;
     public teamStatus!: boolean;
     public eventStatus!: boolean;
+    public role!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
 
-export const initTeamEvent = (db: Sequelize) => {
-    TeamEvent.init(
+export const initEventTeam = (db: Sequelize) => {
+    EventTeam.init(
         {
             id: {
                 type: DataTypes.INTEGER.UNSIGNED,
@@ -26,9 +27,13 @@ export const initTeamEvent = (db: Sequelize) => {
                 allowNull: false,
                 defaultValue: false,
             },
+            role: {
+                type: ENUM('Admin', 'Staff', 'Player', 'Owner'),
+                allowNull: false,
+            },
         },
         {
-            tableName: 'TeamEvents',
+            tableName: 'EventTeams',
             sequelize: db,
         }
     );

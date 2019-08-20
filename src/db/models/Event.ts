@@ -6,7 +6,7 @@ import {
     Sequelize,
 } from 'sequelize';
 import Team from '@models/Team';
-import TeamEvent from '@models/TeamEvent';
+import EventTeam from '@models/EventTeam';
 
 export default class Event extends Model {
     public id!: number;
@@ -18,7 +18,7 @@ export default class Event extends Model {
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
-    public addTeam!: BelongsToManyAddAssociationMixin<Team, TeamEvent>;
+    public addTeam!: BelongsToManyAddAssociationMixin<Team, EventTeam>;
     public getTeams!: BelongsToManyGetAssociationsMixin<Team>;
 }
 
