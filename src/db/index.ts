@@ -38,7 +38,7 @@ class SequelizeDb {
         }
         if (!this.dbTest && test) {
             logger('Database', 'Creating test instance...');
-            this.dbTest = this.createInstance('eh_test');
+            this.dbTest = this.createInstance('eh_testing');
         }
         return test ? this.dbTest : this.db;
     }
