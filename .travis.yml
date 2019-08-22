@@ -4,15 +4,6 @@ services:
   - docker
   - mysql
 
-# addons:
-#   apt:
-#     sources:
-#       - mysql-5.7-trusty
-#     packages:
-#       - mysql-server
-
-# dist: trusty
-
 before_install:
   - mysql -e 'CREATE DATABASE eh_testing;'
   - docker build -t agamblin/eh-server-test -f ./Dockerfile.dev .
