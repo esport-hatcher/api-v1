@@ -4,9 +4,19 @@ services:
   - docker
   - mysql
 
+addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
+
+dist: trusty
+
 before_install:
   - docker build -t agamblin/eh-server-test -f ./Dockerfile.dev .
+  - mysql -u root --password="" < tests/travis.sql
 
 script:
-  - docker run -e SQL_HOST=127.0.0.1 -e SQL_PORT=3306 -e SQL_USER=travis -e SQL_DB=eh_testing -e NODE_ENV=CI -e JWT_SECRET=somejwtrandom agamblin/eh-server-test yarn launch-tests --coverage
+  - docker run -e SQL_HOST=127.0.0.1 -e SQL_PORT=3306 -e SQL_USER=dev -e SQL_PASSWORD='' -e SQL_DB=eh_testing -e NODE_ENV=CI -e JWT_SECRET=somejwtrandom agamblin/eh-server-test yarn launch-tests --coverage
 #test
