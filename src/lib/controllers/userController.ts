@@ -3,6 +3,7 @@ import { compare } from 'bcryptjs';
 import IRequest from '@typings/general/IRequest';
 import userFactory from '@factories/userFactory';
 import User from '@models/User';
+import Team from '@models/Team';
 import { pick } from 'lodash';
 import { logRequest } from '@utils/decorators';
 import { notFoundError, unauthorizedError, conflictError } from '@utils/errors';
@@ -161,6 +162,38 @@ class UserController {
                 return res.sendStatus(200);
             }
             return next(conflictError());
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async userJoinTeam(req: IRequest, res: Response, next: NextFunction) {
+        try {
+            const { user } = req;
+            const { teamID } = req.params;
+            const { role } = req.body.role;
+
+            const team = await Team.findByPk(teamID);
+            if (!team) {
+                return next(notFoundError('Team'));
+            }
+            const users = await team.getUsers();
+            const teamUser = users.find(teamUser => teamUser.id === user.id);
+            if (!teamUser) {
+                team.addUser(user, {
+                    through: {
+                        role: role,
+                        teamStatus: false,
+                        playerStatus: true,
+                    },
+                });
+                await teamUser.save();
+                return res.sendStatus(201);
+            }
+            teamUser.TeamUser.playerStatus = true;
+            await teamUser.save();
+            return res.sendStatus(201);
         } catch (err) {
             return next(err);
         }

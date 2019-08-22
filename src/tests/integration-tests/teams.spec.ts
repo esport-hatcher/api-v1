@@ -167,7 +167,7 @@ describe('when a user try invite an another user in a team', () => {
     //userJoinTeam
     void it('should return 201 when a user join a team', async () => {
         const res = await request(app)
-            .post(`/teams/userJoinTeam/${team.id}`)
+            .post(`/user/${user.id}/teams/${team.id}`)
             .send({
                 role: 'Admin',
             })
@@ -178,7 +178,7 @@ describe('when a user try invite an another user in a team', () => {
 
     void it("should return 404 when user try to join a team which doesn't exist", async () => {
         const res = await request(app)
-            .post(`/teams/userJoinTeam/fake`)
+            .post(`/user/${user.id}/teams/${team.id}`)
             .send({
                 role: 'Admin',
             })
@@ -189,7 +189,7 @@ describe('when a user try invite an another user in a team', () => {
 
     void it('should return 401 when user have not the rights to join the team requested', async () => {
         const res = await request(app)
-            .post(`/teams/userJoinTeam/${team.id}`)
+            .post(`/user/${user.id}/teams/${team.id}`)
             .send({
                 role: 'Admin',
             })

@@ -26,24 +26,24 @@ teamsRoutes.post(
 );
 
 teamsRoutes.get('/', requireAuth, requireAdmin, teamsController.findAll);
-teamsRoutes.get('/:teamID', requireAuth, teamsController.findById);
+teamsRoutes.get('/:teamId', requireAuth, teamsController.findById);
 
 teamsRoutes.delete(
-    '/:teamID',
+    '/:teamId',
     requireAuth,
     requireScopeOrAdmin,
     teamsController.deleteById
 );
 
 teamsRoutes.patch(
-    '/:teamID',
+    '/:teamId',
     requireAuth,
     requireScopeOrAdmin,
     teamsController.updateById
 );
 
 teamsRoutes.post(
-    '/:teamID/members/:userID',
+    '/:teamId/members/:userId',
     [
         body('role')
             .trim()
@@ -52,18 +52,6 @@ teamsRoutes.post(
     requireValidation,
     requireAuth,
     teamsController.addTeamUser
-);
-
-teamsRoutes.post(
-    '/userJoinTeam/:teamID',
-    [
-        body('role')
-            .trim()
-            .withMessage('Please enter a role'),
-    ],
-    requireValidation,
-    requireAuth,
-    teamsController.userJoinTeam
 );
 
 export default teamsRoutes;

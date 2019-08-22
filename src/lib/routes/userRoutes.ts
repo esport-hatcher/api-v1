@@ -63,4 +63,16 @@ userRoutes.delete(
     userController.deleteById
 );
 
+userRoutes.post(
+    '/:userID/teams/:teamID',
+    [
+        body('role')
+            .trim()
+            .withMessage('Please enter a role'),
+    ],
+    requireValidation,
+    requireAuth,
+    userController.userJoinTeam
+);
+
 export default userRoutes;
