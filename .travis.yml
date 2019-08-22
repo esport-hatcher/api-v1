@@ -9,23 +9,3 @@ before_install:
 
 script:
   - docker run -e SQL_HOST=127.0.0.1 -e SQL_PORT=3306 -e SQL_USER=travis -e SQL_DB=eh_testing -e NODE_ENV=CI -e JWT_SECRET=somejwtrandom agamblin/eh-server-test yarn launch-tests --coverage
-# after_success:
-#   - docker build -t agamblin/eh-client ./client
-#   - docker build -t agamblin/eh-server ./server
-#   - docker build -t agamblin/eh-nginx ./nginx
-#   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-#   - docker push agamblin/eh-client
-#   - docker push agamblin/eh-server
-#   - docker push agamblin/eh-nginx
-# deploy:
-#   provider: elasticbeanstalk
-#   region: 'eu-west-3'
-#   app: 'eh'
-#   env: 'eh'
-#   bucket_name: 'elasticbeanstalk-eu-west-3-537685808258'
-#   bucket_path: 'eh'
-#   on:
-#     branch: master
-#   access_key_id: $AWS_ACCESS_KEY
-#   secret_access_key:
-#     secure: $AWS_SECRET_KEY
