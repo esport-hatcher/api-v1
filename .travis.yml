@@ -2,9 +2,11 @@ sudo: required
 
 services:
   - docker
+  - mysql
 
 before_install:
+  - mysql -e 'CREATE DATABASE eh_testing;'
   - docker build -t agamblin/eh-server-test -f ./Dockerfile.dev .
 
 script:
-  - docker run -e SQL_HOST=$SQLHOST -e SQL_PORT=3306 -e SQL_USER=root -e SQL_PASSWORD=$SQLPWD -e SQL_DB=eh_testing -e NODE_ENV=CI -e JWT_SECRET=somejwtrandom agamblin/eh-server-test yarn launch-tests --coverage
+  - docker run --net=host  -e SQL_HOST=127.0.0.1 -e SQL_PORT=3306 -e SQL_USER=root -e SQL_PASSWORD='' -e SQL_DB=eh_testing -e NODE_ENV=CI -e JWT_SECRET=somejwtrandom agamblin/eh-server-test yarn launch-tests --coverage
