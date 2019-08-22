@@ -18,5 +18,5 @@ before_install:
   - mysql -u root --password="" < tests/travis.sql
 
 script:
-  - docker run -e SQL_HOST=$TRAVIS_APP_HOST -e SQL_PORT=3306 -e SQL_USER=dev -e SQL_PASSWORD='' -e SQL_DB=eh_testing -e NODE_ENV=CI -e JWT_SECRET=somejwtrandom agamblin/eh-server-test yarn launch-tests --coverage
+  - docker run -p 3306:3306 -e SQL_HOST=127.0.0.1 -e SQL_PORT=3306 -e SQL_USER=dev -e SQL_PASSWORD='' -e SQL_DB=eh_testing -e NODE_ENV=CI -e JWT_SECRET=somejwtrandom agamblin/eh-server-test yarn launch-tests --coverage
 #test
