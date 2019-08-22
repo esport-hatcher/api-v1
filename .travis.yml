@@ -19,4 +19,3 @@ before_install:
 
 script:
   - docker run --net=host  -e SQL_HOST=127.0.0.1 -e SQL_PORT=3306 -e SQL_USER=root -e SQL_PASSWORD='' -e SQL_DB=eh_testing -e NODE_ENV=CI -e JWT_SECRET=somejwtrandom agamblin/eh-server-test yarn launch-tests --coverage
-#test
