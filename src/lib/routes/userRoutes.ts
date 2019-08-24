@@ -4,7 +4,6 @@ import userController from '@controllers/userController';
 import {
     requireValidation,
     requireScopeOrAdmin,
-    requireAdmin,
     requireAuth,
 } from '@middlewares';
 
@@ -39,7 +38,7 @@ userRoutes.post(
     userController.getToken
 );
 
-userRoutes.get('/', requireAuth, requireAdmin, userController.findAll);
+userRoutes.get('/', requireAuth, userController.findAll);
 userRoutes.get('/:userID', requireAuth, userController.findById);
 
 userRoutes.post(
