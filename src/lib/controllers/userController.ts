@@ -52,7 +52,7 @@ class UserController {
             ([key, value]) => {
                 return {
                     key,
-                    operator: { [Op.like]: `%${value}%` },
+                    operator: { [Op.like]: `${value}%` },
                 };
             }
         );
