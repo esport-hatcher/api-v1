@@ -1,11 +1,6 @@
 import { Router } from 'express';
 import { body } from 'express-validator/check';
-import {
-    requireAuth,
-    requireAdmin,
-    requireScopeOrAdmin,
-    findByPagination,
-} from '@middlewares';
+import { requireAuth, requireScopeOrAdmin, findByQuery } from '@middlewares';
 import teamsController from '@controllers/teamsController';
 import { requireValidation } from '../middlewares/requireValidation';
 
@@ -30,7 +25,7 @@ teamsRoutes.post(
     teamsController.createTeams
 );
 
-teamsRoutes.get('/', requireAuth, requireAdmin, findByPagination);
+teamsRoutes.get('/', requireAuth, findByQuery);
 teamsRoutes.get('/:teamID', requireAuth, teamsController.findById);
 
 teamsRoutes.delete(

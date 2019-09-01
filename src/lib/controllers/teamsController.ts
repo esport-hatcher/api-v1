@@ -67,31 +67,6 @@ class TeamsController {
     }
 
     @logRequest
-    async findAll(
-        // tslint:disable-next-line: variable-name
-        req: IRequest,
-        res: Response,
-        next: NextFunction
-    ) {
-        let teams;
-        try {
-            if (req.query.page) {
-                const { page } = req.query || 1;
-                const perPage = 15;
-                teams = await Team.findAll({
-                    limit: perPage,
-                    offset: (page - 1) * perPage,
-                });
-            } else {
-                teams = await Team.findAll();
-            }
-            return res.status(200).json(teams);
-        } catch (err) {
-            return next(err);
-        }
-    }
-
-    @logRequest
     async findById(req: IRequest, res: Response, next: NextFunction) {
         const { teamID } = req.params;
 

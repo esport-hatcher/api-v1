@@ -3,4 +3,4 @@ export { requireScopeOrAdmin } from './requireScopeOrAdmin';
 export { requireValidation } from './requireValidation';
 export { requireAdmin } from './requireAdmin';
 export { requireStagingOrDevEnv } from './requireStagingOrDevEnv';
-export { findByPagination } from './pagination';
+export { findByQuery } from './findByQuery';

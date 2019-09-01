@@ -3,12 +3,9 @@ import { compare } from 'bcryptjs';
 import IRequest from '@typings/general/IRequest';
 import userFactory from '@factories/userFactory';
 import User from '@models/User';
-import { pick, omit, fromPairs, map } from 'lodash';
+import { pick } from 'lodash';
 import { logRequest } from '@utils/decorators';
 import { notFoundError, unauthorizedError, conflictError } from '@utils/errors';
-import Sequelize from 'sequelize';
-
-const Op = Sequelize.Op;
 
 class UserController {
     @logRequest
@@ -34,58 +31,6 @@ class UserController {
             return next(unauthorizedError());
         }
         return res.status(200).json({ token: user.getAccessToken() });
-    }
-
-    @logRequest
-    async findAll(
-        // tslint:disable-next-line: variable-name
-        req: IRequest,
-        res: Response,
-        next: NextFunction
-    ) {
-        let users: User[];
-        const page = req.query.page || 1;
-        const PER_PAGE = 50;
-
-        const queryWithoutPage = omit(req.query, 'page');
-        const filtersArray = Object.entries(queryWithoutPage).map(
-            ([key, value]) => {
-                return {
-                    key,
-                    operator: { [Op.like]: `${value}%` },
-                };
-            }
-        );
-        const filters = fromPairs(map(filtersArray, i => [i.key, i.operator]));
-        try {
-            users = await User.findAll({
-                limit: PER_PAGE,
-                offset: (page - 1) * PER_PAGE,
-                where: filters,
-            });
-            return res
-                .status(200)
-                .json(
-                    users.map(user =>
-                        pick(
-                            user,
-                            'id',
-                            'username',
-                            'email',
-                            'avatarUrl',
-                            'country',
-                            'city',
-                            'hashtag',
-                            'phoneNumber',
-                            'superAdmin',
-                            'createdAt',
-                            'updatedAt'
-                        )
-                    )
-                );
-        } catch (err) {
-            return next(err);
-        }
     }
 
     @logRequest
