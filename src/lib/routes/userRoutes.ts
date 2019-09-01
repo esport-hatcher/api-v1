@@ -5,6 +5,7 @@ import {
     requireValidation,
     requireScopeOrAdmin,
     requireAuth,
+    findByPagination,
 } from '@middlewares';
 
 const userRoutes = Router();
@@ -38,7 +39,7 @@ userRoutes.post(
     userController.getToken
 );
 
-userRoutes.get('/', requireAuth, userController.findAll);
+userRoutes.get('/', requireAuth, findByPagination);
 userRoutes.get('/:userID', requireAuth, userController.findById);
 
 userRoutes.post(
