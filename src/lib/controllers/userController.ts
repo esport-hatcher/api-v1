@@ -41,6 +41,7 @@ class UserController extends ModelController<typeof User> {
         return res.status(200).json({ token: user.getAccessToken() });
     }
 
+    @logRequest
     async updateById(
         req: IRequest,
         res: Response,
