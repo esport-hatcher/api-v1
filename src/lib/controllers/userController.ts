@@ -3,16 +3,17 @@ import { compare } from 'bcryptjs';
 import IRequest from '@typings/general/IRequest';
 import userFactory from '@factories/userFactory';
 import User from '@models/User';
-import { pick, omit, fromPairs, map } from 'lodash';
 import { logRequest } from '@utils/decorators';
 import { notFoundError, unauthorizedError, conflictError } from '@utils/errors';
-import Sequelize from 'sequelize';
+import { ModelController } from './ModelController';
 
-const Op = Sequelize.Op;
-
-class UserController {
+class UserController extends ModelController<typeof User> {
     @logRequest
-    async register(req: IRequest, res: Response, next: NextFunction) {
+    async create(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
         try {
             const user = await userFactory.create(req.body);
             return res.status(201).json({ token: user.getAccessToken() });
@@ -22,7 +23,11 @@ class UserController {
     }
 
     @logRequest
-    async getToken(req: IRequest, res: Response, next: NextFunction) {
+    async getToken(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
         const { email, password } = req.body;
 
         const user = await User.findOne({ where: { email } });
@@ -36,97 +41,15 @@ class UserController {
         return res.status(200).json({ token: user.getAccessToken() });
     }
 
-    @logRequest
-    async findAll(
-        // tslint:disable-next-line: variable-name
+    async updateById(
         req: IRequest,
         res: Response,
         next: NextFunction
-    ) {
-        let users: User[];
-        const page = req.query.page || 1;
-        const PER_PAGE = 50;
-
-        const queryWithoutPage = omit(req.query, 'page');
-        const filtersArray = Object.entries(queryWithoutPage).map(
-            ([key, value]) => {
-                return {
-                    key,
-                    operator: { [Op.like]: `${value}%` },
-                };
-            }
-        );
-        const filters = fromPairs(map(filtersArray, i => [i.key, i.operator]));
-        try {
-            users = await User.findAll({
-                limit: PER_PAGE,
-                offset: (page - 1) * PER_PAGE,
-                where: filters,
-            });
-            return res
-                .status(200)
-                .json(
-                    users.map(user =>
-                        pick(
-                            user,
-                            'id',
-                            'username',
-                            'email',
-                            'avatarUrl',
-                            'country',
-                            'city',
-                            'hashtag',
-                            'phoneNumber',
-                            'superAdmin',
-                            'createdAt',
-                            'updatedAt'
-                        )
-                    )
-                );
-        } catch (err) {
-            return next(err);
-        }
-    }
-
-    @logRequest
-    async findById(req: IRequest, res: Response, next: NextFunction) {
-        const { userID } = req.params;
+    ): Promise<void | Response> {
+        const { userId } = req.params;
 
         try {
-            const user = await User.findByPk(userID);
-
-            if (!user) {
-                return next(notFoundError('User'));
-            }
-            return res
-                .status(200)
-                .json(
-                    pick(
-                        user,
-                        'id',
-                        'username',
-                        'email',
-                        'avatarUrl',
-                        'country',
-                        'city',
-                        'hashtag',
-                        'phoneNumber',
-                        'superAdmin',
-                        'createdAt',
-                        'updatedAt'
-                    )
-                );
-        } catch (err) {
-            return next(err);
-        }
-    }
-
-    @logRequest
-    async updateById(req: IRequest, res: Response, next: NextFunction) {
-        const { userID } = req.params;
-
-        try {
-            const user = await User.findByPk(userID);
+            const user = await User.findByPk(userId);
             if (!user) {
                 return next(notFoundError('User'));
             }
@@ -143,27 +66,11 @@ class UserController {
     }
 
     @logRequest
-    async deleteById(req: IRequest, res: Response, next: NextFunction) {
-        const { userID } = req.params;
-
-        try {
-            const user = await User.findByPk(userID);
-            if (!user) {
-                return next(notFoundError('User'));
-            }
-            await user.destroy();
-            return res.sendStatus(200);
-        } catch (err) {
-            return next(err);
-        }
-    }
-
-    @logRequest
     async checkIfEmailIsAvailable(
         req: IRequest,
         res: Response,
         next: NextFunction
-    ) {
+    ): Promise<void | Response> {
         const { email } = req.body;
 
         try {
@@ -178,4 +85,4 @@ class UserController {
     }
 }
 
-export default new UserController();
+export default new UserController(User);

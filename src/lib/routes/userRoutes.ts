@@ -24,7 +24,7 @@ userRoutes.post(
             .isLength({ min: 2, max: 25 }),
     ],
     requireValidation,
-    userController.register
+    userController.create
 );
 
 userRoutes.post(
@@ -39,7 +39,7 @@ userRoutes.post(
 );
 
 userRoutes.get('/', requireAuth, userController.findAll);
-userRoutes.get('/:userID', requireAuth, userController.findById);
+userRoutes.get('/:userId', requireAuth, userController.findById);
 
 userRoutes.post(
     '/email',
@@ -49,14 +49,14 @@ userRoutes.post(
 );
 
 userRoutes.patch(
-    '/:userID',
+    '/:userId',
     requireAuth,
     requireScopeOrAdmin,
     userController.updateById
 );
 
 userRoutes.delete(
-    '/:userID',
+    '/:userId',
     requireAuth,
     requireScopeOrAdmin,
     userController.deleteById

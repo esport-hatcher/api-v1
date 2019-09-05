@@ -22,21 +22,21 @@ teamsRoutes.post(
     ],
     requireValidation,
     requireAuth,
-    teamsController.createTeams
+    teamsController.create
 );
 
 teamsRoutes.get('/', requireAuth, requireAdmin, teamsController.findAll);
-teamsRoutes.get('/:teamID', requireAuth, teamsController.findById);
+teamsRoutes.get('/:teamId', requireAuth, teamsController.findById);
 
 teamsRoutes.delete(
-    '/:teamID',
+    '/:teamId',
     requireAuth,
     requireScopeOrAdmin,
     teamsController.deleteById
 );
 
 teamsRoutes.patch(
-    '/:teamID',
+    '/:teamId',
     requireAuth,
     requireScopeOrAdmin,
     teamsController.updateById
