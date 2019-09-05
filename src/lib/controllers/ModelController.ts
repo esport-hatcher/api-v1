@@ -2,7 +2,7 @@ import { omit, fromPairs, map } from 'lodash';
 import { Op, Model } from 'sequelize';
 import IRequest from '@typings/general/IRequest';
 import { NextFunction, Response } from 'express';
-import { notFoundError } from '../utils/errors';
+import { notFoundError } from '@utils/errors';
 
 /**
  * Base class to all Controllers

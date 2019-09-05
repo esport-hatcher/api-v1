@@ -8,7 +8,11 @@ import { ModelController } from '@controllers/ModelController';
 
 class TeamsController extends ModelController<typeof Team> {
     @logRequest
-    async create(req: IRequest, res: Response, next: NextFunction) {
+    async create(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
         try {
             const { user } = req;
             const { game, name, region } = req.body;
@@ -32,7 +36,11 @@ class TeamsController extends ModelController<typeof Team> {
     }
 
     @logRequest
-    async addTeamUser(req: IRequest, res: Response, next: NextFunction) {
+    async addTeamUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
         try {
             const { user } = req;
             const { userId, teamId } = req.params;
@@ -68,7 +76,11 @@ class TeamsController extends ModelController<typeof Team> {
     }
 
     @logRequest
-    async updateById(req: IRequest, res: Response, next: NextFunction) {
+    async updateById(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
         const { teamId } = req.params;
         try {
             const team = await Team.findByPk(teamId);

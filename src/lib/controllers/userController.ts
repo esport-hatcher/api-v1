@@ -5,7 +5,7 @@ import userFactory from '@factories/userFactory';
 import User from '@models/User';
 import { logRequest } from '@utils/decorators';
 import { notFoundError, unauthorizedError, conflictError } from '@utils/errors';
-import { ModelController } from './ModelController';
+import { ModelController } from '@controllers/ModelController';
 
 class UserController extends ModelController<typeof User> {
     @logRequest
