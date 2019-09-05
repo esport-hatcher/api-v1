@@ -8,8 +8,7 @@ import { notFoundError } from '@utils/errors';
  * Base class to all Controllers
  */
 export abstract class ModelController<
-    // tslint:disable-next-line: no-any
-    T extends (new () => Model<any, any>) & typeof Model
+    T extends (new () => Model) & typeof Model
 > {
     private readonly modelName: string;
 
@@ -94,7 +93,7 @@ export abstract class ModelController<
     };
 
     /**
-     * Method to implement yourself
+     * Method YOU MUST implement yourself
      */
     abstract updateById(
         req: IRequest,
