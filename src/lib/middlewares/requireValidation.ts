@@ -1,5 +1,5 @@
-import { validationResult } from 'express-validator/check';
 import { Response, NextFunction } from 'express';
+import { validationResult } from 'express-validator/check';
 import IRequest from '@typings/general/IRequest';
 import { validationError } from '@utils/errors';
 

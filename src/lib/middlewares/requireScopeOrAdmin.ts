@@ -1,5 +1,5 @@
-import IRequest from '@typings/general/IRequest';
 import { Response, NextFunction } from 'express';
+import IRequest from '@typings/general/IRequest';
 import { unauthorizedError } from '@utils/errors';
 
 export const requireScopeOrAdmin = (

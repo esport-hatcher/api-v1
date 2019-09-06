@@ -1,8 +1,10 @@
 import { omit, fromPairs, map } from 'lodash';
 import { Op, Model } from 'sequelize';
-import IRequest from '@typings/general/IRequest';
 import { NextFunction, Response } from 'express';
+import IRequest from '@typings/general/IRequest';
 import { notFoundError } from '@utils/errors';
+import { logRequest } from '@utils/decorators';
+import { FORBIDDEN_FIELDS } from '@config/index';
 
 /**
  * Base class to all Controllers
@@ -23,11 +25,12 @@ export abstract class ModelController<
      * Method by defaults.
      * You can implement it yourself on your controller
      */
-    findAll = async (
+    @logRequest
+    async findAll(
         req: IRequest,
         res: Response,
         next: NextFunction
-    ): Promise<void | Response> => {
+    ): Promise<void | Response> {
         const page = req.query.page || 1;
         const PER_PAGE = 50;
         const queryWithoutPage = omit(req.query, 'page');
@@ -47,18 +50,25 @@ export abstract class ModelController<
                 limit: PER_PAGE,
                 offset: (page - 1) * PER_PAGE,
                 where: filters,
+                raw: true,
             });
-            return res.status(200).json(records);
+
+            return res
+                .status(200)
+                .json(
+                    records.map(record => omit(record, [...FORBIDDEN_FIELDS]))
+                );
         } catch (err) {
             return next(err);
         }
-    };
+    }
 
-    findById = async (
+    @logRequest
+    async findById(
         req: IRequest,
         res: Response,
         next: NextFunction
-    ): Promise<void | Response> => {
+    ): Promise<void | Response> {
         const id = req.params[`${this.modelName}Id`];
 
         try {
@@ -67,17 +77,20 @@ export abstract class ModelController<
             if (!record) {
                 return next(notFoundError(this.modelName));
             }
-            return res.status(200).json(record);
+            return res
+                .status(200)
+                .json(omit(record.get({ plain: true }), [...FORBIDDEN_FIELDS]));
         } catch (err) {
             return next(err);
         }
-    };
+    }
 
-    deleteById = async (
+    @logRequest
+    async deleteById(
         req: IRequest,
         res: Response,
         next: NextFunction
-    ): Promise<void | Response> => {
+    ): Promise<void | Response> {
         const id = req.params[`${this.modelName}Id`];
 
         try {
@@ -90,7 +103,7 @@ export abstract class ModelController<
         } catch (err) {
             return next(err);
         }
-    };
+    }
 
     /**
      * Method YOU MUST implement yourself

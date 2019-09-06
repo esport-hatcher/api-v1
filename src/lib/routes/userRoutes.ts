@@ -9,6 +9,20 @@ import {
 
 const userRoutes = Router();
 
+/**
+ * Get routes
+ */
+userRoutes.get('/', requireAuth, userController.findAll.bind(userController));
+
+userRoutes.get(
+    '/:userId',
+    requireAuth,
+    userController.findById.bind(userController)
+);
+
+/**
+ * Post routes
+ */
 userRoutes.post(
     '/',
     [
@@ -24,7 +38,7 @@ userRoutes.post(
             .isLength({ min: 2, max: 25 }),
     ],
     requireValidation,
-    userController.create
+    userController.create.bind(userController)
 );
 
 userRoutes.post(
@@ -35,31 +49,34 @@ userRoutes.post(
             .withMessage('Please enter a valid email'),
     ],
     requireValidation,
-    userController.getToken
+    userController.getToken.bind(userController)
 );
-
-userRoutes.get('/', requireAuth, userController.findAll);
-userRoutes.get('/:userId', requireAuth, userController.findById);
 
 userRoutes.post(
     '/email',
     [body('email').isEmail()],
     requireValidation,
-    userController.checkIfEmailIsAvailable
+    userController.checkIfEmailIsAvailable.bind(userController)
 );
 
+/**
+ * Patch routes
+ */
 userRoutes.patch(
     '/:userId',
     requireAuth,
     requireScopeOrAdmin,
-    userController.updateById
+    userController.updateById.bind(userController)
 );
 
+/**
+ * Delete routes
+ */
 userRoutes.delete(
     '/:userId',
     requireAuth,
     requireScopeOrAdmin,
-    userController.deleteById
+    userController.deleteById.bind(userController)
 );
 
 export default userRoutes;
