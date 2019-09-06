@@ -8,6 +8,10 @@ import { notFoundError, unauthorizedError, conflictError } from '@utils/errors';
 import { ModelController } from '@controllers/ModelController';
 
 class UserController extends ModelController<typeof User> {
+    constructor() {
+        super(User);
+    }
+
     @logRequest
     async create(
         req: IRequest,
@@ -86,4 +90,4 @@ class UserController extends ModelController<typeof User> {
     }
 }
 
-export default new UserController(User);
+export default new UserController();

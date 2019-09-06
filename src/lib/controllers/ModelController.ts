@@ -12,7 +12,7 @@ export abstract class ModelController<
 > {
     private readonly modelName: string;
 
-    constructor(public model: T) {
+    constructor(private readonly model: T) {
         this.modelName = this.model
             .toString()
             .split(' ')[1]
@@ -30,8 +30,8 @@ export abstract class ModelController<
     ): Promise<void | Response> => {
         const page = req.query.page || 1;
         const PER_PAGE = 50;
-
         const queryWithoutPage = omit(req.query, 'page');
+
         const filtersArray = Object.entries(queryWithoutPage).map(
             ([key, value]) => {
                 return {

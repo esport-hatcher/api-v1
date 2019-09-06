@@ -7,6 +7,10 @@ import { unauthorizedError, notFoundError } from '@utils/errors';
 import { ModelController } from '@controllers/ModelController';
 
 class TeamsController extends ModelController<typeof Team> {
+    constructor() {
+        super(Team);
+    }
+
     @logRequest
     async create(
         req: IRequest,
@@ -100,4 +104,4 @@ class TeamsController extends ModelController<typeof Team> {
     }
 }
 
-export default new TeamsController(Team);
+export default new TeamsController();
