@@ -13,12 +13,12 @@ describe('when logged in as a normal user', () => {
         secondUser = await getNormalUser();
     });
 
-    void it("can't fetch all users", async () => {
+    void it('can fetch all users', async () => {
         const res = await request(app)
             .get('/users')
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
-        expect(res.status).toBe(401);
+        expect(res.status).toBe(200);
     });
 
     void it('change his records', async () => {

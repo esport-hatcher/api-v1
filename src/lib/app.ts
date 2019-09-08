@@ -6,6 +6,7 @@ import * as express from 'express';
 import userRoutes from '@routes/userRoutes';
 import teamsRoutes from '@routes/teamsRoutes';
 import eventRoutes from '@routes/eventRoutes';
+import jobRoutes from '@routes/jobRoutes';
 import IError from '@typings/general/IError';
 import IRequest from '@typings/general/IRequest';
 // Express app creation
@@ -19,6 +20,7 @@ app.use(json());
 app.use('/users', userRoutes);
 app.use('/teams', teamsRoutes);
 app.use('/events', eventRoutes);
+app.use('/jobs', jobRoutes);
 
 // Healthcheck route
 app.get('/', (req, res) => {
