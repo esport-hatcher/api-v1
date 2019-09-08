@@ -3,6 +3,6 @@ export default interface IEvent {
     title: string;
     description: string;
     place: string;
-    from: Date;
-    to: Date;
+    dateBegin: Date;
+    dateEnd: Date;
 }
