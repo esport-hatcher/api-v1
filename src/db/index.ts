@@ -1,10 +1,10 @@
+import { Sequelize } from 'sequelize';
+import logger from '@utils/logger';
 import { sqlDb, sqlHost, sqlPassword, sqlPort, sqlUser } from '@config/keys';
 import User, { initUser } from '@models/User';
 import Team, { initTeam } from '@models/Team';
 import Event, { initEvent } from '@models/Event';
 import TeamUser, { initTeamUser } from '@models/TeamUser';
-import { Sequelize } from 'sequelize';
-import logger from '@utils/logger';
 
 class SequelizeDb {
     private db: Sequelize;

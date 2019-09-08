@@ -9,6 +9,16 @@ import {
 
 const userRoutes = Router();
 
+/**
+ * Get routes
+ */
+userRoutes.get('/', requireAuth, userController.findAll);
+
+userRoutes.get('/:userId', requireAuth, userController.findById);
+
+/**
+ * Post routes
+ */
 userRoutes.post(
     '/',
     [
@@ -24,7 +34,7 @@ userRoutes.post(
             .isLength({ min: 2, max: 25 }),
     ],
     requireValidation,
-    userController.register
+    userController.create
 );
 
 userRoutes.post(
@@ -38,9 +48,6 @@ userRoutes.post(
     userController.getToken
 );
 
-userRoutes.get('/', requireAuth, userController.findAll);
-userRoutes.get('/:userID', requireAuth, userController.findById);
-
 userRoutes.post(
     '/email',
     [body('email').isEmail()],
@@ -48,15 +55,21 @@ userRoutes.post(
     userController.checkIfEmailIsAvailable
 );
 
+/**
+ * Patch routes
+ */
 userRoutes.patch(
-    '/:userID',
+    '/:userId',
     requireAuth,
     requireScopeOrAdmin,
     userController.updateById
 );
 
+/**
+ * Delete routes
+ */
 userRoutes.delete(
-    '/:userID',
+    '/:userId',
     requireAuth,
     requireScopeOrAdmin,
     userController.deleteById
