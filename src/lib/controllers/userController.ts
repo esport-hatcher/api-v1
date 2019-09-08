@@ -4,13 +4,21 @@ import IRequest from '@typings/general/IRequest';
 import userFactory from '@factories/userFactory';
 import User from '@models/User';
 import Team from '@models/Team';
-import { pick } from 'lodash';
 import { logRequest } from '@utils/decorators';
 import { notFoundError, unauthorizedError, conflictError } from '@utils/errors';
+import { ModelController } from '@controllers/ModelController';
 
-class UserController {
+class UserController extends ModelController<typeof User> {
+    constructor() {
+        super(User);
+    }
+
     @logRequest
-    async register(req: IRequest, res: Response, next: NextFunction) {
+    async create(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
         try {
             const user = await userFactory.create(req.body);
             return res.status(201).json({ token: user.getAccessToken() });
@@ -20,7 +28,11 @@ class UserController {
     }
 
     @logRequest
-    async getToken(req: IRequest, res: Response, next: NextFunction) {
+    async getToken(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
         const { email, password } = req.body;
 
         const user = await User.findOne({ where: { email } });
@@ -35,88 +47,15 @@ class UserController {
     }
 
     @logRequest
-    async findAll(
-        // tslint:disable-next-line: variable-name
+    async updateById(
         req: IRequest,
         res: Response,
         next: NextFunction
-    ) {
-        let users: User[];
-        try {
-            if (req.query.page) {
-                const { page } = req.query || 1;
-                const perPage = 15;
-                users = await User.findAll({
-                    limit: perPage,
-                    offset: (page - 1) * perPage,
-                });
-            } else {
-                users = await User.findAll();
-            }
-            return res
-                .status(200)
-                .json(
-                    users.map(user =>
-                        pick(
-                            user,
-                            'id',
-                            'username',
-                            'email',
-                            'avatarUrl',
-                            'country',
-                            'city',
-                            'hashtag',
-                            'phoneNumber',
-                            'superAdmin',
-                            'createdAt',
-                            'updatedAt'
-                        )
-                    )
-                );
-        } catch (err) {
-            return next(err);
-        }
-    }
-
-    @logRequest
-    async findById(req: IRequest, res: Response, next: NextFunction) {
-        const { userID } = req.params;
+    ): Promise<void | Response> {
+        const { userId } = req.params;
 
         try {
-            const user = await User.findByPk(userID);
-
-            if (!user) {
-                return next(notFoundError('User'));
-            }
-            return res
-                .status(200)
-                .json(
-                    pick(
-                        user,
-                        'id',
-                        'username',
-                        'email',
-                        'avatarUrl',
-                        'country',
-                        'city',
-                        'hashtag',
-                        'phoneNumber',
-                        'superAdmin',
-                        'createdAt',
-                        'updatedAt'
-                    )
-                );
-        } catch (err) {
-            return next(err);
-        }
-    }
-
-    @logRequest
-    async updateById(req: IRequest, res: Response, next: NextFunction) {
-        const { userID } = req.params;
-
-        try {
-            const user = await User.findByPk(userID);
+            const user = await User.findByPk(userId);
             if (!user) {
                 return next(notFoundError('User'));
             }
@@ -133,27 +72,11 @@ class UserController {
     }
 
     @logRequest
-    async deleteById(req: IRequest, res: Response, next: NextFunction) {
-        const { userID } = req.params;
-
-        try {
-            const user = await User.findByPk(userID);
-            if (!user) {
-                return next(notFoundError('User'));
-            }
-            await user.destroy();
-            return res.sendStatus(200);
-        } catch (err) {
-            return next(err);
-        }
-    }
-
-    @logRequest
     async checkIfEmailIsAvailable(
         req: IRequest,
         res: Response,
         next: NextFunction
-    ) {
+    ): Promise<void | Response> {
         const { email } = req.body;
 
         try {

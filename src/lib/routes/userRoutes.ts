@@ -4,12 +4,21 @@ import userController from '@controllers/userController';
 import {
     requireValidation,
     requireScopeOrAdmin,
-    requireAdmin,
     requireAuth,
 } from '@middlewares';
 
 const userRoutes = Router();
 
+/**
+ * Get routes
+ */
+userRoutes.get('/', requireAuth, userController.findAll);
+
+userRoutes.get('/:userId', requireAuth, userController.findById);
+
+/**
+ * Post routes
+ */
 userRoutes.post(
     '/',
     [
@@ -25,7 +34,7 @@ userRoutes.post(
             .isLength({ min: 2, max: 25 }),
     ],
     requireValidation,
-    userController.register
+    userController.create
 );
 
 userRoutes.post(
@@ -39,28 +48,11 @@ userRoutes.post(
     userController.getToken
 );
 
-userRoutes.get('/', requireAuth, requireAdmin, userController.findAll);
-userRoutes.get('/:userID', requireAuth, userController.findById);
-
 userRoutes.post(
     '/email',
     [body('email').isEmail()],
     requireValidation,
     userController.checkIfEmailIsAvailable
-);
-
-userRoutes.patch(
-    '/:userID',
-    requireAuth,
-    requireScopeOrAdmin,
-    userController.updateById
-);
-
-userRoutes.delete(
-    '/:userID',
-    requireAuth,
-    requireScopeOrAdmin,
-    userController.deleteById
 );
 
 userRoutes.post(
@@ -73,6 +65,26 @@ userRoutes.post(
     requireValidation,
     requireAuth,
     userController.userJoinTeam
+);
+
+/**
+ * Patch routes
+ */
+userRoutes.patch(
+    '/:userId',
+    requireAuth,
+    requireScopeOrAdmin,
+    userController.updateById
+);
+
+/**
+ * Delete routes
+ */
+userRoutes.delete(
+    '/:userId',
+    requireAuth,
+    requireScopeOrAdmin,
+    userController.deleteById
 );
 
 export default userRoutes;

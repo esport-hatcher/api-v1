@@ -4,10 +4,19 @@ import { logRequest } from '@utils/decorators';
 import Team from '@models/Team';
 import User from '@models/User';
 import { unauthorizedError, notFoundError } from '@utils/errors';
+import { ModelController } from '@controllers/ModelController';
 
-class TeamsController {
+class TeamsController extends ModelController<typeof Team> {
+    constructor() {
+        super(Team);
+    }
+
     @logRequest
-    async createTeams(req: IRequest, res: Response, next: NextFunction) {
+    async create(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
         try {
             const { user } = req;
             const { game, name, region } = req.body;
@@ -31,7 +40,11 @@ class TeamsController {
     }
 
     @logRequest
-    async addTeamUser(req: IRequest, res: Response, next: NextFunction) {
+    async addTeamUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
         try {
             const { user } = req;
             const { userId, teamId } = req.params;
@@ -69,67 +82,14 @@ class TeamsController {
     }
 
     @logRequest
-    async findAll(
-        // tslint:disable-next-line: variable-name
+    async updateById(
         req: IRequest,
         res: Response,
         next: NextFunction
-    ) {
-        let teams;
+    ): Promise<void | Response> {
+        const { teamId } = req.params;
         try {
-            if (req.query.page) {
-                const { page } = req.query || 1;
-                const perPage = 15;
-                teams = await Team.findAll({
-                    limit: perPage,
-                    offset: (page - 1) * perPage,
-                });
-            } else {
-                teams = await Team.findAll();
-            }
-            return res.status(200).json(teams);
-        } catch (err) {
-            return next(err);
-        }
-    }
-
-    @logRequest
-    async findById(req: IRequest, res: Response, next: NextFunction) {
-        const { teamID } = req.params;
-
-        try {
-            const team = await Team.findByPk(teamID);
-
-            if (!team) {
-                return next(notFoundError('Team'));
-            }
-            return res.status(200).json(team);
-        } catch (err) {
-            return next(err);
-        }
-    }
-
-    @logRequest
-    async deleteById(req: IRequest, res: Response, next: NextFunction) {
-        const { teamID } = req.params;
-
-        try {
-            const team = await Team.findByPk(teamID);
-            if (!team) {
-                return next(notFoundError('Team'));
-            }
-            await team.destroy();
-            return res.sendStatus(200);
-        } catch (err) {
-            return next(err);
-        }
-    }
-
-    @logRequest
-    async updateById(req: IRequest, res: Response, next: NextFunction) {
-        const { teamID } = req.params;
-        try {
-            const team = await Team.findByPk(teamID);
+            const team = await Team.findByPk(teamId);
             if (!team) {
                 return next(notFoundError('Team'));
             }

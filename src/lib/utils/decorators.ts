@@ -3,6 +3,7 @@ import IRequest from '@typings/general/IRequest';
 import { Response } from 'superagent';
 import { NextFunction } from 'express-serve-static-core';
 import { bgYellow, fgBlack } from './colors-console';
+import { pick } from 'lodash';
 
 // tslint:disable-next-line: only-arrow-functions
 export function logRequest(
@@ -38,6 +39,17 @@ export function logRequest(
                 console.log(
                     'Authentified with token',
                     req.headers.authorization
+                );
+                // tslint:disable-next-line: no-console
+                console.log(
+                    'As user:',
+                    pick(
+                        req.user.get({ plain: true }),
+                        'id',
+                        'username',
+                        'email',
+                        'superAdmin'
+                    )
                 );
             } else {
                 // tslint:disable-next-line: no-console
