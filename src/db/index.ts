@@ -3,7 +3,6 @@ import User, { initUser } from '@models/User';
 import Team, { initTeam } from '@models/Team';
 import Event, { initEvent } from '@models/Event';
 import TeamUser, { initTeamUser } from '@models/TeamUser';
-import EventTeam, { initEventTeam } from '@models/EventTeam';
 import { Sequelize } from 'sequelize';
 import logger from '@utils/logger';
 
@@ -92,7 +91,6 @@ class SequelizeDb {
         initTeam(db);
         initEvent(db);
         initTeamUser(db);
-        initEventTeam(db);
     }
 
     /**
@@ -106,8 +104,12 @@ class SequelizeDb {
         logger('Database', 'Initializing relations');
         User.belongsToMany(Team, { through: TeamUser });
         Team.belongsToMany(User, { through: TeamUser });
-        Team.belongsToMany(Event, { through: EventTeam });
-        Event.belongsToMany(Team, { through: EventTeam });
+        Event.belongsTo(Team, {
+            constraints: true,
+            onDelete: 'cascade',
+            hooks: true,
+        });
+        Team.hasMany(Event);
     }
 }
 

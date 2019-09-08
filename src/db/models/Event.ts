@@ -1,25 +1,14 @@
-import {
-    Model,
-    DataTypes,
-    BelongsToManyAddAssociationMixin,
-    BelongsToManyGetAssociationsMixin,
-    Sequelize,
-} from 'sequelize';
-import Team from '@models/Team';
-import EventTeam from '@models/EventTeam';
+import { Model, DataTypes, Sequelize } from 'sequelize';
 
 export default class Event extends Model {
     public id!: number;
     public title!: string;
     public description!: string;
     public place!: string;
-    public from!: Date;
-    public to!: Date;
+    public dateBegin!: Date;
+    public dateEnd!: Date;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
-
-    public addTeam!: BelongsToManyAddAssociationMixin<Team, EventTeam>;
-    public getTeams!: BelongsToManyGetAssociationsMixin<Team>;
 }
 
 export const initEvent = (db: Sequelize) => {
@@ -42,11 +31,11 @@ export const initEvent = (db: Sequelize) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            from: {
+            dateBegin: {
                 type: DataTypes.DATE,
                 allowNull: false,
             },
-            to: {
+            dateEnd: {
                 type: DataTypes.DATE,
                 allowNull: false,
             },

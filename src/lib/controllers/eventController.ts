@@ -11,7 +11,7 @@ class EventController {
         try {
             const { user } = req;
             const { teamId } = req.params;
-            const { title, description, place, from, to } = req.body;
+            const { title, description, place, dateBegin, dateEnd } = req.body;
 
             const team = await Team.findByPk(teamId);
             if (!team) {
@@ -26,45 +26,14 @@ class EventController {
             ) {
                 return next(unauthorizedError());
             }
-            const newEvent = await Event.create({
+            const newEvent = await team.createEvent({
                 title,
                 description,
                 place,
-                from,
-                to,
+                dateBegin,
+                dateEnd,
             });
-            await newEvent.addTeam(team);
             return res.status(201).json(newEvent);
-        } catch (err) {
-            return next(err);
-        }
-    }
-
-    @logRequest
-    async addEventTeam(req: IRequest, res: Response, next: NextFunction) {
-        try {
-            const { user } = req;
-            const { teamId, eventId } = req.params;
-
-            const event = await Event.findByPk(eventId);
-            if (!event) {
-                return next(notFoundError('Event'));
-            }
-            const invitedTeam = await Team.findByPk(teamId);
-            if (!invitedTeam) {
-                return next(notFoundError('Invited team'));
-            }
-            const users = await invitedTeam.getUsers();
-            const teamUser = users.find(teamUser => teamUser.id === user.id);
-            if (
-                !teamUser ||
-                (teamUser.TeamUser.role !== 'Owner' &&
-                    teamUser.TeamUser.role !== 'Admin')
-            ) {
-                return next(unauthorizedError());
-            }
-            event.addTeam(invitedTeam);
-            return res.sendStatus(201);
         } catch (err) {
             return next(err);
         }
@@ -138,8 +107,8 @@ class EventController {
             event.title = req.body.title || event.title;
             event.description = req.body.description || event.description;
             event.place = req.body.place || event.place;
-            event.from = req.body.from || event.from;
-            event.to = req.body.to || event.to;
+            event.dateBegin = req.body.dateBegin || event.dateBegin;
+            event.dateEnd = req.body.dateEnd || event.dateEnd;
             await event.save();
             return res.sendStatus(200);
         } catch (err) {

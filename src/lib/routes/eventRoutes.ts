@@ -19,8 +19,8 @@ eventRoutes.post(
         body('place')
             .trim()
             .isLength({ min: 1, max: 50 }),
-        body('from').trim(),
-        body('to').trim(),
+        body('dateBegin').trim(),
+        body('dateEnd').trim(),
     ],
     requireValidation,
     requireAuth,
@@ -42,18 +42,6 @@ eventRoutes.patch(
     requireAuth,
     requireScopeOrAdmin,
     eventController.updateById
-);
-
-eventRoutes.post(
-    '/:eventId/teams/:teamId',
-    [
-        body('role')
-            .trim()
-            .withMessage('Please enter a role'),
-    ],
-    requireValidation,
-    requireAuth,
-    eventController.addEventTeam
 );
 
 export default eventRoutes;
