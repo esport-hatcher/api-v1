@@ -19,6 +19,11 @@ export abstract class ModelController<
             .toString()
             .split(' ')[1]
             .toLowerCase();
+        this.findAll = this.findAll.bind(this);
+        this.findById = this.findById.bind(this);
+        this.deleteById = this.deleteById.bind(this);
+        this.updateById = this.updateById.bind(this);
+        this.create = this.create.bind(this);
     }
 
     /**

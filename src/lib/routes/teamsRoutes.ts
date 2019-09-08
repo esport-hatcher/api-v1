@@ -14,18 +14,9 @@ const teamsRoutes = Router();
  * Get routes
  */
 
-teamsRoutes.get(
-    '/',
-    requireAuth,
-    requireAdmin,
-    teamsController.findAll.bind(teamsController)
-);
+teamsRoutes.get('/', requireAuth, requireAdmin, teamsController.findAll);
 
-teamsRoutes.get(
-    '/:teamId',
-    requireAuth,
-    teamsController.findById.bind(teamsController)
-);
+teamsRoutes.get('/:teamId', requireAuth, teamsController.findById);
 
 /**
  * Post routes
@@ -46,7 +37,7 @@ teamsRoutes.post(
     ],
     requireValidation,
     requireAuth,
-    teamsController.create.bind(teamsController)
+    teamsController.create
 );
 
 teamsRoutes.post(
@@ -58,7 +49,7 @@ teamsRoutes.post(
     ],
     requireValidation,
     requireAuth,
-    teamsController.addTeamUser.bind(teamsController)
+    teamsController.addTeamUser
 );
 
 /**
@@ -68,7 +59,7 @@ teamsRoutes.patch(
     '/:teamId',
     requireAuth,
     requireScopeOrAdmin,
-    teamsController.updateById.bind(teamsController)
+    teamsController.updateById
 );
 
 /**
@@ -78,7 +69,7 @@ teamsRoutes.delete(
     '/:teamId',
     requireAuth,
     requireScopeOrAdmin,
-    teamsController.deleteById.bind(teamsController)
+    teamsController.deleteById
 );
 
 export default teamsRoutes;

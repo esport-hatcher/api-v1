@@ -12,13 +12,9 @@ const userRoutes = Router();
 /**
  * Get routes
  */
-userRoutes.get('/', requireAuth, userController.findAll.bind(userController));
+userRoutes.get('/', requireAuth, userController.findAll);
 
-userRoutes.get(
-    '/:userId',
-    requireAuth,
-    userController.findById.bind(userController)
-);
+userRoutes.get('/:userId', requireAuth, userController.findById);
 
 /**
  * Post routes
@@ -38,7 +34,7 @@ userRoutes.post(
             .isLength({ min: 2, max: 25 }),
     ],
     requireValidation,
-    userController.create.bind(userController)
+    userController.create
 );
 
 userRoutes.post(
@@ -49,14 +45,14 @@ userRoutes.post(
             .withMessage('Please enter a valid email'),
     ],
     requireValidation,
-    userController.getToken.bind(userController)
+    userController.getToken
 );
 
 userRoutes.post(
     '/email',
     [body('email').isEmail()],
     requireValidation,
-    userController.checkIfEmailIsAvailable.bind(userController)
+    userController.checkIfEmailIsAvailable
 );
 
 /**
@@ -66,7 +62,7 @@ userRoutes.patch(
     '/:userId',
     requireAuth,
     requireScopeOrAdmin,
-    userController.updateById.bind(userController)
+    userController.updateById
 );
 
 /**
@@ -76,7 +72,7 @@ userRoutes.delete(
     '/:userId',
     requireAuth,
     requireScopeOrAdmin,
-    userController.deleteById.bind(userController)
+    userController.deleteById
 );
 
 export default userRoutes;
