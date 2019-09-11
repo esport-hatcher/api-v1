@@ -14,6 +14,8 @@ const userRoutes = Router();
  */
 userRoutes.get('/', requireAuth, userController.findAll);
 
+userRoutes.get('/me', requireAuth, userController.getMe);
+
 userRoutes.get('/:userId', requireAuth, userController.findById);
 
 /**
@@ -75,4 +77,4 @@ userRoutes.delete(
     userController.deleteById
 );
 
-export default userRoutes;
+export { userRoutes };

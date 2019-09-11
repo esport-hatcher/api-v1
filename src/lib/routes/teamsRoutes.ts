@@ -72,4 +72,4 @@ teamsRoutes.delete(
     teamsController.deleteById
 );
 
-export default teamsRoutes;
+export { teamsRoutes };
