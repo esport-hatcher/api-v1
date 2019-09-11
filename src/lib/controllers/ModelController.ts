@@ -3,7 +3,7 @@ import { Op, Model } from 'sequelize';
 import { NextFunction, Response } from 'express';
 import { IRequest } from '@typings';
 import { notFoundError, logRequest } from '@utils';
-import { FORBIDDEN_FIELDS } from '@config';
+import { FORBIDDEN_FIELDS, RECORDS_PER_PAGE } from '@config';
 
 /**
  * Base class to all Controllers
@@ -36,7 +36,6 @@ export abstract class ModelController<
         next: NextFunction
     ): Promise<void | Response> {
         const page = req.query.page || 1;
-        const PER_PAGE = 50;
         const queryWithoutPage = omit(req.query, 'page');
 
         const filtersArray = Object.entries(queryWithoutPage).map(
@@ -51,8 +50,8 @@ export abstract class ModelController<
 
         try {
             const records = await this.model.findAll({
-                limit: PER_PAGE,
-                offset: (page - 1) * PER_PAGE,
+                limit: RECORDS_PER_PAGE,
+                offset: (page - 1) * RECORDS_PER_PAGE,
                 where: filters,
                 raw: true,
             });
