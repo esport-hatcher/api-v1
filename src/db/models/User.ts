@@ -19,8 +19,23 @@ import { Team, TeamUser } from '@models';
 // 	HasManyCreateAssociationMixin
 // } from 'sequelize/lib/associations';
 
+export interface IUserProps {
+    firstName: string;
+    lastName: string;
+    username: string;
+    password: string;
+    email: string;
+    avatarUrl: string;
+    superAdmin: boolean;
+    hashtag?: string;
+    country?: string;
+    city?: string;
+    phoneNumber?: string;
+}
 export class User extends Model {
     public id!: number; // Note that the `null assertion` `!` is required in strict mode.
+    public firstName: string;
+    public lastName: string;
     public username!: string;
     public email!: string; // for nullable fields
     public avatarUrl: string;
@@ -70,6 +85,14 @@ export const initUser = (db: Sequelize) => {
                 type: DataTypes.INTEGER.UNSIGNED,
                 autoIncrement: true,
                 primaryKey: true,
+            },
+            firstName: {
+                type: DataTypes.STRING(128),
+                allowNull: false,
+            },
+            lastName: {
+                type: DataTypes.STRING(128),
+                allowNull: false,
             },
             username: {
                 type: new DataTypes.STRING(128),
