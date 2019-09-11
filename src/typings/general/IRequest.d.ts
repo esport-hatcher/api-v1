@@ -1,6 +1,7 @@
 import { Request } from 'express';
-import User from '@models/User';
+import { User } from '@models';
 
-export default interface IRequest extends Request {
+export interface IRequest extends Request {
     user: User;
+    body: { [key: string]: any | undefined };
 }

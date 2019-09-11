@@ -1,11 +1,17 @@
 import { Response, NextFunction } from 'express';
 import { compare } from 'bcryptjs';
-import IRequest from '@typings/general/IRequest';
-import userFactory from '@factories/userFactory';
-import User from '@models/User';
-import { logRequest } from '@utils/decorators';
-import { notFoundError, unauthorizedError, conflictError } from '@utils/errors';
-import { ModelController } from '@controllers/ModelController';
+import { omit } from 'lodash';
+import { IRequest, IUserProps } from '@typings';
+import { userFactory } from '@factories';
+import { User } from '@models';
+import {
+    logRequest,
+    notFoundError,
+    unauthorizedError,
+    conflictError,
+} from '@utils';
+import { ModelController } from '@controllers';
+import { FORBIDDEN_FIELDS } from '@config';
 
 class UserController extends ModelController<typeof User> {
     constructor() {
@@ -19,8 +25,11 @@ class UserController extends ModelController<typeof User> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const user = await userFactory.create(req.body);
-            return res.status(201).json({ token: user.getAccessToken() });
+            const user = await userFactory.create(req.body as IUserProps);
+            return res.status(201).json({
+                user: omit(user.get({ plain: true }), ...FORBIDDEN_FIELDS),
+                token: user.getAccessToken(),
+            });
         } catch (err) {
             return next(err);
         }
@@ -34,15 +43,37 @@ class UserController extends ModelController<typeof User> {
     ): Promise<void | Response> {
         const { email, password } = req.body;
 
-        const user = await User.findOne({ where: { email } });
-        if (!user) {
-            return next(notFoundError('User'));
+        try {
+            const user = await User.findOne({ where: { email } });
+            if (!user) {
+                return next(notFoundError('User'));
+            }
+            const equal = await compare(password, user.password);
+            if (!equal) {
+                return next(unauthorizedError('Invalid credentials'));
+            }
+            return res.status(200).json({
+                user: omit(user.get({ plain: true }), ...FORBIDDEN_FIELDS),
+                token: user.getAccessToken(),
+            });
+        } catch (err) {
+            return next(err);
         }
-        const equal = await compare(password, user.password);
-        if (!equal) {
-            return next(unauthorizedError());
+    }
+
+    @logRequest
+    async getMe(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            return res
+                .status(200)
+                .json(omit(req.user.get({ plain: true }), ...FORBIDDEN_FIELDS));
+        } catch (err) {
+            return next(err);
         }
-        return res.status(200).json({ token: user.getAccessToken() });
     }
 
     @logRequest
@@ -90,4 +121,4 @@ class UserController extends ModelController<typeof User> {
     }
 }
 
-export default new UserController();
+export const userController = new UserController();

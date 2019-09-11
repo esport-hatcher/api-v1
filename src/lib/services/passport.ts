@@ -5,8 +5,8 @@ import {
     Strategy,
     VerifiedCallback,
 } from 'passport-jwt';
-import User from '@models/User';
-import * as keys from '@config/keys';
+import { User } from '@models';
+import * as keys from '@config';
 
 const jwtOptions: StrategyOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

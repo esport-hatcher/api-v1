@@ -1,10 +1,9 @@
 import { omit, fromPairs, map } from 'lodash';
 import { Op, Model } from 'sequelize';
 import { NextFunction, Response } from 'express';
-import IRequest from '@typings/general/IRequest';
-import { notFoundError } from '@utils/errors';
-import { logRequest } from '@utils/decorators';
-import { FORBIDDEN_FIELDS, RECORDS_PER_PAGE } from '@config/index';
+import { IRequest } from '@typings';
+import { notFoundError, logRequest } from '@utils';
+import { FORBIDDEN_FIELDS, RECORDS_PER_PAGE } from '@config';
 
 /**
  * Base class to all Controllers
@@ -59,9 +58,7 @@ export abstract class ModelController<
 
             return res
                 .status(200)
-                .json(
-                    records.map(record => omit(record, [...FORBIDDEN_FIELDS]))
-                );
+                .json(records.map(record => omit(record, ...FORBIDDEN_FIELDS)));
         } catch (err) {
             return next(err);
         }
@@ -83,7 +80,7 @@ export abstract class ModelController<
             }
             return res
                 .status(200)
-                .json(omit(record.get({ plain: true }), [...FORBIDDEN_FIELDS]));
+                .json(omit(record.get({ plain: true }), ...FORBIDDEN_FIELDS));
         } catch (err) {
             return next(err);
         }

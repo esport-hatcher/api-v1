@@ -1,8 +1,8 @@
-import { getNormalUser, getAdminUser } from '@tests/utils/generate-models';
-import app from '@app';
-import logger from '@utils/logger';
 import * as request from 'supertest';
-import User from '@models/User';
+import { getNormalUser, getAdminUser } from '@tests/utils/generate-models';
+import { app } from '@app';
+import { logger } from '@utils';
+import { User } from '@models';
 
 describe('when logged in as a normal user', () => {
     let user: User;

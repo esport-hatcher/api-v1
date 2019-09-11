@@ -5,10 +5,9 @@ import {
     BelongsToManyGetAssociationsMixin,
     Sequelize,
 } from 'sequelize';
-import User from '@models/User';
-import TeamUser from '@models/TeamUser';
+import { User, TeamUser } from '@models';
 
-export default class Team extends Model {
+export class Team extends Model {
     public id!: number;
     public name!: string;
     public game!: string;

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { body } from 'express-validator/check';
-import userController from '@controllers/userController';
+import { userController } from '@controllers';
 import {
     requireValidation,
     requireScopeOrAdmin,
@@ -13,6 +13,8 @@ const userRoutes = Router();
  * Get routes
  */
 userRoutes.get('/', requireAuth, userController.findAll);
+
+userRoutes.get('/me', requireAuth, userController.getMe);
 
 userRoutes.get('/:userId', requireAuth, userController.findById);
 
@@ -75,4 +77,4 @@ userRoutes.delete(
     userController.deleteById
 );
 
-export default userRoutes;
+export { userRoutes };

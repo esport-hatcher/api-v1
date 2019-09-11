@@ -1,5 +1,5 @@
 // tslint:disable-file: no-console
-import IRequest from '@typings/general/IRequest';
+import { IRequest } from '@typings';
 import { Response } from 'superagent';
 import { NextFunction } from 'express-serve-static-core';
 import { bgYellow, fgBlack } from './colors-console';
@@ -9,13 +9,11 @@ import { pick } from 'lodash';
 export function logRequest(
     // tslint:disable-next-line: variable-name tslint:disable-next-line: no-any
     _target: any,
-    // tslint:disable-next-line: no-any
-    key: any,
+    key: string,
     descriptor: PropertyDescriptor
 ) {
     const originalMethod = descriptor.value;
 
-    // tslint:disable-next-line: no-any
     descriptor.value = async function(
         req: IRequest,
         res: Response,
