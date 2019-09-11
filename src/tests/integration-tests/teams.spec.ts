@@ -1,8 +1,8 @@
 import * as request from 'supertest';
 import { getNormalUser, getTeam } from '@tests/utils/generate-models';
-import app from '@app';
-import logger from '@utils/logger';
-import User from '@models/User';
+import { app } from '@app';
+import { logger } from '@utils';
+import { User } from '@models';
 
 describe('when a user try to create a team', () => {
     let user: User;

@@ -1,10 +1,9 @@
 import { omit, fromPairs, map } from 'lodash';
 import { Op, Model } from 'sequelize';
 import { NextFunction, Response } from 'express';
-import IRequest from '@typings/general/IRequest';
-import { notFoundError } from '@utils/errors';
-import { logRequest } from '@utils/decorators';
-import { FORBIDDEN_FIELDS } from '@config/index';
+import { IRequest } from '@typings';
+import { notFoundError, logRequest } from '@utils';
+import { FORBIDDEN_FIELDS } from '@config';
 
 /**
  * Base class to all Controllers

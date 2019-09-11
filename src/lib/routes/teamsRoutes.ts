@@ -6,7 +6,7 @@ import {
     requireScopeOrAdmin,
     requireValidation,
 } from '@middlewares';
-import teamsController from '@controllers/teamsController';
+import { teamController } from '@controllers';
 
 const teamsRoutes = Router();
 
@@ -14,9 +14,9 @@ const teamsRoutes = Router();
  * Get routes
  */
 
-teamsRoutes.get('/', requireAuth, requireAdmin, teamsController.findAll);
+teamsRoutes.get('/', requireAuth, requireAdmin, teamController.findAll);
 
-teamsRoutes.get('/:teamId', requireAuth, teamsController.findById);
+teamsRoutes.get('/:teamId', requireAuth, teamController.findById);
 
 /**
  * Post routes
@@ -37,7 +37,7 @@ teamsRoutes.post(
     ],
     requireValidation,
     requireAuth,
-    teamsController.create
+    teamController.create
 );
 
 teamsRoutes.post(
@@ -49,7 +49,7 @@ teamsRoutes.post(
     ],
     requireValidation,
     requireAuth,
-    teamsController.addTeamUser
+    teamController.addTeamUser
 );
 
 /**
@@ -59,7 +59,7 @@ teamsRoutes.patch(
     '/:teamId',
     requireAuth,
     requireScopeOrAdmin,
-    teamsController.updateById
+    teamController.updateById
 );
 
 /**
@@ -69,7 +69,7 @@ teamsRoutes.delete(
     '/:teamId',
     requireAuth,
     requireScopeOrAdmin,
-    teamsController.deleteById
+    teamController.deleteById
 );
 
 export { teamsRoutes };

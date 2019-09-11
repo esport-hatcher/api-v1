@@ -1,6 +1,5 @@
 {
     "extends": ["tslint-plugin-prettier", "tslint-config-prettier"],
-    //   "rulesDirectory": ["path/to/custom/rules/directory/", "another/path/"],
     "rules": {
         "prettier": true,
         "no-console": true,

@@ -1,5 +1,3 @@
-import User from '@models/User';
-import Team from '@models/Team';
 import {
     internet,
     helpers,
@@ -9,7 +7,8 @@ import {
     phone,
     name,
 } from 'faker';
-import logger from '@utils/logger';
+import { User, Team } from '@models';
+import { logger } from '@utils';
 
 let usersDb: User[] = [];
 let teamsDb: Team[] = [];

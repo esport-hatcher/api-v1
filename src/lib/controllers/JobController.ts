@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express';
-import IRequest from '@typings/general/IRequest';
-import { seedData } from '@models/../seeders';
+import { IRequest } from '@typings';
+import { seedData } from '@db';
 
 export const seeder = async (
     req: IRequest,

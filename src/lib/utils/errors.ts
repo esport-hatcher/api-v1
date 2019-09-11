@@ -1,4 +1,5 @@
-import IError from '@typings/general/IError';
+import { Result } from 'express-validator/check';
+import { IError } from '@typings';
 
 export const unauthorizedError = (msg: string = 'Unauthorized') => {
     const error: IError = new Error(msg);
@@ -21,8 +22,7 @@ export const conflictError = (msg?: string) => {
     return error;
 };
 
-// tslint:disable-next-line: no-any
-export const validationError = (errors: any, msg?: string) => {
+export const validationError = (errors: Result, msg?: string) => {
     const error: IError = new Error(msg || 'Validation failed');
     error.statusCode = 422;
     error.data = errors.array();

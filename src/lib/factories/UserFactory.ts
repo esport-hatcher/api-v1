@@ -1,10 +1,9 @@
-import User from '@models/User';
-import { checkIfEmail, checkIfMinAndMax } from '@utils/validators';
-import IUserFactory from '@typings/user/IUserFactory';
-import IUser from '@typings/user/IUser';
+import { User } from '@models';
+import { checkIfEmail, checkIfMinAndMax } from '@utils';
+import { IUserProps } from '@typings';
 
-class UserFactory implements IUserFactory {
-    async create(data: IUser) {
+class UserFactory {
+    async create(data: IUserProps) {
         try {
             if (
                 !checkIfEmail(data.email) ||
@@ -24,12 +23,7 @@ class UserFactory implements IUserFactory {
                     message: 'User already exist',
                 });
             }
-            const newUser = await User.create({
-                email: data.email,
-                username: data.username,
-                password: data.password,
-                superAdmin: data.superAdmin,
-            });
+            const newUser = await User.create(data);
             return newUser;
         } catch (err) {
             throw new Error(err);
@@ -37,4 +31,4 @@ class UserFactory implements IUserFactory {
     }
 }
 
-export default new UserFactory();
+export const userFactory = new UserFactory();

@@ -3,9 +3,8 @@ import * as cors from 'cors';
 import * as express from 'express';
 
 // Routes
-import { userRoutes, jobRoutes, rootRoutes, teamsRoutes } from '@routes/index';
-import IError from '@typings/general/IError';
-import IRequest from '@typings/general/IRequest';
+import { userRoutes, jobRoutes, rootRoutes, teamsRoutes } from '@routes';
+import { IError, IRequest } from '@typings';
 // Express app creation
 const app = express();
 
@@ -45,4 +44,4 @@ app.use(
     }
 );
 
-export default app;
+export { app };

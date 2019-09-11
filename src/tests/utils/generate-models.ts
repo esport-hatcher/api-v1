@@ -1,12 +1,12 @@
 import * as faker from 'faker';
-import app from '@app';
-import IUser from '@typings/user/IUser';
-import userFactory from '@factories/userFactory';
 import * as request from 'supertest';
-import User from '@models/User';
+import { app } from '@app';
+import { IUserProps } from '@typings';
+import { userFactory } from '@factories';
+import { User } from '@models';
 
 export const getAdminUserTemplate = () => {
-    const user: IUser = {
+    const user: IUserProps = {
         email: faker.internet.email(),
         username: faker.internet.userName(),
         password: faker.internet.password(),
@@ -17,7 +17,7 @@ export const getAdminUserTemplate = () => {
 };
 
 export const getNormalUserTemplate = () => {
-    const user: IUser = {
+    const user: IUserProps = {
         email: faker.internet.email(),
         username: faker.internet.userName(),
         password: faker.internet.password(),
@@ -28,7 +28,7 @@ export const getNormalUserTemplate = () => {
 };
 
 export const generateBadEmail = () => {
-    const badEmailUser: IUser = {
+    const badEmailUser: IUserProps = {
         email: 'test',
         username: faker.internet.userName(),
         password: faker.internet.password(),
@@ -39,7 +39,7 @@ export const generateBadEmail = () => {
 };
 
 export const generateBadPwd = () => {
-    const badPwdUser: IUser = {
+    const badPwdUser: IUserProps = {
         email: faker.internet.email(),
         username: faker.internet.userName(),
         password: 'test',

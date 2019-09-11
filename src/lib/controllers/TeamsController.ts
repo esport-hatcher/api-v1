@@ -1,10 +1,8 @@
 import { Response, NextFunction } from 'express';
-import IRequest from '@typings/general/IRequest';
-import { logRequest } from '@utils/decorators';
-import Team from '@models/Team';
-import User from '@models/User';
-import { unauthorizedError, notFoundError } from '@utils/errors';
-import { ModelController } from '@controllers/ModelController';
+import { IRequest } from '@typings';
+import { logRequest, unauthorizedError, notFoundError } from '@utils';
+import { Team, User } from '@models';
+import { ModelController } from '@controllers';
 
 class TeamsController extends ModelController<typeof Team> {
     constructor() {
@@ -104,4 +102,4 @@ class TeamsController extends ModelController<typeof Team> {
     }
 }
 
-export default new TeamsController();
+export const teamController = new TeamsController();

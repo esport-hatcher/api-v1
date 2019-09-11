@@ -1,5 +1,5 @@
 import * as request from 'supertest';
-import app from '@app';
+import { app } from '@app';
 
 describe('application should', () => {
     void it('be live', async () => {
