@@ -1,13 +1,17 @@
 import { Response, NextFunction } from 'express';
 import { compare } from 'bcryptjs';
 import { omit } from 'lodash';
-import IRequest from '@typings/general/IRequest';
-import userFactory from '@factories/userFactory';
-import User from '@models/User';
-import { logRequest } from '@utils/decorators';
-import { notFoundError, unauthorizedError, conflictError } from '@utils/errors';
-import { ModelController } from '@controllers/ModelController';
-import { FORBIDDEN_FIELDS } from '@config/index';
+import { IRequest, IUserProps } from '@typings';
+import { userFactory } from '@factories';
+import { User } from '@models';
+import {
+    logRequest,
+    notFoundError,
+    unauthorizedError,
+    conflictError,
+} from '@utils';
+import { ModelController } from '@controllers';
+import { FORBIDDEN_FIELDS } from '@config';
 
 class UserController extends ModelController<typeof User> {
     constructor() {
@@ -21,7 +25,7 @@ class UserController extends ModelController<typeof User> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const user = await userFactory.create(req.body);
+            const user = await userFactory.create(req.body as IUserProps);
             return res.status(201).json({
                 user: omit(user.get({ plain: true }), ...FORBIDDEN_FIELDS),
                 token: user.getAccessToken(),
@@ -117,4 +121,4 @@ class UserController extends ModelController<typeof User> {
     }
 }
 
-export default new UserController();
+export const userController = new UserController();

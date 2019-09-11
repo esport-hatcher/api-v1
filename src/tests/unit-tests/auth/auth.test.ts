@@ -1,4 +1,4 @@
-import userFactory from '@factories/userFactory';
+import { userFactory } from '@factories';
 import {
     getNormalUserTemplate,
     generateBadEmail,

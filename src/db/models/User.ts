@@ -5,11 +5,10 @@ import {
     BelongsToManyGetAssociationsMixin,
 } from 'sequelize';
 import { hash } from 'bcryptjs';
-import { createHashtag } from '@utils/hashtagGenerator';
-import { jwtSecret } from '@config/keys';
 import { encode } from 'jwt-simple';
-import Team from '@models/Team';
-import TeamUser from '@models/TeamUser';
+import { createHashtag } from '@utils';
+import { jwtSecret } from '@config';
+import { Team, TeamUser } from '@models';
 
 // import {
 // 	HasManyGetAssociationsMixin,
@@ -20,7 +19,7 @@ import TeamUser from '@models/TeamUser';
 // 	HasManyCreateAssociationMixin
 // } from 'sequelize/lib/associations';
 
-export default class User extends Model {
+export class User extends Model {
     public id!: number; // Note that the `null assertion` `!` is required in strict mode.
     public username!: string;
     public email!: string; // for nullable fields
@@ -40,7 +39,6 @@ export default class User extends Model {
     // tslint:disable-next-line: variable-name
     public TeamUser: TeamUser;
 
-    // tslint:disable-next-line: no-any
     getAccessToken() {
         const timestamp = new Date().getTime();
         return encode({ sub: this.id, iat: timestamp }, jwtSecret);
@@ -91,13 +89,13 @@ export const initUser = (db: Sequelize) => {
                 defaultValue:
                     'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png',
             },
-            hashtag: {
-                type: DataTypes.STRING,
-                allowNull: true,
-            },
             superAdmin: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
+            },
+            hashtag: {
+                type: DataTypes.STRING,
+                allowNull: true,
             },
             country: {
                 type: DataTypes.STRING,

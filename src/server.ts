@@ -1,9 +1,9 @@
 // tslint:disable-next-line: no-import-side-effect
 import 'module-alias/register';
-import app from '@app';
-import db from '@db';
-import User from '@models/User';
-import logger from '@utils/logger';
+import { app } from '@app';
+import { sequelizeDb } from '@db';
+import { User } from '@models';
+import { logger } from '@utils';
 
 const executeMigration = async () => {
     const user = await User.findOne({
@@ -23,7 +23,8 @@ const executeMigration = async () => {
     }
 };
 
-db.init(process.env.NODE_ENV === 'CI' || process.env.NODE_ENV === 'prod')
+sequelizeDb
+    .init(process.env.NODE_ENV === 'CI' || process.env.NODE_ENV === 'prod')
     .then(() => {
         app.listen(process.env.PORT_API, () => {
             executeMigration()

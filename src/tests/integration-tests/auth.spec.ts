@@ -1,11 +1,11 @@
+import { pick } from 'lodash';
 import {
     getNormalUserTemplate,
     generateBadEmail,
     generateBadPwd,
 } from '@tests/utils/generate-models';
 import * as request from 'supertest';
-import app from '@app';
-import { pick } from 'lodash';
+import { app } from '@app';
 
 const newUser = getNormalUserTemplate();
 
