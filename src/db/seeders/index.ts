@@ -1,8 +1,15 @@
 import User from '@models/User';
 import Team from '@models/Team';
-// tslint:disable-next-line: match-default-export-name
-import { internet, helpers, address, company, random, phone } from 'faker';
-import logger from './logger';
+import {
+    internet,
+    helpers,
+    address,
+    company,
+    random,
+    phone,
+    name,
+} from 'faker';
+import logger from '@utils/logger';
 
 let usersDb: User[] = [];
 let teamsDb: Team[] = [];
@@ -16,9 +23,11 @@ const getInstances = (functionToExecute: Function, instances: number) => {
 };
 
 const getUser = () => {
+    const firstName = name.firstName();
+    const lastName = name.lastName();
     return {
-        username: internet.userName(),
-        email: internet.email(),
+        username: internet.userName(firstName, lastName),
+        email: internet.email(firstName, lastName),
         avatarUrl: internet.avatar(),
         password: internet.password(),
         superAdmin: helpers.randomize([true, false]),

@@ -60,9 +60,7 @@ export abstract class ModelController<
 
             return res
                 .status(200)
-                .json(
-                    records.map(record => omit(record, [...FORBIDDEN_FIELDS]))
-                );
+                .json(records.map(record => omit(record, ...FORBIDDEN_FIELDS)));
         } catch (err) {
             return next(err);
         }
@@ -84,7 +82,7 @@ export abstract class ModelController<
             }
             return res
                 .status(200)
-                .json(omit(record.get({ plain: true }), [...FORBIDDEN_FIELDS]));
+                .json(omit(record.get({ plain: true }), ...FORBIDDEN_FIELDS));
         } catch (err) {
             return next(err);
         }
