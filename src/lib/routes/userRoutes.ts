@@ -31,6 +31,12 @@ userRoutes.post(
             .trim()
             .isLength({ min: 5, max: 20 })
             .withMessage('Please enter a password between 5 and 20 characters'),
+        body('firstName')
+            .trim()
+            .isString(),
+        body('lastName')
+            .trim()
+            .isString(),
         body('username')
             .trim()
             .isLength({ min: 2, max: 25 }),

@@ -1,13 +1,9 @@
 import { pick } from 'lodash';
-import {
-    getNormalUserTemplate,
-    generateBadEmail,
-    generateBadPwd,
-} from '@tests/utils/generate-models';
 import * as request from 'supertest';
 import { app } from '@app';
+import { getRandomUserProps } from '@utils';
 
-const newUser = getNormalUserTemplate();
+const newUser = getRandomUserProps();
 
 describe('when a user register', () => {
     void it('should return 201 with the right information', async () => {
@@ -27,7 +23,7 @@ describe('when a user register', () => {
     });
 
     void it('should return 422 with bad email', async () => {
-        const badEmailUser = generateBadEmail();
+        const badEmailUser = { ...getRandomUserProps(), email: 'bad email' };
         const res = await request(app)
             .post('/users')
             .send(badEmailUser)
@@ -36,7 +32,7 @@ describe('when a user register', () => {
     });
 
     void it('should return 422 with bad password', async () => {
-        const badPwdUser = generateBadPwd();
+        const badPwdUser = { ...getRandomUserProps(), password: 'b' };
         const res = await request(app)
             .post('/users')
             .send(badPwdUser)

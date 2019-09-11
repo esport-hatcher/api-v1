@@ -1,8 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { compare } from 'bcryptjs';
 import { omit } from 'lodash';
-import { IRequest, IUserProps } from '@typings';
-import { userFactory } from '@factories';
+import { IRequest } from '@typings';
 import { User } from '@models';
 import {
     logRequest,
@@ -25,7 +24,15 @@ class UserController extends ModelController<typeof User> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const user = await userFactory.create(req.body as IUserProps);
+            const { email } = req.body;
+
+            const conflictUser: User = await User.findOne({
+                where: { email },
+            });
+            if (conflictUser) {
+                return next(conflictError('User already exist'));
+            }
+            const user = await User.create(req.body);
             return res.status(201).json({
                 user: omit(user.get({ plain: true }), ...FORBIDDEN_FIELDS),
                 token: user.getAccessToken(),

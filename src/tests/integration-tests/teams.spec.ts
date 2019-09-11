@@ -1,7 +1,7 @@
 import * as request from 'supertest';
-import { getNormalUser, getTeam } from '@tests/utils/generate-models';
+import { getTeam } from '@tests/utils/generate-models';
 import { app } from '@app';
-import { logger } from '@utils';
+import { logger, getUser } from '@utils';
 import { User } from '@models';
 
 describe('when a user try to create a team', () => {
@@ -9,7 +9,7 @@ describe('when a user try to create a team', () => {
 
     beforeAll(async () => {
         logger('Tests', 'Generating access token...');
-        user = await getNormalUser();
+        user = await getUser();
     });
 
     void it('should return 401 when does not have a token', async () => {
@@ -82,13 +82,13 @@ describe('when a user try to create a team', () => {
 });
 
 describe('when a user try invite an another user in a team', () => {
-    let user;
-    let invitedUser;
+    let user: User;
+    let invitedUser: User;
     let team;
 
     beforeEach(async () => {
-        user = await getNormalUser();
-        invitedUser = await getNormalUser();
+        user = await getUser();
+        invitedUser = await getUser();
         team = await getTeam(user);
     });
 
@@ -150,7 +150,7 @@ describe('when a user try invite an another user in a team', () => {
         /**
          * Creating a third user
          */
-        const thirdUser = await getNormalUser();
+        const thirdUser = await getUser();
         /**
          * Making inviteUser invite thirdUser
          */

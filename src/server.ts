@@ -12,6 +12,8 @@ const executeMigration = async () => {
     if (!user) {
         const { BO_ADMIN_PWD } = process.env;
         await User.create({
+            firstName: 'admin',
+            lastName: 'admin',
             username: 'admin',
             password: BO_ADMIN_PWD,
             email: 'admin@esport-hatcher.com',
@@ -29,7 +31,10 @@ sequelizeDb
         app.listen(process.env.PORT_API, () => {
             executeMigration()
                 .then(() => logger('Seeders', 'Seeding successful'))
-                .catch(() => logger('Seeders', 'Seeding failed'));
+                .catch((err: Error) => {
+                    logger('Seeders', 'Seeding failed');
+                    logger('Seeders', `${err}`);
+                });
             logger('Server', `Executed in ${process.env.NODE_ENV} mode`);
             logger('Server', `Server listening on ${process.env.PORT_API}`);
         });
