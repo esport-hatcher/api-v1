@@ -22,8 +22,8 @@ app.use(json());
 app.use(rootRoutes);
 app.use('/users', userRoutes);
 app.use('/teams', teamsRoutes);
-app.use('/events', eventRoutes);
 app.use('/jobs', jobRoutes);
+app.use('/teams/:teamId/events', eventRoutes);
 
 // Healthcheck route
 app.get('/', (req, res) => {
