@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { unauthorizedError } from '@utils';
+import { unauthorizedError, notFoundError } from '@utils';
 import { Team } from '@models';
 
 export const requireOwnerOrAdminTeam = async (
@@ -9,18 +9,25 @@ export const requireOwnerOrAdminTeam = async (
     _res: Response,
     next: NextFunction
 ) => {
-    const { user } = req;
-    const { teamId } = req.params;
+    try {
+        const { user } = req;
+        const { teamId } = req.params;
 
-    const team = await Team.findByPk(teamId);
-    const users = await team.getUsers();
-    const teamUser = users.find(teamUser => teamUser.id === user.id);
-    if (
-        !teamUser ||
-        (teamUser.TeamUser.role !== 'Owner' &&
-            teamUser.TeamUser.role !== 'Admin')
-    ) {
-        return next(unauthorizedError());
+        const team = await Team.findByPk(teamId);
+        if (!team) {
+            return next(notFoundError('Team'));
+        }
+        const users = await team.getUsers();
+        const teamUser = users.find(teamUser => teamUser.id === user.id);
+        if (
+            !teamUser ||
+            (teamUser.TeamUser.role !== 'Owner' &&
+                teamUser.TeamUser.role !== 'Admin')
+        ) {
+            return next(unauthorizedError());
+        }
+        return next();
+    } catch (err) {
+        return next(err);
     }
-    return next();
 };
