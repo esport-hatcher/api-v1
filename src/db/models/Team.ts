@@ -6,10 +6,16 @@ import {
     Sequelize,
     BelongsToCreateAssociationMixin,
 } from 'sequelize';
-import User from '@models/User';
-import TeamUser from '@models/TeamUser';
+import { User, TeamUser } from '@models';
 
-export default class Team extends Model {
+export interface ITeamProps {
+    name: string;
+    game: string;
+    region: string;
+    avatarTeamUrl?: string;
+    bannerUrl?: string;
+}
+export class Team extends Model {
     public id!: number;
     public name!: string;
     public game!: string;
@@ -46,13 +52,13 @@ export const initTeam = (db: Sequelize) => {
             },
             avatarTeamUrl: {
                 type: DataTypes.STRING,
-                allowNull: false,
+                allowNull: true,
                 defaultValue:
                     'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png',
             },
             bannerUrl: {
                 type: DataTypes.STRING,
-                allowNull: false,
+                allowNull: true,
                 defaultValue:
                     'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png',
             },

@@ -1,13 +1,17 @@
 import { Router } from 'express';
 import { body } from 'express-validator/check';
-import { requireAuth, requireAdmin, requireScopeOrAdmin } from '@middlewares';
-import eventController from '@controllers/eventController';
-import { requireValidation } from '../middlewares/requireValidation';
+import {
+    requireAuth,
+    requireAdmin,
+    requireScopeOrAdmin,
+    requireValidation,
+} from '@middlewares';
+import { eventController } from '@controllers';
 
 const eventRoutes = Router();
 
 eventRoutes.post(
-    '/:teamId',
+    '/',
     [
         body('title')
             .trim()
@@ -24,7 +28,7 @@ eventRoutes.post(
     ],
     requireValidation,
     requireAuth,
-    eventController.createEvent
+    eventController.create
 );
 
 eventRoutes.get('/', requireAuth, requireAdmin, eventController.findAll);
@@ -44,4 +48,4 @@ eventRoutes.patch(
     eventController.updateById
 );
 
-export default eventRoutes;
+export { eventRoutes };

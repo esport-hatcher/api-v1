@@ -1,16 +1,15 @@
-import { getNormalUser, getAdminUser } from '@tests/utils/generate-models';
-import app from '@app';
-import logger from '@utils/logger';
 import * as request from 'supertest';
-import User from '@models/User';
+import { app } from '@app';
+import { logger, getUser } from '@utils';
+import { User } from '@models';
 
 describe('when logged in as a normal user', () => {
     let user: User;
     let secondUser: User;
 
     beforeAll(async () => {
-        user = await getNormalUser();
-        secondUser = await getNormalUser();
+        user = await getUser();
+        secondUser = await getUser();
     });
 
     void it('can fetch all users', async () => {
@@ -63,8 +62,8 @@ describe('when logged in as an admin user', () => {
     let admin: User;
     beforeAll(async () => {
         logger('Tests', 'Generating access token...');
-        user = await getNormalUser();
-        admin = await getAdminUser();
+        user = await getUser();
+        admin = await getUser(true);
     });
 
     void it('can fetch all users', async () => {

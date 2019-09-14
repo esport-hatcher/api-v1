@@ -1,6 +1,14 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
 
-export default class Event extends Model {
+export interface IEventProps {
+    title: string;
+    description: string;
+    place: string;
+    dateBegin: Date;
+    dateEnd: Date;
+}
+
+export class Event extends Model {
     public id!: number;
     public title!: string;
     public description!: string;

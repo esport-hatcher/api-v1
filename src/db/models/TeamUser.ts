@@ -1,6 +1,6 @@
 import { Model, DataTypes, Sequelize, ENUM } from 'sequelize';
 
-export default class TeamUser extends Model {
+export class TeamUser extends Model {
     public id!: number;
     public playerStatus!: boolean;
     public teamStatus!: boolean;

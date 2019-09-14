@@ -1,8 +1,8 @@
 import { Request } from 'express';
-import User from '@models/User';
-import Team from '@models/Team';
+import { User } from '@models';
 
-export default interface IRequest extends Request {
+export interface IRequest extends Request {
     user: User;
-    team: Team;
+    // tslint:disable-next-line: no-any
+    body: { [key: string]: any | undefined };
 }

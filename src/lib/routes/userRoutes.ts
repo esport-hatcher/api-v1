@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { body } from 'express-validator/check';
-import userController from '@controllers/userController';
+import { userController } from '@controllers';
 import {
     requireValidation,
     requireScopeOrAdmin,
@@ -13,6 +13,8 @@ const userRoutes = Router();
  * Get routes
  */
 userRoutes.get('/', requireAuth, userController.findAll);
+
+userRoutes.get('/me', requireAuth, userController.getMe);
 
 userRoutes.get('/:userId', requireAuth, userController.findById);
 
@@ -29,6 +31,12 @@ userRoutes.post(
             .trim()
             .isLength({ min: 5, max: 20 })
             .withMessage('Please enter a password between 5 and 20 characters'),
+        body('firstName')
+            .trim()
+            .isString(),
+        body('lastName')
+            .trim()
+            .isString(),
         body('username')
             .trim()
             .isLength({ min: 2, max: 25 }),
@@ -75,4 +83,4 @@ userRoutes.delete(
     userController.deleteById
 );
 
-export default userRoutes;
+export { userRoutes };
