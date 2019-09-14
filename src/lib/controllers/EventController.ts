@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { logRequest, unauthorizedError, notFoundError } from '@utils';
+import { logRequest, notFoundError } from '@utils';
 import { Event, Team } from '@models';
 import { ModelController } from '@controllers';
 
@@ -16,22 +16,12 @@ class EventController extends ModelController<typeof Event> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { user } = req;
             const { teamId } = req.params;
             const { title, description, place, dateBegin, dateEnd } = req.body;
 
             const team = await Team.findByPk(teamId);
             if (!team) {
                 return next(notFoundError('Team'));
-            }
-            const users = await team.getUsers();
-            const teamUser = users.find(teamUser => teamUser.id === user.id);
-            if (
-                !teamUser ||
-                (teamUser.TeamUser.role !== 'Owner' &&
-                    teamUser.TeamUser.role !== 'Admin')
-            ) {
-                return next(unauthorizedError());
             }
             const newEvent = await team.createEvent({
                 title,

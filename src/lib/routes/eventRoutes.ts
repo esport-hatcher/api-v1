@@ -5,6 +5,7 @@ import {
     requireAdmin,
     requireScopeOrAdmin,
     requireValidation,
+    requireOwnerOrAdminTeam,
 } from '@middlewares';
 import { eventController } from '@controllers';
 
@@ -28,6 +29,7 @@ eventRoutes.post(
     ],
     requireValidation,
     requireAuth,
+    requireOwnerOrAdminTeam,
     eventController.create
 );
 

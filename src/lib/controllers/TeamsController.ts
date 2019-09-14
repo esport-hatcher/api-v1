@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { logRequest, unauthorizedError, notFoundError } from '@utils';
+import { logRequest, notFoundError } from '@utils';
 import { Team, User } from '@models';
 import { ModelController } from '@controllers';
 
@@ -44,7 +44,6 @@ class TeamsController extends ModelController<typeof Team> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { user } = req;
             const { userId, teamId } = req.params;
 
             const team = await Team.findByPk(teamId);
@@ -54,15 +53,6 @@ class TeamsController extends ModelController<typeof Team> {
             const invitedUser = await User.findByPk(userId);
             if (!invitedUser) {
                 return next(notFoundError('Invited user'));
-            }
-            const users = await team.getUsers();
-            const teamUser = users.find(teamUser => teamUser.id === user.id);
-            if (
-                !teamUser ||
-                (teamUser.TeamUser.role !== 'Owner' &&
-                    teamUser.TeamUser.role !== 'Admin')
-            ) {
-                return next(unauthorizedError());
             }
             team.addUser(invitedUser, {
                 through: {
