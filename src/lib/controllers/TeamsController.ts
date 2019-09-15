@@ -46,15 +46,38 @@ class TeamsController extends ModelController<typeof Team> {
         try {
             const { owner, user, team } = req;
 
-            const users = await team.getUsers();
-            const teamUser = users.find(teamUser => teamUser.id === owner.id);
+            const teamUsers = await team.getUsers();
+
+            const userRequest = teamUsers.find(
+                userRequest => userRequest.id === owner.id
+            );
+            /**
+             * Check if the userRequest has the permission to invite someone
+             */
             if (
-                !teamUser ||
-                (teamUser.TeamUser.role !== 'Owner' &&
-                    teamUser.TeamUser.role !== 'Admin')
+                !userRequest ||
+                (userRequest.TeamUser.role !== 'Owner' &&
+                    userRequest.TeamUser.role !== 'Admin')
             ) {
                 return next(unauthorizedError());
             }
+
+            /**
+             * Check if the invited user has already request to join the team
+             */
+            const userInTeam = teamUsers.find(
+                userRequest => userRequest.id === user.id
+            );
+            /**
+             * If the userInTeam has already request to join the team accept him
+             */
+            if (userInTeam) {
+                await userInTeam.TeamUser.update({ teamStatus: true });
+                return res.sendStatus(201);
+            }
+            /**
+             * Invite a user in the team by putting the teamStatus on "true"
+             */
             team.addUser(user, {
                 through: {
                     role: req.body.role,
