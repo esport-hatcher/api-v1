@@ -1,5 +1,5 @@
-import { Router } from 'express';
 import { body } from 'express-validator/check';
+import { BaseRouter } from '@services/router';
 import {
     requireAuth,
     requireAdmin,
@@ -7,14 +7,10 @@ import {
     requireValidation,
 } from '@middlewares';
 import { teamController } from '@controllers';
-import { userResolver, teamResolver } from './resolvers';
 
-const teamsRoutes = Router();
+const teamsRoutes = BaseRouter();
 
 teamsRoutes.use(requireAuth);
-
-teamsRoutes.param('userId', userResolver);
-teamsRoutes.param('teamId', teamResolver);
 
 /**
  * Get routes

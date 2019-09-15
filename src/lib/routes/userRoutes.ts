@@ -1,17 +1,13 @@
-import { Router } from 'express';
 import { body } from 'express-validator/check';
+import { BaseRouter } from '@services/router';
 import { userController } from '@controllers';
 import {
     requireValidation,
     requireScopeOrAdmin,
     requireAuth,
 } from '@middlewares';
-import { userResolver, teamResolver } from './resolvers';
 
-const userRoutes = Router();
-
-userRoutes.param('userId', userResolver);
-userRoutes.param('teamId', teamResolver);
+const userRoutes = BaseRouter();
 
 /**
  * Get routes
