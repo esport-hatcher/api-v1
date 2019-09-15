@@ -163,6 +163,29 @@ describe('when a TeamUser try invite an another user in a team', () => {
             .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
         expect(res.status).toBe(401);
     });
+    void it('should return 201 when user accept the request of another user', async () => {
+        /**
+         * invitedUser requesting to join the Team
+         */
+        await request(app)
+            .post(`/users/${invitedUser.id}/teams/${team.id}`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
+        /**
+         * user accepting invitedUser's request
+         */
+        const res = await request(app)
+            .post(`/teams/${team.id}/members/${invitedUser.id}`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(201);
+    });
 });
 
 describe('When a user try to join a team', () => {
@@ -200,7 +223,7 @@ describe('When a user try to join a team', () => {
 
     void it('should return 201 when a user accept to join a team who already invited him', async () => {
         /**
-         * Requête d'invitation du User par la Team
+         * teamOwner requesting user to join the team
          */
         await request(app)
             .post(`/teams/${team.id}/members/${user.id}`)
@@ -210,7 +233,7 @@ describe('When a user try to join a team', () => {
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${teamOwner.getAccessToken()}`);
         /**
-         * Requête d'acceptation du User pour rejoindre la Team
+         * user accepting teamOwner request
          */
         const res = await request(app)
             .post(`/users/${user.id}/teams/${team.id}`)

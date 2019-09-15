@@ -48,22 +48,46 @@ class TeamsController extends ModelController<typeof Team> {
             const { userId, teamId } = req.params;
 
             const team = await Team.findByPk(teamId);
+            /**
+             * Check if the team exists
+             */
             if (!team) {
                 return next(notFoundError('Team'));
             }
             const invitedUser = await User.findByPk(userId);
+            /**
+             * Check if the user we want to invite exists
+             */
             if (!invitedUser) {
                 return next(notFoundError('Invited user'));
             }
             const users = await team.getUsers();
-            const teamUser = users.find(teamUser => teamUser.id === user.id);
+            const userRequest = users.find(
+                userRequest => userRequest.id === user.id
+            );
+            /**
+             * Check if the userRequest has the permission to invite someone
+             */
             if (
-                !teamUser ||
-                (teamUser.TeamUser.role !== 'Owner' &&
-                    teamUser.TeamUser.role !== 'Admin')
+                !userRequest ||
+                (userRequest.TeamUser.role !== 'Owner' &&
+                    userRequest.TeamUser.role !== 'Admin')
             ) {
                 return next(unauthorizedError());
             }
+            const userInTeam = users.find(
+                userRequest => userRequest.id === invitedUser.id
+            );
+            /**
+             * Check if the userInTeam had already request to join the team and accept him if it's true
+             */
+            if (userInTeam && userInTeam.TeamUser.playerStatus === true) {
+                await userInTeam.TeamUser.update({ teamStatus: true });
+                return res.sendStatus(201);
+            }
+            /**
+             * Invite a user in the team by putting the teamStatus on "true"
+             */
             team.addUser(invitedUser, {
                 through: {
                     role: req.body.role,
