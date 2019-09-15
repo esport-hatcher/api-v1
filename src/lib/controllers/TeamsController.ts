@@ -81,7 +81,7 @@ class TeamsController extends ModelController<typeof Team> {
             /**
              * Check if the userInTeam had already request to join the team and accept him if it's true
              */
-            if (userInTeam && userInTeam.TeamUser.playerStatus === true) {
+            if (userInTeam) {
                 await userInTeam.TeamUser.update({ teamStatus: true });
                 return res.sendStatus(201);
             }
