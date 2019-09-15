@@ -17,11 +17,11 @@ const jwtLogin = new Strategy(
     jwtOptions,
     // tslint:disable-next-line: no-any
     async (payload: any, done: VerifiedCallback) => {
-        const user = await User.findByPk(payload.sub);
-        if (!user) {
+        const owner = await User.findByPk(payload.sub);
+        if (!owner) {
             return done(null, false);
         }
-        return done(null, user);
+        return done(null, owner);
     }
 );
 

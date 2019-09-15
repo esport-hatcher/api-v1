@@ -6,8 +6,12 @@ import {
     requireScopeOrAdmin,
     requireAuth,
 } from '@middlewares';
+import { userResolver, teamResolver } from './resolvers';
 
 const userRoutes = Router();
+
+userRoutes.param('userId', userResolver);
+userRoutes.param('teamId', teamResolver);
 
 /**
  * Get routes

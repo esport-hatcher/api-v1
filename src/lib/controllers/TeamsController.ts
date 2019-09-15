@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { logRequest, unauthorizedError, notFoundError } from '@utils';
-import { Team, User } from '@models';
+import { logRequest, unauthorizedError } from '@utils';
+import { Team } from '@models';
 import { ModelController } from '@controllers';
 
 class TeamsController extends ModelController<typeof Team> {
@@ -16,7 +16,7 @@ class TeamsController extends ModelController<typeof Team> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { user } = req;
+            const { owner } = req;
             const { game, name, region } = req.body;
 
             const newTeam = await Team.create({
@@ -24,7 +24,7 @@ class TeamsController extends ModelController<typeof Team> {
                 region,
                 name,
             });
-            await newTeam.addUser(user, {
+            await newTeam.addUser(owner, {
                 through: {
                     role: 'Owner',
                     playerStatus: true,
@@ -44,26 +44,12 @@ class TeamsController extends ModelController<typeof Team> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { user } = req;
-            const { userId, teamId } = req.params;
+            const { owner, user, team } = req;
 
-            const team = await Team.findByPk(teamId);
-            /**
-             * Check if the team exists
-             */
-            if (!team) {
-                return next(notFoundError('Team'));
-            }
-            const invitedUser = await User.findByPk(userId);
-            /**
-             * Check if the user we want to invite exists
-             */
-            if (!invitedUser) {
-                return next(notFoundError('Invited user'));
-            }
-            const users = await team.getUsers();
-            const userRequest = users.find(
-                userRequest => userRequest.id === user.id
+            const teamUsers = await team.getUsers();
+
+            const userRequest = teamUsers.find(
+                userRequest => userRequest.id === owner.id
             );
             /**
              * Check if the userRequest has the permission to invite someone
@@ -75,11 +61,15 @@ class TeamsController extends ModelController<typeof Team> {
             ) {
                 return next(unauthorizedError());
             }
-            const userInTeam = users.find(
-                userRequest => userRequest.id === invitedUser.id
+
+            /**
+             * Check if the invited user has already request to join the team
+             */
+            const userInTeam = teamUsers.find(
+                userRequest => userRequest.id === user.id
             );
             /**
-             * Check if the userInTeam had already request to join the team and accept him if it's true
+             * If the userInTeam has already request to join the team accept him
              */
             if (userInTeam) {
                 await userInTeam.TeamUser.update({ teamStatus: true });
@@ -88,7 +78,7 @@ class TeamsController extends ModelController<typeof Team> {
             /**
              * Invite a user in the team by putting the teamStatus on "true"
              */
-            team.addUser(invitedUser, {
+            team.addUser(user, {
                 through: {
                     role: req.body.role,
                     teamStatus: true,
@@ -107,12 +97,9 @@ class TeamsController extends ModelController<typeof Team> {
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const { teamId } = req.params;
+        const { team } = req;
+
         try {
-            const team = await Team.findByPk(teamId);
-            if (!team) {
-                return next(notFoundError('Team'));
-            }
             team.name = req.body.username || team.name;
             team.game = req.body.avatarUrl || team.game;
             team.region = req.body.country || team.region;

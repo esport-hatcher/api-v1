@@ -8,10 +8,9 @@ export const requireScopeOrAdmin = (
     _res: Response,
     next: NextFunction
 ) => {
-    const { userId } = req.params;
-    const { user } = req;
+    const { owner, user } = req;
 
-    if (!user.superAdmin && user.id.toString() !== userId.toString()) {
+    if (!owner.superAdmin && owner.id !== user.id) {
         return next(unauthorizedError());
     }
     return next();
