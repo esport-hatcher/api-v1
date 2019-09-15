@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import { compare } from 'bcryptjs';
 import { omit } from 'lodash';
 import { IRequest } from '@typings';
-import { User } from '@models';
+import { User, Team } from '@models';
 import {
     logRequest,
     notFoundError,
@@ -122,6 +122,36 @@ class UserController extends ModelController<typeof User> {
                 return res.sendStatus(200);
             }
             return next(conflictError());
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async userJoinTeam(req: IRequest, res: Response, next: NextFunction) {
+        try {
+            const { user } = req;
+            const { teamId } = req.params;
+            const { role } = req.body;
+
+            const team = await Team.findByPk(teamId);
+            if (!team) {
+                return next(notFoundError('Team'));
+            }
+            const users = await team.getUsers();
+            const userInTeam = users.find(userTeam => userTeam.id === user.id);
+            if (!userInTeam) {
+                team.addUser(user, {
+                    through: {
+                        role: role,
+                        teamStatus: false,
+                        playerStatus: true,
+                    },
+                });
+                return res.sendStatus(201);
+            }
+            await userInTeam.TeamUser.update({ playerStatus: true });
+            return res.sendStatus(201);
         } catch (err) {
             return next(err);
         }

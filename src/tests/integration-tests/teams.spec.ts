@@ -81,7 +81,7 @@ describe('when a user try to create a team', () => {
     });
 });
 
-describe('when a user try invite an another user in a team', () => {
+describe('when a TeamUser try invite an another user in a team', () => {
     let user: User;
     let invitedUser: User;
     let team;
@@ -162,5 +162,63 @@ describe('when a user try invite an another user in a team', () => {
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
         expect(res.status).toBe(401);
+    });
+});
+
+describe('When a user try to join a team', () => {
+    let user: User;
+    let teamOwner: User;
+    let team;
+
+    beforeAll(async () => {
+        user = await getUser();
+        teamOwner = await getUser();
+        team = await getTeam(teamOwner);
+    });
+
+    void it('should return 201 when a user join a team', async () => {
+        const res = await request(app)
+            .post(`/users/${user.id}/teams/${team.id}`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(201);
+    });
+
+    void it("should return 404 when user try to join a team which doesn't exist", async () => {
+        const res = await request(app)
+            .post(`/users/${user.id}/teams/44`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(404);
+    });
+
+    void it('should return 201 when a user accept to join a team who already invited him', async () => {
+        /**
+         * Requête d'invitation du User par la Team
+         */
+        await request(app)
+            .post(`/teams/${team.id}/members/${user.id}`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${teamOwner.getAccessToken()}`);
+        /**
+         * Requête d'acceptation du User pour rejoindre la Team
+         */
+        const res = await request(app)
+            .post(`/users/${user.id}/teams/${team.id}`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(201);
     });
 });
