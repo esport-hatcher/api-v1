@@ -8,7 +8,7 @@ export const requireAdmin = (
     _res: Response,
     next: NextFunction
 ) => {
-    if (req.user.superAdmin) {
+    if (req.owner.superAdmin) {
         return next(); // user is admin so go the next function / middleware
     }
     // USER NOT ADMIN

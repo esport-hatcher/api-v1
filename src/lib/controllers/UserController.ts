@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import { compare } from 'bcryptjs';
 import { omit } from 'lodash';
 import { IRequest } from '@typings';
-import { User, Team } from '@models';
+import { User } from '@models';
 import {
     logRequest,
     notFoundError,
@@ -77,7 +77,9 @@ class UserController extends ModelController<typeof User> {
         try {
             return res
                 .status(200)
-                .json(omit(req.user.get({ plain: true }), ...FORBIDDEN_FIELDS));
+                .json(
+                    omit(req.owner.get({ plain: true }), ...FORBIDDEN_FIELDS)
+                );
         } catch (err) {
             return next(err);
         }
@@ -89,13 +91,9 @@ class UserController extends ModelController<typeof User> {
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const { userId } = req.params;
+        const { user } = req;
 
         try {
-            const user = await User.findByPk(userId);
-            if (!user) {
-                return next(notFoundError('User'));
-            }
             user.username = req.body.username || user.username;
             user.avatarUrl = req.body.avatarUrl || user.avatarUrl;
             user.country = req.body.country || user.country;
@@ -130,18 +128,13 @@ class UserController extends ModelController<typeof User> {
     @logRequest
     async userJoinTeam(req: IRequest, res: Response, next: NextFunction) {
         try {
-            const { user } = req;
-            const { teamId } = req.params;
+            const { owner, team } = req;
             const { role } = req.body;
 
-            const team = await Team.findByPk(teamId);
-            if (!team) {
-                return next(notFoundError('Team'));
-            }
             const users = await team.getUsers();
-            const userInTeam = users.find(userTeam => userTeam.id === user.id);
+            const userInTeam = users.find(userTeam => userTeam.id === owner.id);
             if (!userInTeam) {
-                team.addUser(user, {
+                team.addUser(owner, {
                     through: {
                         role: role,
                         teamStatus: false,

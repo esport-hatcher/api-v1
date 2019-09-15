@@ -3,8 +3,9 @@ import * as cors from 'cors';
 import * as express from 'express';
 
 // Routes
-import { userRoutes, jobRoutes, rootRoutes, teamsRoutes } from '@routes';
+import { userRoutes, jobRoutes, teamsRoutes } from '@routes';
 import { IError, IRequest } from '@typings';
+
 // Express app creation
 const app = express();
 
@@ -13,7 +14,7 @@ app.use(cors());
 app.use(json());
 
 // Redirect every url beginning by auth to authRoutes
-app.use(rootRoutes);
+
 app.use('/users', userRoutes);
 app.use('/teams', teamsRoutes);
 app.use('/jobs', jobRoutes);

@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { logRequest, unauthorizedError, notFoundError } from '@utils';
-import { Team, User } from '@models';
+import { logRequest, unauthorizedError } from '@utils';
+import { Team } from '@models';
 import { ModelController } from '@controllers';
 
 class TeamsController extends ModelController<typeof Team> {
@@ -16,7 +16,7 @@ class TeamsController extends ModelController<typeof Team> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { user } = req;
+            const { owner } = req;
             const { game, name, region } = req.body;
 
             const newTeam = await Team.create({
@@ -24,7 +24,7 @@ class TeamsController extends ModelController<typeof Team> {
                 region,
                 name,
             });
-            await newTeam.addUser(user, {
+            await newTeam.addUser(owner, {
                 through: {
                     role: 'Owner',
                     playerStatus: true,
@@ -44,19 +44,10 @@ class TeamsController extends ModelController<typeof Team> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { user } = req;
-            const { userId, teamId } = req.params;
+            const { owner, user, team } = req;
 
-            const team = await Team.findByPk(teamId);
-            if (!team) {
-                return next(notFoundError('Team'));
-            }
-            const invitedUser = await User.findByPk(userId);
-            if (!invitedUser) {
-                return next(notFoundError('Invited user'));
-            }
             const users = await team.getUsers();
-            const teamUser = users.find(teamUser => teamUser.id === user.id);
+            const teamUser = users.find(teamUser => teamUser.id === owner.id);
             if (
                 !teamUser ||
                 (teamUser.TeamUser.role !== 'Owner' &&
@@ -64,7 +55,7 @@ class TeamsController extends ModelController<typeof Team> {
             ) {
                 return next(unauthorizedError());
             }
-            team.addUser(invitedUser, {
+            team.addUser(user, {
                 through: {
                     role: req.body.role,
                     teamStatus: true,
@@ -83,12 +74,9 @@ class TeamsController extends ModelController<typeof Team> {
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const { teamId } = req.params;
+        const { team } = req;
+
         try {
-            const team = await Team.findByPk(teamId);
-            if (!team) {
-                return next(notFoundError('Team'));
-            }
             team.name = req.body.username || team.name;
             team.game = req.body.avatarUrl || team.game;
             team.region = req.body.country || team.region;

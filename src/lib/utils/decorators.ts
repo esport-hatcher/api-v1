@@ -32,7 +32,7 @@ export function logRequest(
             console.log('NODE_ENV:', process.env.NODE_ENV);
             // tslint:disable-next-line: no-console
             console.log('Headers:', req.headers);
-            if (req.user) {
+            if (req.owner) {
                 // tslint:disable-next-line: no-console
                 console.log(
                     'Authentified with token',
@@ -42,7 +42,7 @@ export function logRequest(
                 console.log(
                     'As user:',
                     pick(
-                        req.user.get({ plain: true }),
+                        req.owner.get({ plain: true }),
                         'id',
                         'username',
                         'email',

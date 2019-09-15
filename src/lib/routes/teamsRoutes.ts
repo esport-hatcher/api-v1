@@ -7,16 +7,21 @@ import {
     requireValidation,
 } from '@middlewares';
 import { teamController } from '@controllers';
+import { userResolver, teamResolver } from './resolvers';
 
 const teamsRoutes = Router();
+
+teamsRoutes.use(requireAuth);
+
+teamsRoutes.param('userId', userResolver);
+teamsRoutes.param('teamId', teamResolver);
 
 /**
  * Get routes
  */
 
-teamsRoutes.get('/', requireAuth, requireAdmin, teamController.findAll);
-
-teamsRoutes.get('/:teamId', requireAuth, teamController.findById);
+teamsRoutes.get('/', requireAdmin, teamController.findAll);
+teamsRoutes.get('/:teamId', teamController.findById);
 
 /**
  * Post routes
@@ -36,7 +41,6 @@ teamsRoutes.post(
             .isLength({ min: 2, max: 2 }),
     ],
     requireValidation,
-    requireAuth,
     teamController.create
 );
 
@@ -48,28 +52,17 @@ teamsRoutes.post(
             .withMessage('Please enter a role'),
     ],
     requireValidation,
-    requireAuth,
     teamController.addTeamUser
 );
 
 /**
  * Patch routes
  */
-teamsRoutes.patch(
-    '/:teamId',
-    requireAuth,
-    requireScopeOrAdmin,
-    teamController.updateById
-);
+teamsRoutes.patch('/:teamId', requireScopeOrAdmin, teamController.updateById);
 
 /**
  * Delete routes
  */
-teamsRoutes.delete(
-    '/:teamId',
-    requireAuth,
-    requireScopeOrAdmin,
-    teamController.deleteById
-);
+teamsRoutes.delete('/:teamId', requireScopeOrAdmin, teamController.deleteById);
 
 export { teamsRoutes };
