@@ -135,11 +135,17 @@ class UserController extends ModelController<typeof User> {
             const { role } = req.body;
 
             const team = await Team.findByPk(teamId);
+            /**
+             * Check if the team exists
+             */
             if (!team) {
                 return next(notFoundError('Team'));
             }
             const users = await team.getUsers();
             const userInTeam = users.find(userTeam => userTeam.id === user.id);
+            /**
+             * Check if the team the user wants to join hadn't already invited him
+             */
             if (!userInTeam) {
                 team.addUser(user, {
                     through: {
@@ -150,6 +156,9 @@ class UserController extends ModelController<typeof User> {
                 });
                 return res.sendStatus(201);
             }
+            /**
+             * If the team did invite him, it accept the invitation
+             */
             await userInTeam.TeamUser.update({ playerStatus: true });
             return res.sendStatus(201);
         } catch (err) {
