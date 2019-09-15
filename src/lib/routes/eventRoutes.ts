@@ -9,7 +9,7 @@ import {
 } from '@middlewares';
 import { eventController } from '@controllers';
 
-const eventRoutes = Router();
+const eventRoutes = Router({ mergeParams: true });
 
 eventRoutes.post(
     '/',
