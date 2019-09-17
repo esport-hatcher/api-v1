@@ -98,6 +98,8 @@ class UserController extends ModelController<typeof User> {
             user.avatarUrl = req.body.avatarUrl || user.avatarUrl;
             user.country = req.body.country || user.country;
             user.city = req.body.city || user.city;
+            user.firstName = req.body.firstName || user.firstName;
+            user.lastName = req.body.lastName || user.lastName;
             user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
             await user.save();
             return res.sendStatus(200);
