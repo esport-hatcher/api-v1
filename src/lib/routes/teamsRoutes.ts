@@ -1,5 +1,5 @@
-import { Router } from 'express';
 import { body } from 'express-validator/check';
+import { BaseRouter } from '@services/router';
 import {
     requireAuth,
     requireAdmin,
@@ -9,15 +9,16 @@ import {
 } from '@middlewares';
 import { teamController } from '@controllers';
 
-const teamsRoutes = Router();
+const teamsRoutes = BaseRouter();
+
+teamsRoutes.use(requireAuth);
 
 /**
  * Get routes
  */
 
-teamsRoutes.get('/', requireAuth, requireAdmin, teamController.findAll);
-
-teamsRoutes.get('/:teamId', requireAuth, teamController.findById);
+teamsRoutes.get('/', requireAdmin, teamController.findAll);
+teamsRoutes.get('/:teamId', teamController.findById);
 
 /**
  * Post routes
@@ -37,7 +38,6 @@ teamsRoutes.post(
             .isLength({ min: 2, max: 2 }),
     ],
     requireValidation,
-    requireAuth,
     teamController.create
 );
 
@@ -49,7 +49,6 @@ teamsRoutes.post(
             .withMessage('Please enter a role'),
     ],
     requireValidation,
-    requireAuth,
     requireOwnerOrAdminTeam,
     teamController.addTeamUser
 );
@@ -57,21 +56,11 @@ teamsRoutes.post(
 /**
  * Patch routes
  */
-teamsRoutes.patch(
-    '/:teamId',
-    requireAuth,
-    requireScopeOrAdmin,
-    teamController.updateById
-);
+teamsRoutes.patch('/:teamId', requireScopeOrAdmin, teamController.updateById);
 
 /**
  * Delete routes
  */
-teamsRoutes.delete(
-    '/:teamId',
-    requireAuth,
-    requireScopeOrAdmin,
-    teamController.deleteById
-);
+teamsRoutes.delete('/:teamId', requireScopeOrAdmin, teamController.deleteById);
 
 export { teamsRoutes };

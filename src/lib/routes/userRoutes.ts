@@ -1,5 +1,5 @@
-import { Router } from 'express';
 import { body } from 'express-validator/check';
+import { BaseRouter } from '@services/router';
 import { userController } from '@controllers';
 import {
     requireValidation,
@@ -7,7 +7,7 @@ import {
     requireAuth,
 } from '@middlewares';
 
-const userRoutes = Router();
+const userRoutes = BaseRouter();
 
 /**
  * Get routes

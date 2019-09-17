@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { logRequest, notFoundError } from '@utils';
-import { Event, Team } from '@models';
+import { logRequest } from '@utils';
+import { Event } from '@models';
 import { ModelController } from '@controllers';
 
 class EventController extends ModelController<typeof Event> {
@@ -16,13 +16,9 @@ class EventController extends ModelController<typeof Event> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { teamId } = req.params;
+            const { team } = req;
             const { title, description, place, dateBegin, dateEnd } = req.body;
 
-            const team = await Team.findByPk(teamId);
-            if (!team) {
-                return next(notFoundError('Team'));
-            }
             const newEvent = await team.createEvent({
                 title,
                 description,
@@ -38,12 +34,8 @@ class EventController extends ModelController<typeof Event> {
 
     @logRequest
     async updateById(req: IRequest, res: Response, next: NextFunction) {
-        const { eventId } = req.params;
+        const { event } = req;
         try {
-            const event = await Event.findByPk(eventId);
-            if (!event) {
-                return next(notFoundError('Event'));
-            }
             event.title = req.body.title || event.title;
             event.description = req.body.description || event.description;
             event.place = req.body.place || event.place;

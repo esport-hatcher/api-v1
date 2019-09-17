@@ -1,7 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { unauthorizedError, notFoundError } from '@utils';
-import { Team } from '@models';
+import { unauthorizedError } from '@utils';
 
 export const requireOwnerOrAdminTeam = async (
     req: IRequest,
@@ -10,19 +9,18 @@ export const requireOwnerOrAdminTeam = async (
     next: NextFunction
 ) => {
     try {
-        const { user } = req;
-        const { teamId } = req.params;
-
-        const team = await Team.findByPk(teamId);
-        if (!team) {
-            return next(notFoundError('Team'));
-        }
-        const users = await team.getUsers();
-        const teamUser = users.find(teamUser => teamUser.id === user.id);
+        const { owner, team } = req;
+        const teamUsers = await team.getUsers();
+        const userRequest = teamUsers.find(
+            userRequest => userRequest.id === owner.id
+        );
+        /**
+         * Check if the userRequest has the permission to invite someone
+         */
         if (
-            !teamUser ||
-            (teamUser.TeamUser.role !== 'Owner' &&
-                teamUser.TeamUser.role !== 'Admin')
+            !userRequest ||
+            (userRequest.TeamUser.role !== 'Owner' &&
+                userRequest.TeamUser.role !== 'Admin')
         ) {
             return next(unauthorizedError());
         }

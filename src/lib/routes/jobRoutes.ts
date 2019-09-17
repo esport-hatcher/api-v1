@@ -1,8 +1,8 @@
-import { Router } from 'express';
+import { BaseRouter } from '@services/router';
 import { seeder } from '@controllers';
 import { requireStagingOrDevEnv } from '@middlewares';
 
-const jobRoutes: Router = Router();
+const jobRoutes = BaseRouter();
 
 jobRoutes.get('/seeders', requireStagingOrDevEnv, seeder);
 

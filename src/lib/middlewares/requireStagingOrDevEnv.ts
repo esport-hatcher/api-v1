@@ -8,9 +8,9 @@ export const requireStagingOrDevEnv = (
     _res: Response,
     next: NextFunction
 ) => {
-    const { user } = req;
+    const { owner } = req;
 
-    if (!user || !user.superAdmin) {
+    if (!owner || !owner.superAdmin) {
         if (
             process.env.NODE_ENV !== 'DEV' &&
             process.env.NODE_ENV !== 'staging'

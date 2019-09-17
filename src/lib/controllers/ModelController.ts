@@ -2,7 +2,7 @@ import { omit, fromPairs, map } from 'lodash';
 import { Op, Model } from 'sequelize';
 import { NextFunction, Response } from 'express';
 import { IRequest } from '@typings';
-import { notFoundError, logRequest } from '@utils';
+import { logRequest } from '@utils';
 import { FORBIDDEN_FIELDS, RECORDS_PER_PAGE } from '@config';
 
 /**
@@ -70,17 +70,12 @@ export abstract class ModelController<
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const id = req.params[`${this.modelName}Id`];
+        const instance = req[`${this.modelName}`];
 
         try {
-            const record = await this.model.findByPk(id);
-
-            if (!record) {
-                return next(notFoundError(this.modelName));
-            }
             return res
                 .status(200)
-                .json(omit(record.get({ plain: true }), ...FORBIDDEN_FIELDS));
+                .json(omit(instance.get({ plain: true }), ...FORBIDDEN_FIELDS));
         } catch (err) {
             return next(err);
         }
@@ -92,14 +87,10 @@ export abstract class ModelController<
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const id = req.params[`${this.modelName}Id`];
+        const instance = req[`${this.modelName}`];
 
         try {
-            const record = await this.model.findByPk(id);
-            if (!record) {
-                return next(notFoundError(this.modelName));
-            }
-            await record.destroy();
+            await instance.destroy();
             return res.sendStatus(200);
         } catch (err) {
             return next(err);

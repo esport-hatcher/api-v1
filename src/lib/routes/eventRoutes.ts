@@ -1,5 +1,5 @@
-import { Router } from 'express';
 import { body } from 'express-validator/check';
+import { BaseRouter } from '@services/router';
 import {
     requireAuth,
     requireAdmin,
@@ -9,7 +9,20 @@ import {
 } from '@middlewares';
 import { eventController } from '@controllers';
 
-const eventRoutes = Router({ mergeParams: true });
+const eventRoutes = BaseRouter();
+
+eventRoutes.use(requireAuth);
+
+/**
+ * Get routes
+ */
+
+eventRoutes.get('/', requireAdmin, eventController.findAll);
+eventRoutes.get('/:eventId', eventController.findById);
+
+/**
+ * Post routes
+ */
 
 eventRoutes.post(
     '/',
@@ -28,26 +41,24 @@ eventRoutes.post(
         body('dateEnd').trim(),
     ],
     requireValidation,
-    requireAuth,
     requireOwnerOrAdminTeam,
     eventController.create
 );
 
-eventRoutes.get('/', requireAuth, requireAdmin, eventController.findAll);
-eventRoutes.get('/:eventId', requireAuth, eventController.findById);
+/**
+ * Patch routes
+ */
+
+eventRoutes.patch('/:eventId', requireScopeOrAdmin, eventController.updateById);
+
+/**
+ * Delete routes
+ */
 
 eventRoutes.delete(
     '/:eventId',
-    requireAuth,
     requireScopeOrAdmin,
     eventController.deleteById
-);
-
-eventRoutes.patch(
-    '/:eventId',
-    requireAuth,
-    requireScopeOrAdmin,
-    eventController.updateById
 );
 
 export { eventRoutes };
