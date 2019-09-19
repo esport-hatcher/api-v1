@@ -22,8 +22,8 @@ export const conflictError = (msg?: string) => {
     return error;
 };
 
-export const validationError = (errors: Result, msg?: string) => {
-    const error: IError = new Error(msg || 'Validation failed');
+export const unprocessableEntity = (errors: Result, msg?: string) => {
+    const error: IError = new Error(msg || 'Unprocessable entity');
     error.statusCode = 422;
     error.data = errors.array();
     return error;
