@@ -157,6 +157,37 @@ class UserController extends ModelController<typeof User> {
             return next(err);
         }
     }
+
+    @logRequest
+    async userQuitTeam(req: IRequest, res: Response, next: NextFunction) {
+        try {
+            const { owner, team } = req;
+
+            /**
+             * Check if the team the user wants to quit exists
+             */
+            if (!team) {
+                return res.sendStatus(422);
+            }
+            const teamUsers = await team.getUsers();
+            const userInTeam = teamUsers.find(
+                userTeam => userTeam.id === owner.id
+            );
+            /**
+             * Check if the user is in the team he wants to quit
+             */
+            if (!userInTeam) {
+                return res.sendStatus(422);
+            }
+            /**
+             * If the user is in the team he wants to quit, quit it
+             */
+            await userInTeam.TeamUser.destroy();
+            return res.sendStatus(200);
+        } catch (err) {
+            return next(err);
+        }
+    }
 }
 
 export const userController = new UserController();

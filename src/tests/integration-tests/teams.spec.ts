@@ -245,3 +245,89 @@ describe('When a user try to join a team', () => {
         expect(res.status).toBe(201);
     });
 });
+describe('When a user try to quit a team', () => {
+    let user: User;
+    let teamOwner: User;
+    let team;
+
+    beforeAll(async () => {
+        user = await getUser();
+        teamOwner = await getUser();
+        team = await getTeam(teamOwner);
+    });
+
+    void it("should return 422 if the user isn't in any team", async () => {
+        const res = await request(app)
+            .post(`/users/${user.id}/teams/${team.id}/quit`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(422);
+    });
+
+    void it('should return 200 when a user quit a team', async () => {
+        /**
+         * teamOwner requesting user to join the team
+         */
+        await request(app)
+            .post(`/teams/${team.id}/members/${user.id}`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${teamOwner.getAccessToken()}`);
+        /**
+         * user accepting teamOwner request
+         */
+        await request(app)
+            .post(`/users/${user.id}/teams/${team.id}`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+
+        const res = await request(app)
+            .post(`/users/${user.id}/teams/${team.id}/quit`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(200);
+    });
+
+    void it("should return 404 if the team doesn't exist", async () => {
+        /**
+         * teamOwner requesting user to join the team
+         */
+        await request(app)
+            .post(`/teams/${team.id}/members/${user.id}`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${teamOwner.getAccessToken()}`);
+        /**
+         * user accepting teamOwner request
+         */
+        await request(app)
+            .post(`/users/${user.id}/teams/${team.id}`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+
+        const res = await request(app)
+            .post(`/users/${user.id}/teams/42/quit`)
+            .send({
+                role: 'Admin',
+            })
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(404);
+    });
+});

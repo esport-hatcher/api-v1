@@ -75,6 +75,18 @@ userRoutes.post(
     userController.userJoinTeam
 );
 
+userRoutes.post(
+    '/:userId/teams/:teamId/quit',
+    [
+        body('role')
+            .trim()
+            .withMessage('Please enter a role'),
+    ],
+    requireValidation,
+    requireAuth,
+    userController.userQuitTeam
+);
+
 /**
  * Patch routes
  */
