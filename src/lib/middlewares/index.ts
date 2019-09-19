@@ -3,3 +3,4 @@ export * from './requireScopeOrAdmin';
 export * from './requireValidation';
 export * from './requireAdmin';
 export * from './requireStagingOrDevEnv';
+export * from './requireOwnerOrAdminTeam';

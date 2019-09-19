@@ -6,8 +6,9 @@ import {
     phone,
     name,
     random,
+    date,
 } from 'faker';
-import { User, IUserProps, Team, ITeamProps } from '@models';
+import { User, IUserProps, Team, ITeamProps, IEventProps } from '@models';
 
 export const getRandomUserProps = (superAdmin: boolean = false): IUserProps => {
     const firstName = name.firstName();
@@ -56,6 +57,16 @@ export const getRandomTeamUser = async (teams: Team[], users: User[]) => {
             },
         }
     );
+};
+
+export const getRandomEventProps = (): IEventProps => {
+    return {
+        title: company.companyName(),
+        description: company.catchPhraseDescriptor(),
+        place: address.city(),
+        dateBegin: date.past(),
+        dateEnd: date.future(),
+    };
 };
 
 export const getUser = async (superAdmin: boolean = false): Promise<User> => {

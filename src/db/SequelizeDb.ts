@@ -6,6 +6,8 @@ import {
     initUser,
     Team,
     initTeam,
+    Event,
+    initEvent,
     TeamUser,
     initTeamUser,
 } from '@models';
@@ -64,6 +66,7 @@ class SequelizeDb {
         logger('Database', 'Initializing models');
         initUser(db);
         initTeam(db);
+        initEvent(db);
         initTeamUser(db);
     }
 
@@ -78,6 +81,12 @@ class SequelizeDb {
         logger('Database', 'Initializing relations');
         User.belongsToMany(Team, { through: TeamUser });
         Team.belongsToMany(User, { through: TeamUser });
+        Event.belongsTo(Team, {
+            constraints: true,
+            onDelete: 'cascade',
+            hooks: true,
+        });
+        Team.hasMany(Event);
     }
 
     public async close(test: ConstrainBoolean = false) {

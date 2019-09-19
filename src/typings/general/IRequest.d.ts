@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { User, Team } from '@models';
+import { User, Team, Event } from '@models';
 
 export interface IRequest extends Request {
     /**
@@ -14,6 +14,10 @@ export interface IRequest extends Request {
      * If their is a :userId in the route making the request, the user will be stored in this variable
      */
     user: User;
+    /**
+     * If their is a :eventId in the route making the request, the user will be stored in this variable
+     */
+    event: Event;
     // tslint:disable-next-line: no-any
     body: { [key: string]: any | undefined };
 }
