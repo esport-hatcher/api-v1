@@ -3,6 +3,9 @@ import { IRequest } from '@typings';
 import { logRequest } from '@utils';
 import { Event } from '@models';
 import { ModelController } from '@controllers';
+import { omit, fromPairs, map } from 'lodash';
+import { FORBIDDEN_FIELDS, RECORDS_PER_PAGE } from '@config';
+import { Op } from 'sequelize';
 
 class EventController extends ModelController<typeof Event> {
     constructor() {
@@ -27,6 +30,41 @@ class EventController extends ModelController<typeof Event> {
                 dateEnd,
             });
             return res.status(201).json(newEvent);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async findAll(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        const { team } = req;
+        const page = req.query.page || 1;
+        const queryWithoutPage = omit(req.query, 'page');
+
+        const filtersArray = Object.entries(queryWithoutPage).map(
+            ([key, value]) => {
+                return {
+                    key,
+                    operator: { [Op.like]: `${value}%` },
+                };
+            }
+        );
+        const filters = fromPairs(map(filtersArray, i => [i.key, i.operator]));
+
+        try {
+            const records = await Event.findAll({
+                limit: RECORDS_PER_PAGE,
+                offset: (page - 1) * RECORDS_PER_PAGE,
+                where: { teamId: team.id, ...filters },
+                raw: true,
+            });
+            return res
+                .status(200)
+                .json(records.map(record => omit(record, ...FORBIDDEN_FIELDS)));
         } catch (err) {
             return next(err);
         }
