@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { logRequest, unauthorizedError } from '@utils';
+import { logRequest } from '@utils';
 import { Team } from '@models';
 import { ModelController } from '@controllers';
 
@@ -44,24 +44,8 @@ class TeamsController extends ModelController<typeof Team> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { owner, user, team } = req;
-
+            const { user, team } = req;
             const teamUsers = await team.getUsers();
-
-            const userRequest = teamUsers.find(
-                userRequest => userRequest.id === owner.id
-            );
-            /**
-             * Check if the userRequest has the permission to invite someone
-             */
-            if (
-                !userRequest ||
-                (userRequest.TeamUser.role !== 'Owner' &&
-                    userRequest.TeamUser.role !== 'Admin')
-            ) {
-                return next(unauthorizedError());
-            }
-
             /**
              * Check if the invited user has already request to join the team
              */

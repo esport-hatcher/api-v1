@@ -4,6 +4,7 @@ import {
     BelongsToManyAddAssociationMixin,
     BelongsToManyGetAssociationsMixin,
     Sequelize,
+    BelongsToCreateAssociationMixin,
 } from 'sequelize';
 import { User, TeamUser } from '@models';
 
@@ -26,6 +27,7 @@ export class Team extends Model {
 
     public addUser!: BelongsToManyAddAssociationMixin<User, TeamUser>;
     public getUsers!: BelongsToManyGetAssociationsMixin<User>;
+    public createEvent!: BelongsToCreateAssociationMixin<Event>;
 }
 
 export const initTeam = (db: Sequelize) => {
