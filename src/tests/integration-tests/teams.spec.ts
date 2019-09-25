@@ -256,7 +256,7 @@ describe('When a user try to quit a team', () => {
         team = await getTeam(teamOwner);
     });
 
-    void it("should return 422 if the user isn't in any team", async () => {
+    void it("should return 404 if the user isn't in any team", async () => {
         const res = await request(app)
             .post(`/users/${user.id}/teams/${team.id}/quit`)
             .send({
@@ -264,7 +264,7 @@ describe('When a user try to quit a team', () => {
             })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
-        expect(res.status).toBe(422);
+        expect(res.status).toBe(404);
     });
 
     void it('should return 200 when a user quit a team', async () => {

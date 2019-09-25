@@ -169,7 +169,7 @@ class UserController extends ModelController<typeof User> {
              * Check if the team the user wants to quit exists
              */
             if (!team) {
-                return res.sendStatus(422);
+                return res.sendStatus(404);
             }
             const teamUsers = await team.getUsers();
             const userInTeam = teamUsers.find(
@@ -179,7 +179,7 @@ class UserController extends ModelController<typeof User> {
              * Check if the user is in the team he wants to quit
              */
             if (!userInTeam) {
-                return res.sendStatus(422);
+                return res.sendStatus(404);
             }
             /**
              * If the user is in the team he wants to quit, quit it
