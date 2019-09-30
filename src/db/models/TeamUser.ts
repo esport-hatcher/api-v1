@@ -30,6 +30,7 @@ export const initTeamUser = (db: Sequelize) => {
             role: {
                 type: ENUM('Admin', 'Staff', 'Player', 'Owner'),
                 allowNull: false,
+                defaultValue: 'Player',
             },
         },
         {
