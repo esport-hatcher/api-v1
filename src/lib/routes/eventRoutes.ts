@@ -17,8 +17,13 @@ eventRoutes.use(requireAuth);
  * Get routes
  */
 
-eventRoutes.get('/', requireAdmin, eventController.findAll);
-eventRoutes.get('/:eventId', eventController.findById);
+eventRoutes.get(
+    '/',
+    requireAdmin,
+    requireOwnerOrAdminTeam,
+    eventController.findAll
+);
+eventRoutes.get('/:eventId', requireOwnerOrAdminTeam, eventController.findById);
 
 /**
  * Post routes
@@ -49,7 +54,12 @@ eventRoutes.post(
  * Patch routes
  */
 
-eventRoutes.patch('/:eventId', requireScopeOrAdmin, eventController.updateById);
+eventRoutes.patch(
+    '/:eventId',
+    requireScopeOrAdmin,
+    requireOwnerOrAdminTeam,
+    eventController.updateById
+);
 
 /**
  * Delete routes
@@ -58,6 +68,7 @@ eventRoutes.patch('/:eventId', requireScopeOrAdmin, eventController.updateById);
 eventRoutes.delete(
     '/:eventId',
     requireScopeOrAdmin,
+    requireOwnerOrAdminTeam,
     eventController.deleteById
 );
 
