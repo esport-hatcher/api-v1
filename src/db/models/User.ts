@@ -51,7 +51,6 @@ export class User extends Model {
     public readonly updatedAt!: Date;
     public getTeams!: BelongsToManyGetAssociationsMixin<Team>;
 
-    // tslint:disable-next-line: variable-name
     public TeamUser: TeamUser;
 
     getAccessToken() {

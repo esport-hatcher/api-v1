@@ -7,7 +7,7 @@ import { pick } from 'lodash';
 
 // tslint:disable-next-line: only-arrow-functions
 export function logRequest(
-    // tslint:disable-next-line: variable-name tslint:disable-next-line: no-any
+    // tslint:disable-next-line: no-any
     _target: any,
     key: string,
     descriptor: PropertyDescriptor

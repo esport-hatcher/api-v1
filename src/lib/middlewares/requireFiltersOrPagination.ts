@@ -5,7 +5,6 @@ import { Op } from 'sequelize';
 
 export const requireFiltersOrPagination = async (
     req: IRequest,
-    // tslint:disable-next-line: variable-name
     _res: Response,
     next: NextFunction
 ) => {

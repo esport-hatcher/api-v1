@@ -4,7 +4,6 @@ import { unauthorizedError } from '@utils';
 
 export const requireStagingOrDevEnv = (
     req: IRequest,
-    // tslint:disable-next-line: variable-name
     _res: Response,
     next: NextFunction
 ) => {
