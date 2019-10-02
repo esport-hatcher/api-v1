@@ -4,7 +4,6 @@ import { unauthorizedError, notFoundError } from '@utils';
 
 export const requireScopeOrAdmin = (
     req: IRequest,
-    // tslint:disable-next-line: variable-name
     _res: Response,
     next: NextFunction
 ) => {
