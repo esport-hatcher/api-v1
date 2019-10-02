@@ -31,7 +31,6 @@
         "promise-function-async": true,
         "prefer-readonly": true,
         "switch-default": true,
-        "variable-name": true,
         "return-undefined": true
     },
     "jsRules": {

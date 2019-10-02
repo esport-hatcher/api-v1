@@ -60,7 +60,11 @@ class EventController extends ModelController<typeof Event> {
     }
 
     @logRequest
-    async updateById(req: IRequest, res: Response, next: NextFunction) {
+    async updateById(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
         const { event } = req;
         try {
             event.title = req.body.title || event.title;
