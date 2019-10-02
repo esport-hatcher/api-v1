@@ -1,5 +1,5 @@
-import { omit, fromPairs, map } from 'lodash';
-import { Op, Model } from 'sequelize';
+import { omit } from 'lodash';
+import { Model } from 'sequelize';
 import { NextFunction, Response } from 'express';
 import { IRequest } from '@typings';
 import { logRequest } from '@utils';
@@ -35,18 +35,8 @@ export abstract class ModelController<
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const page = req.query.page || 1;
-        const queryWithoutPage = omit(req.query, 'page');
-
-        const filtersArray = Object.entries(queryWithoutPage).map(
-            ([key, value]) => {
-                return {
-                    key,
-                    operator: { [Op.like]: `${value}%` },
-                };
-            }
-        );
-        const filters = fromPairs(map(filtersArray, i => [i.key, i.operator]));
+        const page = req.pagination;
+        const filters = req.filters;
 
         try {
             const records = await this.model.findAll({
