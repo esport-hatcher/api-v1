@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { unauthorizedError } from '@utils';
+import { unauthorizedError, notFoundError } from '@utils';
 
 export const requireScopeOrAdmin = (
     req: IRequest,
@@ -10,6 +10,9 @@ export const requireScopeOrAdmin = (
 ) => {
     const { owner, user } = req;
 
+    if (!user) {
+        return next(notFoundError('User'));
+    }
     if (!owner.superAdmin && owner.id !== user.id) {
         return next(unauthorizedError());
     }

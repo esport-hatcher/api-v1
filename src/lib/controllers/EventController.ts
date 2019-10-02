@@ -3,9 +3,8 @@ import { IRequest } from '@typings';
 import { logRequest } from '@utils';
 import { Event } from '@models';
 import { ModelController } from '@controllers';
-import { omit, fromPairs, map } from 'lodash';
+import { omit } from 'lodash';
 import { FORBIDDEN_FIELDS, RECORDS_PER_PAGE } from '@config';
-import { Op } from 'sequelize';
 
 class EventController extends ModelController<typeof Event> {
     constructor() {
@@ -42,18 +41,8 @@ class EventController extends ModelController<typeof Event> {
         next: NextFunction
     ): Promise<void | Response> {
         const { team } = req;
-        const page = req.query.page || 1;
-        const queryWithoutPage = omit(req.query, 'page');
-
-        const filtersArray = Object.entries(queryWithoutPage).map(
-            ([key, value]) => {
-                return {
-                    key,
-                    operator: { [Op.like]: `${value}%` },
-                };
-            }
-        );
-        const filters = fromPairs(map(filtersArray, i => [i.key, i.operator]));
+        const page = req.pagination;
+        const filters = req.filters;
 
         try {
             const records = await Event.findAll({
