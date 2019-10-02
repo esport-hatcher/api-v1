@@ -6,6 +6,7 @@ import {
     requireScopeOrAdmin,
     requireValidation,
     requireOwnerOrAdminTeam,
+    requireFiltersOrPagination,
 } from '@middlewares';
 import { eventController } from '@controllers';
 
@@ -19,11 +20,12 @@ eventRoutes.use(requireAuth);
 
 eventRoutes.get(
     '/',
-    requireAdmin,
+    requireFiltersOrPagination,
     requireOwnerOrAdminTeam,
     eventController.findAll
 );
-eventRoutes.get('/:eventId', requireOwnerOrAdminTeam, eventController.findById);
+
+eventRoutes.get('/:eventId', eventController.findById);
 
 /**
  * Post routes
