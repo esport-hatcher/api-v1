@@ -72,19 +72,13 @@ userRoutes.post(
     ],
     requireValidation,
     requireAuth,
-    userController.userJoinTeam
+    userController.joinTeam
 );
 
-userRoutes.post(
-    '/:userId/teams/:teamId/quit',
-    [
-        body('role')
-            .trim()
-            .withMessage('Please enter a role'),
-    ],
-    requireValidation,
+userRoutes.delete(
+    '/:userId/teams/:teamId/',
     requireAuth,
-    userController.userQuitTeam
+    userController.quitTeam
 );
 
 /**

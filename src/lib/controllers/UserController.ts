@@ -128,7 +128,7 @@ class UserController extends ModelController<typeof User> {
     }
 
     @logRequest
-    async userJoinTeam(req: IRequest, res: Response, next: NextFunction) {
+    async joinTeam(req: IRequest, res: Response, next: NextFunction) {
         try {
             const { owner, team } = req;
             const { role } = req.body;
@@ -161,7 +161,7 @@ class UserController extends ModelController<typeof User> {
     }
 
     @logRequest
-    async userQuitTeam(req: IRequest, res: Response, next: NextFunction) {
+    async quitTeam(req: IRequest, res: Response, next: NextFunction) {
         try {
             const { owner, team } = req;
 

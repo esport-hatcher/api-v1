@@ -257,8 +257,11 @@ describe('When a user try to quit a team', () => {
     });
 
     void it("should return 404 if the user isn't in any team", async () => {
+        /**
+         * user trying to quit a team without being in one.
+         */
         const res = await request(app)
-            .post(`/users/${user.id}/teams/${team.id}/quit`)
+            .delete(`/users/${user.id}/teams/${team.id}`)
             .send({
                 role: 'Admin',
             })
@@ -269,7 +272,7 @@ describe('When a user try to quit a team', () => {
 
     void it('should return 200 when a user quit a team', async () => {
         /**
-         * teamOwner requesting user to join the team
+         * teamOwner requesting user to join the team.
          */
         await request(app)
             .post(`/teams/${team.id}/members/${user.id}`)
@@ -279,7 +282,7 @@ describe('When a user try to quit a team', () => {
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${teamOwner.getAccessToken()}`);
         /**
-         * user accepting teamOwner request
+         * user accepting teamOwner request.
          */
         await request(app)
             .post(`/users/${user.id}/teams/${team.id}`)
@@ -288,9 +291,11 @@ describe('When a user try to quit a team', () => {
             })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
-
+        /**
+         * user quitting a team.
+         */
         const res = await request(app)
-            .post(`/users/${user.id}/teams/${team.id}/quit`)
+            .delete(`/users/${user.id}/teams/${team.id}`)
             .send({
                 role: 'Admin',
             })
@@ -301,7 +306,7 @@ describe('When a user try to quit a team', () => {
 
     void it("should return 404 if the team doesn't exist", async () => {
         /**
-         * teamOwner requesting user to join the team
+         * teamOwner requesting user to join the team.
          */
         await request(app)
             .post(`/teams/${team.id}/members/${user.id}`)
@@ -311,7 +316,7 @@ describe('When a user try to quit a team', () => {
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${teamOwner.getAccessToken()}`);
         /**
-         * user accepting teamOwner request
+         * user accepting teamOwner request.
          */
         await request(app)
             .post(`/users/${user.id}/teams/${team.id}`)
@@ -320,9 +325,11 @@ describe('When a user try to quit a team', () => {
             })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
-
+        /**
+         * User trying to quit a team that doesn't exist.
+         */
         const res = await request(app)
-            .post(`/users/${user.id}/teams/42/quit`)
+            .delete(`/users/${user.id}/teams/42/`)
             .send({
                 role: 'Admin',
             })
