@@ -5,6 +5,7 @@ import {
     requireValidation,
     requireScopeOrAdmin,
     requireAuth,
+    requireFiltersOrPagination,
 } from '@middlewares';
 
 const userRoutes = BaseRouter();
@@ -12,7 +13,12 @@ const userRoutes = BaseRouter();
 /**
  * Get routes
  */
-userRoutes.get('/', requireAuth, userController.findAll);
+userRoutes.get(
+    '/',
+    requireAuth,
+    requireFiltersOrPagination,
+    userController.findAll
+);
 
 userRoutes.get('/me', requireAuth, userController.getMe);
 
