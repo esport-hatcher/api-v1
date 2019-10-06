@@ -6,6 +6,7 @@ import {
     requireScopeOrAdmin,
     requireValidation,
     requireOwnerOrAdminTeam,
+    requireFiltersOrPagination,
 } from '@middlewares';
 import { teamController } from '@controllers';
 
@@ -17,9 +18,14 @@ teamsRoutes.use(requireAuth);
  * Get routes
  */
 
-teamsRoutes.get('/', requireAdmin, teamController.findAll);
-
+teamsRoutes.get(
+    '/',
+    requireAdmin,
+    requireFiltersOrPagination,
+    teamController.findAll
+);
 teamsRoutes.get('/:teamId/users', requireAuth, teamController.getTeamUser);
+
 teamsRoutes.get('/:teamId', teamController.findById);
 
 /**

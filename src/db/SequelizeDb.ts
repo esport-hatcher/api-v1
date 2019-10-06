@@ -84,7 +84,6 @@ class SequelizeDb {
         Event.belongsTo(Team, {
             constraints: true,
             onDelete: 'cascade',
-            hooks: true,
         });
         Team.hasMany(Event);
     }
