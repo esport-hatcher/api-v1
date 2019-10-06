@@ -95,6 +95,20 @@ class TeamsController extends ModelController<typeof Team> {
             return next(err);
         }
     }
+    @logRequest
+    async getTeamUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { team } = req;
+            const teamUsers = await team.getUsers();
+            return res.status(200).json(teamUsers);
+        } catch (err) {
+            return next(err);
+        }
+    }
 }
 
 export const teamController = new TeamsController();
