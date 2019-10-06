@@ -2,10 +2,10 @@ import { body } from 'express-validator/check';
 import { BaseRouter } from '@services/router';
 import {
     requireAuth,
-    requireAdmin,
-    requireScopeOrAdmin,
     requireValidation,
     requireOwnerOrAdminTeam,
+    requireFiltersOrPagination,
+    requireTeamMember,
 } from '@middlewares';
 import { eventController } from '@controllers';
 
@@ -17,8 +17,14 @@ eventRoutes.use(requireAuth);
  * Get routes
  */
 
-eventRoutes.get('/', requireAdmin, eventController.findAll);
-eventRoutes.get('/:eventId', eventController.findById);
+eventRoutes.get(
+    '/',
+    requireFiltersOrPagination,
+    requireTeamMember,
+    eventController.findAll
+);
+
+eventRoutes.get('/:eventId', requireTeamMember, eventController.findById);
 
 /**
  * Post routes
@@ -49,7 +55,11 @@ eventRoutes.post(
  * Patch routes
  */
 
-eventRoutes.patch('/:eventId', requireScopeOrAdmin, eventController.updateById);
+eventRoutes.patch(
+    '/:eventId',
+    requireOwnerOrAdminTeam,
+    eventController.updateById
+);
 
 /**
  * Delete routes
@@ -57,7 +67,7 @@ eventRoutes.patch('/:eventId', requireScopeOrAdmin, eventController.updateById);
 
 eventRoutes.delete(
     '/:eventId',
-    requireScopeOrAdmin,
+    requireOwnerOrAdminTeam,
     eventController.deleteById
 );
 
