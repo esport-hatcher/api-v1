@@ -16,6 +16,7 @@ userRoutes.get('/', requireAuth, userController.findAll);
 
 userRoutes.get('/me', requireAuth, userController.getMe);
 
+userRoutes.get('/:userId/teams', requireAuth, userController.getUserTeam);
 userRoutes.get('/:userId', requireAuth, userController.findById);
 
 /**

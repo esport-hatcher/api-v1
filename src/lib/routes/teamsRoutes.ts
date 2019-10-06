@@ -18,6 +18,8 @@ teamsRoutes.use(requireAuth);
  */
 
 teamsRoutes.get('/', requireAdmin, teamController.findAll);
+
+teamsRoutes.get('/:teamId/users', requireAuth, teamController.getTeamUser);
 teamsRoutes.get('/:teamId', teamController.findById);
 
 /**
