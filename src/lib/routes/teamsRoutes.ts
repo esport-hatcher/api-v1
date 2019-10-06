@@ -35,7 +35,7 @@ teamsRoutes.post(
             .isLength({ min: 1 }),
         body('region')
             .trim()
-            .isLength({ min: 2, max: 2 }),
+            .isLength({ min: 2, max: 30 }),
     ],
     requireValidation,
     teamController.create
