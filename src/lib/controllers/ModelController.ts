@@ -37,18 +37,24 @@ export abstract class ModelController<
     ): Promise<void | Response> {
         const page = req.pagination;
         const filters = req.filters;
+        const countMode = req.count;
 
         try {
-            const records = await this.model.findAll({
-                limit: RECORDS_PER_PAGE,
-                offset: (page - 1) * RECORDS_PER_PAGE,
-                where: filters,
-                raw: true,
-            });
-
-            return res
-                .status(200)
-                .json(records.map(record => omit(record, ...FORBIDDEN_FIELDS)));
+            if (!countMode) {
+                const records = await this.model.findAll({
+                    limit: RECORDS_PER_PAGE,
+                    offset: (page - 1) * RECORDS_PER_PAGE,
+                    where: filters,
+                    raw: true,
+                });
+                return res
+                    .status(200)
+                    .json(
+                        records.map(record => omit(record, ...FORBIDDEN_FIELDS))
+                    );
+            }
+            const recordsCount = await this.model.count({ where: filters });
+            return res.status(200).json({ records: recordsCount });
         } catch (err) {
             return next(err);
         }
