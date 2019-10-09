@@ -64,7 +64,6 @@ class TeamsController extends ModelController<typeof Team> {
              */
             team.addUser(user, {
                 through: {
-                    role: req.body.role,
                     teamStatus: true,
                     playerStatus: false,
                 },
