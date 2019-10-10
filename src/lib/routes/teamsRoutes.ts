@@ -51,11 +51,6 @@ teamsRoutes.post(
 
 teamsRoutes.post(
     '/:teamId/members/:userId',
-    [
-        body('role')
-            .trim()
-            .withMessage('Please enter a role'),
-    ],
     requireValidation,
     requireOwnerOrAdminTeam,
     teamController.addTeamUser
