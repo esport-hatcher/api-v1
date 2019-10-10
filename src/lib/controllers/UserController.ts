@@ -159,6 +159,21 @@ class UserController extends ModelController<typeof User> {
             return next(err);
         }
     }
+
+    @logRequest
+    async getUserTeam(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { user } = req;
+            const userTeams = await user.getTeams();
+            return res.status(200).json(userTeams);
+        } catch (err) {
+            return next(err);
+        }
+    }
 }
 
 export const userController = new UserController();

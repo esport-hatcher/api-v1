@@ -24,6 +24,8 @@ teamsRoutes.get(
     requireFiltersOrPagination,
     teamController.findAll
 );
+teamsRoutes.get('/:teamId/users', requireAuth, teamController.getTeamUser);
+
 teamsRoutes.get('/:teamId', teamController.findById);
 
 /**
