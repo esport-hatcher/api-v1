@@ -3,6 +3,7 @@ import { IRequest } from '@typings';
 import { logRequest } from '@utils';
 import { Team } from '@models';
 import { ModelController } from '@controllers';
+import { FORBIDDEN_FIELDS } from '@config';
 
 class TeamsController extends ModelController<typeof Team> {
     constructor() {
@@ -103,7 +104,9 @@ class TeamsController extends ModelController<typeof Team> {
     ): Promise<void | Response> {
         try {
             const { team } = req;
-            const teamUsers = await team.getUsers();
+            const teamUsers = await team.getUsers({
+                attributes: { exclude: FORBIDDEN_FIELDS },
+            });
             return res.status(200).json(teamUsers);
         } catch (err) {
             return next(err);
