@@ -24,6 +24,8 @@ teamsRoutes.get(
     requireFiltersOrPagination,
     teamController.findAll
 );
+teamsRoutes.get('/:teamId/users', requireAuth, teamController.getTeamUser);
+
 teamsRoutes.get('/:teamId', teamController.findById);
 
 /**
@@ -49,11 +51,6 @@ teamsRoutes.post(
 
 teamsRoutes.post(
     '/:teamId/members/:userId',
-    [
-        body('role')
-            .trim()
-            .withMessage('Please enter a role'),
-    ],
     requireValidation,
     requireOwnerOrAdminTeam,
     teamController.addTeamUser

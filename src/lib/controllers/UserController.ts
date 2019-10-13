@@ -8,9 +8,11 @@ import {
     notFoundError,
     unauthorizedError,
     conflictError,
+    unprocessableEntity,
 } from '@utils';
 import { ModelController } from '@controllers';
 import { FORBIDDEN_FIELDS } from '@config';
+import { validationResult } from 'express-validator/check';
 
 class UserController extends ModelController<typeof User> {
     constructor() {
@@ -169,7 +171,7 @@ class UserController extends ModelController<typeof User> {
              * Check if the team the user wants to quit exists
              */
             if (!team) {
-                return res.sendStatus(404);
+                return next(unprocessableEntity('Team does not exist'));
             }
             const teamUsers = await team.getUsers();
             const userInTeam = teamUsers.find(
@@ -179,13 +181,26 @@ class UserController extends ModelController<typeof User> {
              * Check if the user is in the team he wants to quit
              */
             if (!userInTeam) {
-                return res.sendStatus(404);
+                return next(unprocessableEntity("User isn't in that team"));
             }
             /**
              * If the user is in the team he wants to quit, quit it
              */
             await userInTeam.TeamUser.destroy();
             return res.sendStatus(200);
+        } catch (err) {
+            return next(err);
+        }
+    }
+    async getUserTeam(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { user } = req;
+            const userTeams = await user.getTeams();
+            return res.status(200).json(userTeams);
         } catch (err) {
             return next(err);
         }

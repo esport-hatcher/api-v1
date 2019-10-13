@@ -95,9 +95,6 @@ describe('when a TeamUser try invite an another user in a team', () => {
     void it('should return 201 when user invite another user', async () => {
         const res = await request(app)
             .post(`/teams/${team.id}/members/${invitedUser.id}`)
-            .send({
-                role: 'Admin',
-            })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(201);
@@ -106,9 +103,6 @@ describe('when a TeamUser try invite an another user in a team', () => {
     void it('should return 404 when team does not exist', async () => {
         const res = await request(app)
             .post(`/teams/42/members/${invitedUser.id}`)
-            .send({
-                role: 'Admin',
-            })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(404);
@@ -117,9 +111,6 @@ describe('when a TeamUser try invite an another user in a team', () => {
     void it('should return 404 when invited user does not exist', async () => {
         const res = await request(app)
             .post(`/teams/${team.id}/members/42`)
-            .send({
-                role: 'Admin',
-            })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(404);
@@ -128,9 +119,6 @@ describe('when a TeamUser try invite an another user in a team', () => {
     void it('should return 401 when user requesting the invitation is not part of the team', async () => {
         const res = await request(app)
             .post(`/teams/${team.id}/members/${invitedUser.id}`)
-            .send({
-                role: 'Admin',
-            })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
         expect(res.status).toBe(401);
@@ -142,9 +130,6 @@ describe('when a TeamUser try invite an another user in a team', () => {
          */
         await request(app)
             .post(`/teams/${team.id}/members/${invitedUser.id}`)
-            .send({
-                role: 'Player',
-            })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         /**
@@ -156,9 +141,6 @@ describe('when a TeamUser try invite an another user in a team', () => {
          */
         const res = await request(app)
             .post(`/teams/${team.id}/members/${thirdUser.id}`)
-            .send({
-                role: 'Admin',
-            })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
         expect(res.status).toBe(401);
@@ -169,9 +151,6 @@ describe('when a TeamUser try invite an another user in a team', () => {
          */
         await request(app)
             .post(`/users/${invitedUser.id}/teams/${team.id}`)
-            .send({
-                role: 'Admin',
-            })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
         /**
@@ -179,9 +158,6 @@ describe('when a TeamUser try invite an another user in a team', () => {
          */
         const res = await request(app)
             .post(`/teams/${team.id}/members/${invitedUser.id}`)
-            .send({
-                role: 'Admin',
-            })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(201);
@@ -202,9 +178,6 @@ describe('When a user try to join a team', () => {
     void it('should return 201 when a user join a team', async () => {
         const res = await request(app)
             .post(`/users/${user.id}/teams/${team.id}`)
-            .send({
-                role: 'Admin',
-            })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(201);
@@ -213,9 +186,6 @@ describe('When a user try to join a team', () => {
     void it("should return 404 when user try to join a team which doesn't exist", async () => {
         const res = await request(app)
             .post(`/users/${user.id}/teams/44`)
-            .send({
-                role: 'Admin',
-            })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(404);
@@ -227,9 +197,6 @@ describe('When a user try to join a team', () => {
          */
         await request(app)
             .post(`/teams/${team.id}/members/${user.id}`)
-            .send({
-                role: 'Admin',
-            })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${teamOwner.getAccessToken()}`);
         /**
@@ -237,9 +204,6 @@ describe('When a user try to join a team', () => {
          */
         const res = await request(app)
             .post(`/users/${user.id}/teams/${team.id}`)
-            .send({
-                role: 'Admin',
-            })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(201);
