@@ -102,7 +102,9 @@ class UserController extends ModelController<typeof User> {
             user.lastName = req.body.lastName || user.lastName;
             user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
             await user.save();
-            return res.sendStatus(200);
+            return res
+                .status(200)
+                .json(omit(user.get({ plain: true }), 'password'));
         } catch (err) {
             return next(err);
         }
