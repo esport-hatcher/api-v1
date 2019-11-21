@@ -4,7 +4,6 @@ import { baseContoller } from '@controllers';
 
 const basicRoutes = BaseRouter();
 
-basicRoutes.use(requireAuth);
+basicRoutes.get('/upload', requireAuth, baseContoller.upload);
 
-basicRoutes.get('/upload', baseContoller.upload);
 export { basicRoutes };
