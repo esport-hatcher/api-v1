@@ -75,11 +75,10 @@ class UserController extends ModelController<typeof User> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
+            const { owner } = req;
             return res
                 .status(200)
-                .json(
-                    omit(req.owner.get({ plain: true }), ...FORBIDDEN_FIELDS)
-                );
+                .json(omit(owner.get({ plain: true }), ...FORBIDDEN_FIELDS));
         } catch (err) {
             return next(err);
         }
