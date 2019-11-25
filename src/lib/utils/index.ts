@@ -5,3 +5,4 @@ export * from './hashtagGenerator';
 export * from './logger';
 export * from './validators';
 export * from './modelGenerator';
+export * from './uploader';

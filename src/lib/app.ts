@@ -11,6 +11,7 @@ import {
     userResolver,
     teamResolver,
     eventResolver,
+    basicRoutes,
 } from '@routes';
 import { IError, IRequest } from '@typings';
 
@@ -25,6 +26,7 @@ app.use(json());
 app.param('userId', userResolver)
     .param('teamId', teamResolver)
     .param('eventId', eventResolver);
+app.use(basicRoutes);
 app.use('/users', userRoutes);
 app.use('/teams', teamsRoutes);
 app.use('/jobs', jobRoutes);
