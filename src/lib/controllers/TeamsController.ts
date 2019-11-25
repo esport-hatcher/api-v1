@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { logRequest } from '@utils';
+import { logRequest, unauthorizedError } from '@utils';
 import { Team } from '@models';
 import { ModelController } from '@controllers';
 import { FORBIDDEN_FIELDS } from '@config';
@@ -54,7 +54,7 @@ class TeamsController extends ModelController<typeof Team> {
                 userRequest => userRequest.id === user.id
             );
             /**
-             * If the userInTeam has already request to join the team accept him
+             * If the userInTeam has already request to join the team, accept him
              */
             if (userInTeam) {
                 await userInTeam.TeamUser.update({ teamStatus: true });
@@ -69,6 +69,37 @@ class TeamsController extends ModelController<typeof Team> {
                     playerStatus: false,
                 },
             });
+            return res.sendStatus(201);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async deleteTeamUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { user, team } = req;
+            const teamUsers = await team.getUsers();
+            /**
+             * Check if the invited user has already request to join the team
+             */
+            const userInTeam = teamUsers.find(
+                userRequest => userRequest.id === user.id
+            );
+            /**
+             * Check if the user is in the team he wants to quit
+             */
+            if (!userInTeam) {
+                return next(unauthorizedError("User isn't in that team"));
+            }
+            /**
+             * Invite a user in the team by putting the teamStatus on "true"
+             */
+            await userInTeam.TeamUser.destroy();
             return res.sendStatus(201);
         } catch (err) {
             return next(err);

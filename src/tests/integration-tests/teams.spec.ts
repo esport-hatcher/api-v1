@@ -164,6 +164,72 @@ describe('when a TeamUser try invite an another user in a team', () => {
     });
 });
 
+describe('when a TeamUser try to delete an user in a team', () => {
+    let user: User;
+    let invitedUser: User;
+    let team;
+
+    beforeEach(async () => {
+        user = await getUser();
+        invitedUser = await getUser();
+        team = await getTeam(user);
+    });
+
+    void it('should return 201 when user delete another user', async () => {
+        const res = await request(app)
+            .post(`/teams/${team.id}/members/${invitedUser.id}`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(201);
+    });
+
+    void it('should return 404 when team does not exist', async () => {
+        const res = await request(app)
+            .post(`/teams/42/members/${invitedUser.id}`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(404);
+    });
+
+    void it('should return 404 when invited user does not exist', async () => {
+        const res = await request(app)
+            .post(`/teams/${team.id}/members/42`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(404);
+    });
+
+    void it('should return 401 when user requesting the invitation is not part of the team', async () => {
+        const res = await request(app)
+            .post(`/teams/${team.id}/members/${invitedUser.id}`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
+        expect(res.status).toBe(401);
+    });
+
+    void it('should return 401 when user requesting the invitation is not admin or owner', async () => {
+        /**
+         * Inviting inviteUser as player in the team
+         */
+        await request(app)
+            .post(`/teams/${team.id}/members/${invitedUser.id}`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        /**
+         * Creating a third user
+         */
+        const thirdUser = await getUser();
+        /**
+         * Making inviteUser invite thirdUser
+         */
+        const res = await request(app)
+            .post(`/teams/${team.id}/members/${thirdUser.id}`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
+        expect(res.status).toBe(401);
+    });
+});
+
 describe('When a user try to join a team', () => {
     let user: User;
     let teamOwner: User;
@@ -209,6 +275,7 @@ describe('When a user try to join a team', () => {
         expect(res.status).toBe(201);
     });
 });
+
 describe('When a user try to quit a team', () => {
     let user: User;
     let teamOwner: User;
@@ -220,7 +287,7 @@ describe('When a user try to quit a team', () => {
         team = await getTeam(teamOwner);
     });
 
-    void it("should return 404 if the user isn't in any team", async () => {
+    void it("should return 401 if the user isn't in the team", async () => {
         /**
          * user trying to quit a team without being in one.
          */
@@ -231,7 +298,7 @@ describe('When a user try to quit a team', () => {
             })
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
-        expect(res.status).toBe(404);
+        expect(res.status).toBe(401);
     });
 
     void it('should return 200 when a user quit a team', async () => {

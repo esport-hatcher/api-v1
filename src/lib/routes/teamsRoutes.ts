@@ -56,6 +56,13 @@ teamsRoutes.post(
     teamController.addTeamUser
 );
 
+teamsRoutes.delete(
+    '/:teamId/members/:userId',
+    requireValidation,
+    requireOwnerOrAdminTeam,
+    teamController.deleteTeamUser
+);
+
 /**
  * Patch routes
  */
