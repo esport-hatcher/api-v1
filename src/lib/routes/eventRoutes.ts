@@ -35,8 +35,7 @@ eventRoutes.post(
     [
         body('title')
             .trim()
-            .isLength({ min: 2, max: 20 })
-            .withMessage('Please enter a title between 2 and 20 characters'),
+            .isLength({ min: 1 }),
         body('description')
             .trim()
             .isLength({ min: 1 }),
