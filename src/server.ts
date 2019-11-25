@@ -26,7 +26,11 @@ const executeMigration = async () => {
 };
 
 sequelizeDb
-    .init(process.env.NODE_ENV === 'CI' || process.env.NODE_ENV === 'prod')
+    .init(
+        process.env.NODE_ENV === 'CI' ||
+            process.env.NODE_ENV === 'production' ||
+            process.env.NODE_ENV === 'staging'
+    )
     .then(() => {
         app.listen(process.env.PORT_API, () => {
             executeMigration()
