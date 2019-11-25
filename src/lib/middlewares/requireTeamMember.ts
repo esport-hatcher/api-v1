@@ -1,5 +1,5 @@
-import { IRequest } from '@typings';
 import { Response, NextFunction } from 'express';
+import { IRequest } from '@typings';
 import { unauthorizedError } from '@utils';
 
 export const requireTeamMember = async (
