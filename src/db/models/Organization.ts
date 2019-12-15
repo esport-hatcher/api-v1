@@ -1,37 +1,29 @@
 import {
     Model,
     DataTypes,
-    BelongsToManyAddAssociationMixin,
-    BelongsToManyGetAssociationsMixin,
     Sequelize,
     BelongsToCreateAssociationMixin,
 } from 'sequelize';
-import { User, TeamUser, Event } from '@models';
+import { Team } from '@models';
 
-export interface ITeamProps {
+export interface IOrganizationProps {
     name: string;
-    game: string;
-    region: string;
-    avatarTeamUrl?: string;
+    avatarOrganizationUrl?: string;
     bannerUrl?: string;
 }
-export class Team extends Model {
+export class Organization extends Model {
     public id!: number;
     public name!: string;
-    public game!: string;
-    public region!: string;
-    public avatarTeamUrl: string;
+    public avatarOrganizationUrl: string;
     public bannerUrl: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
-    public addUser!: BelongsToManyAddAssociationMixin<User, TeamUser>;
-    public getUsers!: BelongsToManyGetAssociationsMixin<User>;
-    public createEvent!: BelongsToCreateAssociationMixin<Event>;
+    public createTeam!: BelongsToCreateAssociationMixin<Team>;
 }
 
-export const initTeam = (db: Sequelize) => {
-    Team.init(
+export const initOrganization = (db: Sequelize) => {
+    Organization.init(
         {
             id: {
                 type: DataTypes.INTEGER.UNSIGNED,
@@ -42,15 +34,7 @@ export const initTeam = (db: Sequelize) => {
                 type: new DataTypes.STRING(128),
                 allowNull: false,
             },
-            game: {
-                type: new DataTypes.STRING(128),
-                allowNull: false,
-            },
-            region: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            avatarTeamUrl: {
+            avatarOrganizationUrl: {
                 type: DataTypes.STRING,
                 allowNull: true,
                 defaultValue:
@@ -64,7 +48,7 @@ export const initTeam = (db: Sequelize) => {
             },
         },
         {
-            tableName: 'Teams',
+            tableName: 'Organizations',
             sequelize: db,
         }
     );

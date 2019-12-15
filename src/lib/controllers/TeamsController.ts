@@ -17,10 +17,10 @@ class TeamsController extends ModelController<typeof Team> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { owner } = req;
+            const { owner, organization } = req;
             const { game, name, region } = req.body;
 
-            const newTeam = await Team.create({
+            const newTeam = await organization.createTeam({
                 game,
                 region,
                 name,
@@ -84,10 +84,10 @@ class TeamsController extends ModelController<typeof Team> {
         const { team } = req;
 
         try {
-            team.name = req.body.username || team.name;
-            team.game = req.body.avatarUrl || team.game;
-            team.region = req.body.country || team.region;
-            team.avatarTeamUrl = req.body.city || team.avatarTeamUrl;
+            team.name = req.body.name || team.name;
+            team.game = req.body.game || team.game;
+            team.region = req.body.region || team.region;
+            team.avatarTeamUrl = req.body.avatarTeamUrl || team.avatarTeamUrl;
             team.bannerUrl = req.body.bannerUrl || team.bannerUrl;
             await team.save();
             return res.sendStatus(200);
