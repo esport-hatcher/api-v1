@@ -1,6 +1,6 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+import { Model, DataTypes, Sequelize, ENUM } from 'sequelize';
 
-export default class TeamUser extends Model {
+export class TeamUser extends Model {
     public id!: number;
     public playerStatus!: boolean;
     public teamStatus!: boolean;
@@ -23,13 +23,14 @@ export const initTeamUser = (db: Sequelize) => {
                 defaultValue: false,
             },
             teamStatus: {
-                type: DataTypes.STRING,
+                type: DataTypes.BOOLEAN,
                 allowNull: false,
                 defaultValue: false,
             },
             role: {
-                type: DataTypes.STRING,
+                type: ENUM('Admin', 'Staff', 'Player', 'Owner'),
                 allowNull: false,
+                defaultValue: 'Player',
             },
         },
         {

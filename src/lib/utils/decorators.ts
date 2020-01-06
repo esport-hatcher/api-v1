@@ -1,20 +1,19 @@
 // tslint:disable-file: no-console
-import IRequest from '@typings/general/IRequest';
+import { IRequest } from '@typings';
 import { Response } from 'superagent';
 import { NextFunction } from 'express-serve-static-core';
 import { bgYellow, fgBlack } from './colors-console';
+import { pick } from 'lodash';
 
 // tslint:disable-next-line: only-arrow-functions
 export function logRequest(
-    // tslint:disable-next-line: variable-name tslint:disable-next-line: no-any
-    _target: any,
     // tslint:disable-next-line: no-any
-    key: any,
+    _target: any,
+    key: string,
     descriptor: PropertyDescriptor
 ) {
     const originalMethod = descriptor.value;
 
-    // tslint:disable-next-line: no-any
     descriptor.value = async function(
         req: IRequest,
         res: Response,
@@ -33,11 +32,22 @@ export function logRequest(
             console.log('NODE_ENV:', process.env.NODE_ENV);
             // tslint:disable-next-line: no-console
             console.log('Headers:', req.headers);
-            if (req.user) {
+            if (req.owner) {
                 // tslint:disable-next-line: no-console
                 console.log(
                     'Authentified with token',
                     req.headers.authorization
+                );
+                // tslint:disable-next-line: no-console
+                console.log(
+                    'As user:',
+                    pick(
+                        req.owner.get({ plain: true }),
+                        'id',
+                        'username',
+                        'email',
+                        'superAdmin'
+                    )
                 );
             } else {
                 // tslint:disable-next-line: no-console

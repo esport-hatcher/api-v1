@@ -3,10 +3,18 @@ import * as cors from 'cors';
 import * as express from 'express';
 
 // Routes
-import userRoutes from '@routes/userRoutes';
-import teamsRoutes from '@routes/teamsRoutes';
-import IError from '@typings/general/IError';
-import IRequest from '@typings/general/IRequest';
+import {
+    userRoutes,
+    jobRoutes,
+    teamsRoutes,
+    eventRoutes,
+    userResolver,
+    teamResolver,
+    eventResolver,
+    basicRoutes,
+} from '@routes';
+import { IError, IRequest } from '@typings';
+
 // Express app creation
 const app = express();
 
@@ -15,8 +23,14 @@ app.use(cors());
 app.use(json());
 
 // Redirect every url beginning by auth to authRoutes
+app.param('userId', userResolver)
+    .param('teamId', teamResolver)
+    .param('eventId', eventResolver);
+app.use(basicRoutes);
 app.use('/users', userRoutes);
 app.use('/teams', teamsRoutes);
+app.use('/jobs', jobRoutes);
+app.use('/teams/:teamId/events', eventRoutes);
 
 // Healthcheck route
 app.get('/', (req, res) => {
@@ -44,4 +58,4 @@ app.use(
     }
 );
 
-export default app;
+export { app };

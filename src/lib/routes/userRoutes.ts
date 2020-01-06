@@ -1,15 +1,33 @@
-import { Router } from 'express';
 import { body } from 'express-validator/check';
-import userController from '@controllers/userController';
+import { BaseRouter } from '@services/router';
+import { userController } from '@controllers';
 import {
     requireValidation,
     requireScopeOrAdmin,
-    requireAdmin,
     requireAuth,
+    requireFiltersOrPagination,
 } from '@middlewares';
 
-const userRoutes = Router();
+const userRoutes = BaseRouter();
 
+/**
+ * Get routes
+ */
+userRoutes.get(
+    '/',
+    requireAuth,
+    requireFiltersOrPagination,
+    userController.findAll
+);
+
+userRoutes.get('/me', requireAuth, userController.getMe);
+
+userRoutes.get('/:userId/teams', requireAuth, userController.getUserTeam);
+userRoutes.get('/:userId', requireAuth, userController.findById);
+
+/**
+ * Post routes
+ */
 userRoutes.post(
     '/',
     [
@@ -20,12 +38,18 @@ userRoutes.post(
             .trim()
             .isLength({ min: 5, max: 20 })
             .withMessage('Please enter a password between 5 and 20 characters'),
+        body('firstName')
+            .trim()
+            .isString(),
+        body('lastName')
+            .trim()
+            .isString(),
         body('username')
             .trim()
             .isLength({ min: 2, max: 25 }),
     ],
     requireValidation,
-    userController.register
+    userController.create
 );
 
 userRoutes.post(
@@ -39,9 +63,6 @@ userRoutes.post(
     userController.getToken
 );
 
-userRoutes.get('/', requireAuth, requireAdmin, userController.findAll);
-userRoutes.get('/:userID', requireAuth, userController.findById);
-
 userRoutes.post(
     '/email',
     [body('email').isEmail()],
@@ -49,18 +70,36 @@ userRoutes.post(
     userController.checkIfEmailIsAvailable
 );
 
+userRoutes.post(
+    '/:userId/teams/:teamId',
+    [
+        body('role')
+            .trim()
+            .withMessage('Please enter a role'),
+    ],
+    requireValidation,
+    requireAuth,
+    userController.userJoinTeam
+);
+
+/**
+ * Patch routes
+ */
 userRoutes.patch(
-    '/:userID',
+    '/:userId',
     requireAuth,
     requireScopeOrAdmin,
     userController.updateById
 );
 
+/**
+ * Delete routes
+ */
 userRoutes.delete(
-    '/:userID',
+    '/:userId',
     requireAuth,
     requireScopeOrAdmin,
     userController.deleteById
 );
 
-export default userRoutes;
+export { userRoutes };

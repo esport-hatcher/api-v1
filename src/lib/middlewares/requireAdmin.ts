@@ -1,19 +1,15 @@
 import { Response, NextFunction } from 'express';
-import IRequest from '@typings/general/IRequest';
-import IError from '@typings/general/IError';
+import { IRequest } from '@typings';
+import { unauthorizedError } from '@utils';
 
 export const requireAdmin = (
     req: IRequest,
-    // tslint:disable-next-line: variable-name
     _res: Response,
     next: NextFunction
 ) => {
-    if (req.user.superAdmin) {
+    if (req.owner.superAdmin) {
         return next(); // user is admin so go the next function / middleware
     }
     // USER NOT ADMIN
-    const error: IError = new Error('Needs to be admin');
-    error.statusCode = 401;
-    error.message = 'Needs to be admin';
-    return next(error); // Go to error handling
+    return next(unauthorizedError()); // Go to error handling
 };

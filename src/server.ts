@@ -1,9 +1,9 @@
 // tslint:disable-next-line: no-import-side-effect
 import 'module-alias/register';
-import app from '@app';
-import db from '@db';
-import User from '@models/User';
-import logger from '@utils/logger';
+import { app } from '@app';
+import { sequelizeDb } from '@db';
+import { User } from '@models';
+import { logger } from '@utils';
 
 const executeMigration = async () => {
     const user = await User.findOne({
@@ -12,6 +12,8 @@ const executeMigration = async () => {
     if (!user) {
         const { BO_ADMIN_PWD } = process.env;
         await User.create({
+            firstName: 'admin',
+            lastName: 'admin',
             username: 'admin',
             password: BO_ADMIN_PWD,
             email: 'admin@esport-hatcher.com',
@@ -23,12 +25,20 @@ const executeMigration = async () => {
     }
 };
 
-db.init(process.env.NODE_ENV === 'CI' || process.env.NODE_ENV === 'prod')
+sequelizeDb
+    .init(
+        process.env.NODE_ENV === 'CI' ||
+            process.env.NODE_ENV === 'production' ||
+            process.env.NODE_ENV === 'staging'
+    )
     .then(() => {
         app.listen(process.env.PORT_API, () => {
             executeMigration()
                 .then(() => logger('Seeders', 'Seeding successful'))
-                .catch(() => logger('Seeders', 'Seeding failed'));
+                .catch((err: Error) => {
+                    logger('Seeders', 'Seeding failed');
+                    logger('Seeders', `${err}`);
+                });
             logger('Server', `Executed in ${process.env.NODE_ENV} mode`);
             logger('Server', `Server listening on ${process.env.PORT_API}`);
         });

@@ -1,8 +1,14 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+import {
+    Model,
+    DataTypes,
+    Sequelize,
+    BelongsToManyGetAssociationsMixin,
+} from 'sequelize';
 import { hash } from 'bcryptjs';
-import { createHashtag } from '@utils/hashtagGenerator';
-import { jwtSecret } from '@config/keys';
 import { encode } from 'jwt-simple';
+import { createHashtag } from '@utils';
+import { jwtSecret } from '@config';
+import { Team, TeamUser } from '@models';
 
 // import {
 // 	HasManyGetAssociationsMixin,
@@ -13,8 +19,23 @@ import { encode } from 'jwt-simple';
 // 	HasManyCreateAssociationMixin
 // } from 'sequelize/lib/associations';
 
-export default class User extends Model {
+export interface IUserProps {
+    firstName: string;
+    lastName: string;
+    username: string;
+    password: string;
+    email: string;
+    avatarUrl: string;
+    superAdmin: boolean;
+    hashtag?: string;
+    country?: string;
+    city?: string;
+    phoneNumber?: string;
+}
+export class User extends Model {
     public id!: number; // Note that the `null assertion` `!` is required in strict mode.
+    public firstName: string;
+    public lastName: string;
     public username!: string;
     public email!: string; // for nullable fields
     public avatarUrl: string;
@@ -28,8 +49,10 @@ export default class User extends Model {
     // timestamps!
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+    public getTeams!: BelongsToManyGetAssociationsMixin<Team>;
 
-    // tslint:disable-next-line: no-any
+    public TeamUser: TeamUser;
+
     getAccessToken() {
         const timestamp = new Date().getTime();
         return encode({ sub: this.id, iat: timestamp }, jwtSecret);
@@ -62,6 +85,14 @@ export const initUser = (db: Sequelize) => {
                 autoIncrement: true,
                 primaryKey: true,
             },
+            firstName: {
+                type: DataTypes.STRING(128),
+                allowNull: false,
+            },
+            lastName: {
+                type: DataTypes.STRING(128),
+                allowNull: false,
+            },
             username: {
                 type: new DataTypes.STRING(128),
                 allowNull: false,
@@ -80,13 +111,13 @@ export const initUser = (db: Sequelize) => {
                 defaultValue:
                     'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png',
             },
-            hashtag: {
-                type: DataTypes.STRING,
-                allowNull: true,
-            },
             superAdmin: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
+            },
+            hashtag: {
+                type: DataTypes.STRING,
+                allowNull: true,
             },
             country: {
                 type: DataTypes.STRING,
