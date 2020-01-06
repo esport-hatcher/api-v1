@@ -11,12 +11,12 @@ export const requireStagingOrDevEnv = (
 
     if (!owner || !owner.superAdmin) {
         if (
-            process.env.NODE_ENV !== 'DEV' &&
+            process.env.NODE_ENV !== 'development' &&
             process.env.NODE_ENV !== 'staging'
         ) {
             return next(
                 unauthorizedError(
-                    'Should be in DEV or STAGING environment /or admin'
+                    'Should be in DEVELOPMENT or STAGING environment /or admin'
                 )
             );
         }
