@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
     req;
     return res
         .status(200)
-        .json({ success: 'Esport-Hatcher {API v1.0} is online' });
+        .json({ success: 'Esport-Hatcher {API v1.1} is online' });
 });
 
 // Error handler
