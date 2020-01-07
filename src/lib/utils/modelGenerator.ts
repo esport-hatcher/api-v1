@@ -12,7 +12,7 @@ import {
     User,
     IUserProps,
     Team,
-    IOrganizationProps,
+    IClubProps,
     ITeamProps,
     IEventProps,
 } from '@models';
@@ -34,10 +34,10 @@ export const getRandomUserProps = (superAdmin: boolean = false): IUserProps => {
     };
 };
 
-export const getRandomOrganizationProps = (): IOrganizationProps => {
+export const getRandomClubProps = (): IClubProps => {
     return {
         name: company.companyName(),
-        avatarOrganizationUrl:
+        avatarClubUrl:
             'https://upload.wikimedia.org/wikipedia/fr/thumb/3/36/Fnatic_Logo.svg/1200px-Fnatic_Logo.svg.png',
         bannerUrl:
             'https://image.redbull.com/rbcom/010/2016-11-19/1331830255276_2/0012/0/46/0/721/1199/1050/1/fnatic-esports-league-of-legends-2017-equipe.jpg',

@@ -17,10 +17,10 @@ class TeamsController extends ModelController<typeof Team> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { owner, organization } = req;
+            const { owner, club } = req;
             const { game, name, region } = req.body;
 
-            const newTeam = await organization.createTeam({
+            const newTeam = await club.createTeam({
                 game,
                 region,
                 name,

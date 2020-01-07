@@ -1,37 +1,33 @@
 import * as request from 'supertest';
 import { app } from '@app';
-import { User, Team, Organization } from '@models';
+import { User, Team, Club } from '@models';
 import {
-    getRandomOrganizationProps,
+    getRandomClubProps,
     getRandomTeamProps,
     getRandomEventProps,
 } from '@utils';
 
-export const getOrganization = async (user: User) => {
+export const getClub = async (user: User) => {
     const { body } = await request(app)
-        .post('/organizations')
-        .send(getRandomOrganizationProps())
+        .post('/clubs')
+        .send(getRandomClubProps())
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${user.getAccessToken()}`);
     return body;
 };
 
-export const getTeam = async (user: User, organization: Organization) => {
+export const getTeam = async (user: User, club: Club) => {
     const { body } = await request(app)
-        .post(`/organizations/${organization.id}/teams`)
+        .post(`/clubs/${club.id}/teams`)
         .send(getRandomTeamProps())
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${user.getAccessToken()}`);
     return body;
 };
 
-export const getEvent = async (
-    user: User,
-    team: Team,
-    organization: Organization
-) => {
+export const getEvent = async (user: User, team: Team, club: Club) => {
     const { body } = await request(app)
-        .post(`/organizations/${organization.id}/teams/${team.id}/events`)
+        .post(`/clubs/${club.id}/teams/${team.id}/events`)
         .send(getRandomEventProps())
         .set('Content-Type', 'application/json')
         .set('Authorization', `Bearer ${user.getAccessToken()}`);

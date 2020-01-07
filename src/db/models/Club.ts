@@ -6,15 +6,15 @@ import {
 } from 'sequelize';
 import { Team } from '@models';
 
-export interface IOrganizationProps {
+export interface IClubProps {
     name: string;
-    avatarOrganizationUrl?: string;
+    avatarClubUrl?: string;
     bannerUrl?: string;
 }
-export class Organization extends Model {
+export class Club extends Model {
     public id!: number;
     public name!: string;
-    public avatarOrganizationUrl: string;
+    public avatarClubUrl: string;
     public bannerUrl: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -22,8 +22,8 @@ export class Organization extends Model {
     public createTeam!: BelongsToCreateAssociationMixin<Team>;
 }
 
-export const initOrganization = (db: Sequelize) => {
-    Organization.init(
+export const initClub = (db: Sequelize) => {
+    Club.init(
         {
             id: {
                 type: DataTypes.INTEGER.UNSIGNED,
@@ -34,7 +34,7 @@ export const initOrganization = (db: Sequelize) => {
                 type: new DataTypes.STRING(128),
                 allowNull: false,
             },
-            avatarOrganizationUrl: {
+            avatarClubUrl: {
                 type: DataTypes.STRING,
                 allowNull: true,
                 defaultValue:
@@ -48,7 +48,7 @@ export const initOrganization = (db: Sequelize) => {
             },
         },
         {
-            tableName: 'Organizations',
+            tableName: 'Clubs',
             sequelize: db,
         }
     );

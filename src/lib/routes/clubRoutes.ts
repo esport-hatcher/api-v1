@@ -7,29 +7,29 @@ import {
     requireValidation,
     requireFiltersOrPagination,
 } from '@middlewares';
-import { organizationController } from '@controllers';
+import { clubController } from '@controllers';
 
-const organizationRoutes = BaseRouter();
+const clubRoutes = BaseRouter();
 
-organizationRoutes.use(requireAuth);
+clubRoutes.use(requireAuth);
 
 /**
  * Get routes
  */
 
-organizationRoutes.get(
+clubRoutes.get(
     '/',
     requireAdmin,
     requireFiltersOrPagination,
-    organizationController.findAll
+    clubController.findAll
 );
 
-organizationRoutes.get('/:organizationId', organizationController.findById);
+clubRoutes.get('/:clubId', clubController.findById);
 
 /**
  * Post routes
  */
-organizationRoutes.post(
+clubRoutes.post(
     '/',
     [
         body('name')
@@ -38,25 +38,17 @@ organizationRoutes.post(
             .withMessage('Please enter a name between 5 and 40 characters'),
     ],
     requireValidation,
-    organizationController.create
+    clubController.create
 );
 
 /**
  * Patch routes
  */
-organizationRoutes.patch(
-    '/:organizationId',
-    requireScopeOrAdmin,
-    organizationController.updateById
-);
+clubRoutes.patch('/:clubId', requireScopeOrAdmin, clubController.updateById);
 
 /**
  * Delete routes
  */
-organizationRoutes.delete(
-    '/:organizationId',
-    requireScopeOrAdmin,
-    organizationController.deleteById
-);
+clubRoutes.delete('/:clubId', requireScopeOrAdmin, clubController.deleteById);
 
-export { organizationRoutes };
+export { clubRoutes };

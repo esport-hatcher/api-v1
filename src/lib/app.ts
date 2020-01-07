@@ -6,11 +6,11 @@ import * as express from 'express';
 import {
     userRoutes,
     jobRoutes,
-    organizationRoutes,
+    clubRoutes,
     teamsRoutes,
     eventRoutes,
     userResolver,
-    organizationResolver,
+    clubResolver,
     teamResolver,
     eventResolver,
     basicRoutes,
@@ -26,15 +26,15 @@ app.use(json());
 
 // Redirect every url beginning by auth to authRoutes
 app.param('userId', userResolver)
-    .param('organizationId', organizationResolver)
+    .param('clubId', clubResolver)
     .param('teamId', teamResolver)
     .param('eventId', eventResolver);
 app.use(basicRoutes);
 app.use('/users', userRoutes);
-app.use('/organizations', organizationRoutes);
-app.use('/organizations/:organizationId/teams', teamsRoutes);
+app.use('/clubs', clubRoutes);
+app.use('/clubs/:clubId/teams', teamsRoutes);
 app.use('/jobs', jobRoutes);
-app.use('/organizations/:organizationId/teams/:teamId/events', eventRoutes);
+app.use('/clubs/:clubId/teams/:teamId/events', eventRoutes);
 
 // Healthcheck route
 app.get('/', (req, res) => {

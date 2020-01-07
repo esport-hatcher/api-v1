@@ -10,8 +10,8 @@ import {
     initEvent,
     TeamUser,
     initTeamUser,
-    Organization,
-    initOrganization,
+    Club,
+    initClub,
 } from '@models';
 
 class SequelizeDb {
@@ -70,7 +70,7 @@ class SequelizeDb {
         initTeam(db);
         initEvent(db);
         initTeamUser(db);
-        initOrganization(db);
+        initClub(db);
     }
 
     /**
@@ -84,11 +84,11 @@ class SequelizeDb {
         logger('Database', 'Initializing relations');
         User.belongsToMany(Team, { through: TeamUser });
         Team.belongsToMany(User, { through: TeamUser });
-        Team.belongsTo(Organization, {
+        Team.belongsTo(Club, {
             constraints: true,
             onDelete: 'cascade',
         });
-        Organization.hasMany(Team);
+        Club.hasMany(Team);
         Event.belongsTo(Team, {
             constraints: true,
             onDelete: 'cascade',

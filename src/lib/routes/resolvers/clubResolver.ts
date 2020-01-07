@@ -1,9 +1,9 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
 import { notFoundError } from '@utils';
-import { Organization } from '@models';
+import { Club } from '@models';
 
-export const organizationResolver = async (
+export const clubResolver = async (
     req: IRequest,
     res: Response,
     next: NextFunction,
@@ -11,11 +11,11 @@ export const organizationResolver = async (
 ) => {
     try {
         res;
-        const organization = await Organization.findByPk(id);
-        if (!organization) {
-            return next(notFoundError('Organization'));
+        const club = await Club.findByPk(id);
+        if (!club) {
+            return next(notFoundError('Club'));
         }
-        req.organization = organization;
+        req.club = club;
         return next();
     } catch (err) {
         return next(err);

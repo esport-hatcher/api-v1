@@ -1,12 +1,12 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
 import { logRequest } from '@utils';
-import { Organization } from '@models';
+import { Club } from '@models';
 import { ModelController } from '@controllers';
 
-class OrganizationController extends ModelController<typeof Organization> {
+class ClubController extends ModelController<typeof Club> {
     constructor() {
-        super(Organization);
+        super(Club);
     }
 
     @logRequest
@@ -18,10 +18,10 @@ class OrganizationController extends ModelController<typeof Organization> {
         try {
             const { name } = req.body;
 
-            const newOrganization = await Organization.create({
+            const newClub = await Club.create({
                 name,
             });
-            return res.status(201).json(newOrganization);
+            return res.status(201).json(newClub);
         } catch (err) {
             return next(err);
         }
@@ -33,16 +33,13 @@ class OrganizationController extends ModelController<typeof Organization> {
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const { organization } = req;
+        const { club } = req;
 
         try {
-            organization.name = req.body.name || organization.name;
-            organization.avatarOrganizationUrl =
-                req.body.avatarOrganizationUrl ||
-                organization.avatarOrganizationUrl;
-            organization.bannerUrl =
-                req.body.bannerUrl || organization.bannerUrl;
-            await organization.save();
+            club.name = req.body.name || club.name;
+            club.avatarClubUrl = req.body.avatarClubUrl || club.avatarClubUrl;
+            club.bannerUrl = req.body.bannerUrl || club.bannerUrl;
+            await club.save();
             return res.sendStatus(200);
         } catch (err) {
             return next(err);
@@ -50,4 +47,4 @@ class OrganizationController extends ModelController<typeof Organization> {
     }
 }
 
-export const organizationController = new OrganizationController();
+export const clubController = new ClubController();

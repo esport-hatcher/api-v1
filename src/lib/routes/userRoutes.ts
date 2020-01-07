@@ -23,7 +23,7 @@ userRoutes.get(
 userRoutes.get('/me', requireAuth, userController.getMe);
 
 userRoutes.get(
-    '/:userId/organizations/:organizationId/teams',
+    '/:userId/clubs/:clubId/teams',
     requireAuth,
     userController.getUserTeam
 );
@@ -75,7 +75,7 @@ userRoutes.post(
 );
 
 userRoutes.post(
-    '/:userId/organizations/:organizationId/teams/:teamId',
+    '/:userId/clubs/:clubId/teams/:teamId',
     [
         body('role')
             .trim()

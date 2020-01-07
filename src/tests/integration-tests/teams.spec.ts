@@ -1,24 +1,24 @@
 import * as request from 'supertest';
-import { getTeam, getOrganization } from '@tests/utils/generate-models';
+import { getTeam, getClub } from '@tests/utils/generate-models';
 import { app } from '@app';
 import { logger, getUser } from '@utils';
-import { User, Organization } from '@models';
+import { User, Club } from '@models';
 
 describe('when a user try to create a team', () => {
     let user: User;
-    let organization: Organization;
+    let club: Club;
     let team;
 
     beforeAll(async () => {
         logger('Tests', 'Generating access token...');
         user = await getUser();
-        organization = await getOrganization(user);
-        team = await getTeam(user, organization);
+        club = await getClub(user);
+        team = await getTeam(user, club);
     });
 
     void it('should return 401 when does not have a token', async () => {
         const res = await request(app)
-            .post(`/organizations/${organization.id}/teams`)
+            .post(`/clubs/${club.id}/teams`)
             .send(team)
             .set('Content-Type', 'application/json');
         expect(res.status).toBe(401);
@@ -26,7 +26,7 @@ describe('when a user try to create a team', () => {
 
     void it('should return 201 with a correct team', async () => {
         const res = await request(app)
-            .post(`/organizations/${organization.id}/teams`)
+            .post(`/clubs/${club.id}/teams`)
             .send(team)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
@@ -40,7 +40,7 @@ describe('when a user try to create a team', () => {
             game: 'Counter Strike',
         };
         const res = await request(app)
-            .post(`/organizations/${organization.id}/teams`)
+            .post(`/clubs/${club.id}/teams`)
             .send(team)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
@@ -53,7 +53,7 @@ describe('when a user try to create a team', () => {
             region: 'FR',
         };
         const res = await request(app)
-            .post(`/organizations/${organization.id}/teams`)
+            .post(`/clubs/${club.id}/teams`)
             .send(team)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
@@ -67,7 +67,7 @@ describe('when a user try to create a team', () => {
             game: 'Counter Strike',
         };
         const res = await request(app)
-            .post(`/organizations/${organization.id}/teams`)
+            .post(`/clubs/${club.id}/teams`)
             .send(team)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
@@ -78,20 +78,20 @@ describe('when a user try to create a team', () => {
 describe('when a TeamUser try invite an another user in a team', () => {
     let user: User;
     let invitedUser: User;
-    let organization: Organization;
+    let club: Club;
     let team;
 
     beforeEach(async () => {
         user = await getUser();
         invitedUser = await getUser();
-        organization = await getOrganization(user);
-        team = await getTeam(user, organization);
+        club = await getClub(user);
+        team = await getTeam(user, club);
     });
 
     void it('should return 201 when user invite another user', async () => {
         const res = await request(app)
             .post(
-                `/organizations/${organization.id}/teams/${team.id}/members/${invitedUser.id}`
+                `/clubs/${club.id}/teams/${team.id}/members/${invitedUser.id}`
             )
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
@@ -100,9 +100,7 @@ describe('when a TeamUser try invite an another user in a team', () => {
 
     void it('should return 404 when team does not exist', async () => {
         const res = await request(app)
-            .post(
-                `/organizations/${organization.id}/teams/42/members/${invitedUser.id}`
-            )
+            .post(`/clubs/${club.id}/teams/42/members/${invitedUser.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(404);
@@ -110,9 +108,7 @@ describe('when a TeamUser try invite an another user in a team', () => {
 
     void it('should return 404 when invited user does not exist', async () => {
         const res = await request(app)
-            .post(
-                `/organizations/${organization.id}/teams/${team.id}/members/42`
-            )
+            .post(`/clubs/${club.id}/teams/${team.id}/members/42`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(404);
@@ -121,7 +117,7 @@ describe('when a TeamUser try invite an another user in a team', () => {
     void it('should return 401 when user requesting the invitation is not part of the team', async () => {
         const res = await request(app)
             .post(
-                `/organizations/${organization.id}/teams/${team.id}/members/${invitedUser.id}`
+                `/clubs/${club.id}/teams/${team.id}/members/${invitedUser.id}`
             )
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
@@ -134,7 +130,7 @@ describe('when a TeamUser try invite an another user in a team', () => {
          */
         await request(app)
             .post(
-                `/organizations/${organization.id}/teams/${team.id}/members/${invitedUser.id}`
+                `/clubs/${club.id}/teams/${team.id}/members/${invitedUser.id}`
             )
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
@@ -146,9 +142,7 @@ describe('when a TeamUser try invite an another user in a team', () => {
          * Making inviteUser invite thirdUser
          */
         const res = await request(app)
-            .post(
-                `/organizations/${organization.id}/teams/${team.id}/members/${thirdUser.id}`
-            )
+            .post(`/clubs/${club.id}/teams/${team.id}/members/${thirdUser.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
         expect(res.status).toBe(401);
@@ -158,9 +152,7 @@ describe('when a TeamUser try invite an another user in a team', () => {
          * invitedUser requesting to join the Team
          */
         await request(app)
-            .post(
-                `/users/${invitedUser.id}/organizations/${organization.id}/teams/${team.id}`
-            )
+            .post(`/users/${invitedUser.id}/clubs/${club.id}/teams/${team.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
         /**
@@ -168,7 +160,7 @@ describe('when a TeamUser try invite an another user in a team', () => {
          */
         const res = await request(app)
             .post(
-                `/organizations/${organization.id}/teams/${team.id}/members/${invitedUser.id}`
+                `/clubs/${club.id}/teams/${team.id}/members/${invitedUser.id}`
             )
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
@@ -179,21 +171,19 @@ describe('when a TeamUser try invite an another user in a team', () => {
 describe('When a user try to join a team', () => {
     let user: User;
     let teamOwner: User;
-    let organization: Organization;
+    let club: Club;
     let team;
 
     beforeAll(async () => {
         user = await getUser();
         teamOwner = await getUser();
-        organization = await getOrganization(teamOwner);
-        team = await getTeam(teamOwner, organization);
+        club = await getClub(teamOwner);
+        team = await getTeam(teamOwner, club);
     });
 
     void it('should return 201 when a user join a team', async () => {
         const res = await request(app)
-            .post(
-                `/users/${user.id}/organizations/${organization.id}/teams/${team.id}`
-            )
+            .post(`/users/${user.id}/clubs/${club.id}/teams/${team.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(201);
@@ -201,7 +191,7 @@ describe('When a user try to join a team', () => {
 
     void it("should return 404 when user try to join a team which doesn't exist", async () => {
         const res = await request(app)
-            .post(`/users/${user.id}/organizations/${organization.id}/teams/44`)
+            .post(`/users/${user.id}/clubs/${club.id}/teams/44`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(404);
@@ -212,18 +202,14 @@ describe('When a user try to join a team', () => {
          * teamOwner requesting user to join the team
          */
         await request(app)
-            .post(
-                `/organizations/${organization.id}/teams/${team.id}/members/${user.id}`
-            )
+            .post(`/clubs/${club.id}/teams/${team.id}/members/${user.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${teamOwner.getAccessToken()}`);
         /**
          * user accepting teamOwner request
          */
         const res = await request(app)
-            .post(
-                `/users/${user.id}/organizations/${organization.id}/teams/${team.id}`
-            )
+            .post(`/users/${user.id}/clubs/${club.id}/teams/${team.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(201);

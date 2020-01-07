@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { User, Team, Event, Organization } from '@models';
+import { User, Team, Event, Club } from '@models';
 import { Dictionary } from 'lodash';
 import { Op } from 'sequelize';
 
@@ -9,13 +9,13 @@ export interface IRequest extends Request {
      */
     owner: User;
     /**
-     * If there is a :OrganizationId in the route making the request, the organization will be stored in this variable
+     * If there is a :ClubId in the route making the request, the club will be stored in this variable
      */
     user: User;
     /**
      * If there is a :eventId in the route making the request, the event will be stored in this variable
      */
-    organization: Organization;
+    club: Club;
     /**
      * If there is a :teamId in the route making the request, the team will be stored in this variable
      */

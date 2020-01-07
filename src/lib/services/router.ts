@@ -3,12 +3,12 @@ import {
     userResolver,
     teamResolver,
     eventResolver,
-    organizationResolver,
+    clubResolver,
 } from '@routes';
 
 export const BaseRouter = (): Router =>
     Router({ mergeParams: true })
         .param('userId', userResolver)
-        .param('organizationId', organizationResolver)
+        .param('clubId', clubResolver)
         .param('teamId', teamResolver)
         .param('eventId', eventResolver);

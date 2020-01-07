@@ -1,31 +1,27 @@
 import * as request from 'supertest';
-import {
-    getTeam,
-    getEvent,
-    getOrganization,
-} from '@tests/utils/generate-models';
+import { getTeam, getEvent, getClub } from '@tests/utils/generate-models';
 import { app } from '@app';
 import { logger, getUser, getRandomEventProps } from '@utils';
-import { User, Team, Event, Organization } from '@models';
+import { User, Team, Event, Club } from '@models';
 
 describe('when an admin user try to create an event', () => {
     let adminUser: User;
-    let organization: Organization;
+    let club: Club;
     let team: Team;
     let event: Event;
 
     beforeAll(async () => {
         logger('Tests', 'Generating access token...');
         adminUser = await getUser(true);
-        organization = await getOrganization(adminUser);
-        team = await getTeam(adminUser, organization);
-        event = await getEvent(adminUser, team, organization);
+        club = await getClub(adminUser);
+        team = await getTeam(adminUser, club);
+        event = await getEvent(adminUser, team, club);
     });
 
     void it('should return 201 after creation', async () => {
         const newEvent = getRandomEventProps();
         const res = await request(app)
-            .post(`/organizations/${organization.id}/teams/${team.id}/events`)
+            .post(`/clubs/${club.id}/teams/${team.id}/events`)
             .send(newEvent)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${adminUser.getAccessToken()}`);
@@ -34,7 +30,7 @@ describe('when an admin user try to create an event', () => {
 
     void it('can fetch all events and return 200', async () => {
         const res = await request(app)
-            .get(`/organizations/${organization.id}/teams/${team.id}/events`)
+            .get(`/clubs/${club.id}/teams/${team.id}/events`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${adminUser.getAccessToken()}`);
         expect(res.status).toBe(200);
@@ -42,9 +38,7 @@ describe('when an admin user try to create an event', () => {
 
     void it('can fetch an event by eventId and return 200', async () => {
         const res = await request(app)
-            .get(
-                `/organizations/${organization.id}/teams/${team.id}/events/${event.id}`
-            )
+            .get(`/clubs/${club.id}/teams/${team.id}/events/${event.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${adminUser.getAccessToken()}`);
         expect(res.status).toBe(200);
@@ -53,9 +47,7 @@ describe('when an admin user try to create an event', () => {
     void it('can edit the records of the event and return 200', async () => {
         const patchedEvent = { place: 'Seoul' };
         const res = await request(app)
-            .patch(
-                `/organizations/${organization.id}/teams/${team.id}/events/${event.id}`
-            )
+            .patch(`/clubs/${club.id}/teams/${team.id}/events/${event.id}`)
             .send(patchedEvent)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${adminUser.getAccessToken()}`);
@@ -64,9 +56,7 @@ describe('when an admin user try to create an event', () => {
 
     void it('can delete the event and return 200', async () => {
         const res = await request(app)
-            .delete(
-                `/organizations/${organization.id}/teams/${team.id}/events/${event.id}`
-            )
+            .delete(`/clubs/${club.id}/teams/${team.id}/events/${event.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${adminUser.getAccessToken()}`);
         expect(res.status).toBe(200);
@@ -76,7 +66,7 @@ describe('when an admin user try to create an event', () => {
 describe('when a regular user try to create an event', () => {
     let invitedUser: User;
     let adminUser: User;
-    let organization: Organization;
+    let club: Club;
     let team: Team;
     let event: Event;
 
@@ -84,9 +74,9 @@ describe('when a regular user try to create an event', () => {
         logger('Tests', 'Generating access token...');
         invitedUser = await getUser();
         adminUser = await getUser(true);
-        organization = await getOrganization(adminUser);
-        team = await getTeam(adminUser, organization);
-        event = await getEvent(adminUser, team, organization);
+        club = await getClub(adminUser);
+        team = await getTeam(adminUser, club);
+        event = await getEvent(adminUser, team, club);
     });
 
     void it('should return 401 when try to create an event', async () => {
@@ -96,7 +86,7 @@ describe('when a regular user try to create an event', () => {
          */
         await request(app)
             .post(
-                `/organizations/${organization.id}/teams/${team.id}/members/${invitedUser.id}`
+                `/clubs/${club.id}/teams/${team.id}/members/${invitedUser.id}`
             )
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${adminUser.getAccessToken()}`);
@@ -108,7 +98,7 @@ describe('when a regular user try to create an event', () => {
          * Making inviteUser invite thirdUser
          */
         const res = await request(app)
-            .post(`/organizations/${organization.id}/teams/${team.id}/events`)
+            .post(`/clubs/${club.id}/teams/${team.id}/events`)
             .send(newEvent)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${thirdUser.getAccessToken()}`);
@@ -121,7 +111,7 @@ describe('when a regular user try to create an event', () => {
          */
         await request(app)
             .post(
-                `/organizations/${organization.id}/teams/${team.id}/members/${invitedUser.id}`
+                `/clubs/${club.id}/teams/${team.id}/members/${invitedUser.id}`
             )
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${adminUser.getAccessToken()}`);
@@ -133,7 +123,7 @@ describe('when a regular user try to create an event', () => {
          * Making inviteUser invite thirdUser
          */
         const res = await request(app)
-            .get(`/organizations/${organization.id}/teams/${team.id}/events`)
+            .get(`/clubs/${club.id}/teams/${team.id}/events`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${thirdUser.getAccessToken()}`);
         expect(res.status).toBe(401);
@@ -145,7 +135,7 @@ describe('when a regular user try to create an event', () => {
          */
         await request(app)
             .post(
-                `/organizations/${organization.id}/teams/${team.id}/members/${invitedUser.id}`
+                `/clubs/${club.id}/teams/${team.id}/members/${invitedUser.id}`
             )
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${adminUser.getAccessToken()}`);
@@ -157,9 +147,7 @@ describe('when a regular user try to create an event', () => {
          * Making inviteUser invite thirdUser
          */
         const res = await request(app)
-            .get(
-                `/organizations/${organization.id}/teams/${team.id}/events/${event.id}`
-            )
+            .get(`/clubs/${club.id}/teams/${team.id}/events/${event.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${thirdUser.getAccessToken()}`);
         expect(res.status).toBe(401);
@@ -172,7 +160,7 @@ describe('when a regular user try to create an event', () => {
          */
         await request(app)
             .post(
-                `/organizations/${organization.id}/teams/${team.id}/members/${invitedUser.id}`
+                `/clubs/${club.id}/teams/${team.id}/members/${invitedUser.id}`
             )
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${adminUser.getAccessToken()}`);
@@ -184,9 +172,7 @@ describe('when a regular user try to create an event', () => {
          * Making inviteUser invite thirdUser
          */
         const res = await request(app)
-            .patch(
-                `/organizations/${organization.id}/teams/${team.id}/events/${event.id}`
-            )
+            .patch(`/clubs/${club.id}/teams/${team.id}/events/${event.id}`)
             .send(patchedEvent)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${thirdUser.getAccessToken()}`);
@@ -199,7 +185,7 @@ describe('when a regular user try to create an event', () => {
          */
         await request(app)
             .post(
-                `/organizations/${organization.id}/teams/${team.id}/members/${invitedUser.id}`
+                `/clubs/${club.id}/teams/${team.id}/members/${invitedUser.id}`
             )
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${adminUser.getAccessToken()}`);
@@ -211,9 +197,7 @@ describe('when a regular user try to create an event', () => {
          * Making inviteUser invite thirdUser
          */
         const res = await request(app)
-            .delete(
-                `/organizations/${organization.id}/teams/${team.id}/events/${event.id}`
-            )
+            .delete(`/clubs/${club.id}/teams/${team.id}/events/${event.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${thirdUser.getAccessToken()}`);
         expect(res.status).toBe(401);
