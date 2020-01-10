@@ -8,9 +8,11 @@ import {
     jobRoutes,
     teamsRoutes,
     eventRoutes,
+    taskRoutes,
     userResolver,
     teamResolver,
     eventResolver,
+    taskResolver,
     basicRoutes,
 } from '@routes';
 import { IError, IRequest } from '@typings';
@@ -25,12 +27,14 @@ app.use(json());
 // Redirect every url beginning by auth to authRoutes
 app.param('userId', userResolver)
     .param('teamId', teamResolver)
-    .param('eventId', eventResolver);
+    .param('eventId', eventResolver)
+    .param('taskId', taskResolver);
 app.use(basicRoutes);
 app.use('/users', userRoutes);
 app.use('/teams', teamsRoutes);
 app.use('/jobs', jobRoutes);
 app.use('/teams/:teamId/events', eventRoutes);
+app.use('/teams/:teamId/tasks', taskRoutes);
 
 // Healthcheck route
 app.get('/', (req, res) => {

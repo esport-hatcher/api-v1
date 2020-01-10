@@ -10,6 +10,10 @@ import {
     initEvent,
     TeamUser,
     initTeamUser,
+    Task,
+    initTask,
+    TaskUser,
+    initTaskUser,
 } from '@models';
 
 class SequelizeDb {
@@ -68,6 +72,8 @@ class SequelizeDb {
         initTeam(db);
         initEvent(db);
         initTeamUser(db);
+        initTask(db);
+        initTaskUser(db);
     }
 
     /**
@@ -86,6 +92,8 @@ class SequelizeDb {
             onDelete: 'cascade',
         });
         Team.hasMany(Event);
+        Task.belongsToMany(User, { through: TaskUser });
+        User.belongsToMany(Task, { through: TaskUser });
     }
 
     public async close(test: ConstrainBoolean = false) {

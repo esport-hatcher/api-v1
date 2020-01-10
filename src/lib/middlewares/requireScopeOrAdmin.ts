@@ -9,7 +9,7 @@ export const requireScopeOrAdmin = (
 ) => {
     const { owner, user } = req;
 
-    if (!user) {
+    if (!user && !owner) {
         return next(notFoundError('User'));
     }
     if (!owner.superAdmin && owner.id !== user.id) {

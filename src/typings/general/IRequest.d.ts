@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { User, Team, Event } from '@models';
+import { User, Team, Event, Task } from '@models';
 import { Dictionary } from 'lodash';
 import { Op } from 'sequelize';
 
@@ -20,6 +20,10 @@ export interface IRequest extends Request {
      * If there is a :eventId in the route making the request, the event will be stored in this variable
      */
     event: Event;
+    /**
+     * If there is a :eventId in the route making the request, the event will be stored in this variable
+     */
+    task: Task;
     /**
      * If there is a filter in the route making the request, the filter will be stored in this variable
      */
