@@ -9,11 +9,11 @@ export interface IRequest extends Request {
      */
     owner: User;
     /**
-     * If there is a :ClubId in the route making the request, the club will be stored in this variable
+     * If there is a :userId in the route making the request, the user will be stored in this variable
      */
     user: User;
     /**
-     * If there is a :eventId in the route making the request, the event will be stored in this variable
+     * If there is a :clubId in the route making the request, the club will be stored in this variable
      */
     club: Club;
     /**
@@ -21,7 +21,7 @@ export interface IRequest extends Request {
      */
     team: Team;
     /**
-     * If there is a :userId in the route making the request, the user will be stored in this variable
+     * If there is a :eventId in the route making the request, the event will be stored in this variable
      */
     event: Event;
     /**

@@ -32,9 +32,9 @@ app.param('userId', userResolver)
 app.use(basicRoutes);
 app.use('/users', userRoutes);
 app.use('/clubs', clubRoutes);
-app.use('/clubs/:clubId/teams', teamsRoutes);
+app.use('/teams', teamsRoutes);
 app.use('/jobs', jobRoutes);
-app.use('/clubs/:clubId/teams/:teamId/events', eventRoutes);
+app.use('/teams/:teamId/events', eventRoutes);
 
 // Healthcheck route
 app.get('/', (req, res) => {
