@@ -48,19 +48,6 @@ class TaskController extends ModelController<typeof Task> {
     ): Promise<void | Response> {
         try {
             const { user, task } = req;
-            const taskUsers = await task.getUsers();
-            /**
-             * Check if the invited user has already request to join the task
-             */
-            const userInTask = taskUsers.find(
-                userRequest => userRequest.id === user.id
-            );
-            /**
-             * If the userInTask has already request to join the task accept him
-             */
-            if (userInTask) {
-                return res.sendStatus(201);
-            }
             /**
              * Invite an user in the task
              */
