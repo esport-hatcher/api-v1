@@ -2,7 +2,7 @@ import {
     Model,
     DataTypes,
     Sequelize,
-    BelongsToCreateAssociationMixin,
+    HasManyGetAssociationsMixin,
 } from 'sequelize';
 import { Team } from '@models';
 
@@ -19,7 +19,7 @@ export class Club extends Model {
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
-    public createTeam!: BelongsToCreateAssociationMixin<Team>;
+    public getTeams!: HasManyGetAssociationsMixin<Team>;
 }
 
 export const initClub = (db: Sequelize) => {

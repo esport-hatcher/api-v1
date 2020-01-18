@@ -45,6 +45,21 @@ class ClubController extends ModelController<typeof Club> {
             return next(err);
         }
     }
+
+    @logRequest
+    async getClubTeams(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { club } = req;
+            const clubTeams = await club.getTeams();
+            return res.status(200).json(clubTeams);
+        } catch (err) {
+            return next(err);
+        }
+    }
 }
 
 export const clubController = new ClubController();

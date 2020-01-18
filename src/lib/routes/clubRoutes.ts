@@ -24,6 +24,7 @@ clubRoutes.get(
     clubController.findAll
 );
 
+clubRoutes.get('/:clubId/teams', requireAuth, clubController.getClubTeams);
 clubRoutes.get('/:clubId', clubController.findById);
 
 /**
