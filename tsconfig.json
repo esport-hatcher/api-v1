@@ -2,6 +2,7 @@
 	"compileOnSave": false,
 	"compilerOptions": {
 		"target": "es2015",
+		"skipLibCheck": true,
 		"lib": ["es2015", "dom"],
 		"types": ["reflect-metadata", "jest", "node"],
 		"module": "commonjs",
@@ -41,5 +42,8 @@
 			"@db": ["db/index.ts"]
 		}
 	},
-	"include": ["./src/**/*", "environment.js"]
+	"include": ["./src/**/*", "environment.js"],
+	"exclude": ["node_modules", "./node_modules",
+		"./node_modules/*",
+		"./node_modules/@types/node/index.d.ts",]
 }
