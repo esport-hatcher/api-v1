@@ -9,7 +9,7 @@
   "scripts": {
     "clean": "rimraf coverage build tmp",
     "start": "node build/server.js",
-    "serve": "concurrently --kill-others \"npm run build:watch\" \"nodemon build/server.js\"",
+    "serve": "concurrently --kill-others \"npm run build:watch\" \"nodemon --max-old-space-size=6144 build/server.js\"",
     "build": "tsc -p tsconfig.json",
     "build:watch": "tsc -w -p tsconfig.json",
     "lint": "tslint -t stylish --project tsconfig.json --config tslint.json",
@@ -52,7 +52,7 @@
     "query-string": "^6.2.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^2.6.3",
-    "sequelize": ">=5.15.1",
+    "sequelize": "5.15.1",
     "superagent": "^5.0.2",
     "supertest": "^4.0.2"
   },

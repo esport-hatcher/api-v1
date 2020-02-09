@@ -37,12 +37,10 @@ app.use('/jobs', jobRoutes);
 app.use('/teams/:teamId/events', eventRoutes);
 
 // Healthcheck route
-app.get('/', (req, res) => {
-    // tslint:disable-next-line: no-unused-expression
-    req;
+app.get('/', (_req, res) => {
     return res
         .status(200)
-        .json({ success: 'Esport-Hatcher {API v1.1} is online' });
+        .json({ success: 'Esport-Hatcher {API v1.0} is online' });
 });
 
 // Error handler
