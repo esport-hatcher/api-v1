@@ -44,7 +44,10 @@ class SequelizeDb {
 
     private getDb(test: boolean = false) {
         if (!this.db && !test) {
-            logger('Database', 'Creating standard instance...');
+            logger(
+                'Database',
+                `Creating standard instance...\nHost: ${sqlHost}\nUser: ${sqlUser}\nPwd: ${sqlPassword}\nPort: ${sqlPort}\nDatabase: ${sqlDb}`
+            );
             this.db = this.createInstance(sqlDb);
         }
         if (!this.dbTest && test) {
@@ -67,7 +70,6 @@ class SequelizeDb {
      * Register the models into the sequelize instance
      */
     private registerModels(db: Sequelize) {
-        logger('Database', 'Initializing models');
         initUser(db);
         initTeam(db);
         initEvent(db);
@@ -84,7 +86,7 @@ class SequelizeDb {
          * User can have many teams
          * Teams can have many users
          */
-        logger('Database', 'Initializing relations');
+
         User.belongsToMany(Team, { through: TeamUser });
         Team.belongsToMany(User, { through: TeamUser });
         Event.belongsTo(Team, {
@@ -116,13 +118,17 @@ class SequelizeDb {
         if (test && this.db) {
             await this.db.close();
         }
+        logger('Database', 'Fetching database instance...');
         const db = this.getDb(test);
+        logger('Database', 'Initializing models...');
         this.registerModels(db);
+        logger('Database', 'Initializing relations...');
         this.registerRelations();
+        logger('Database', 'Authenticating to database...');
         await this.connect(test);
         logger('Database', 'Syncing database...');
         await this.sync(force, test);
-        logger('Database', 'Initialization ok');
+        logger('Database', 'Initialization ok.');
     }
 }
 
