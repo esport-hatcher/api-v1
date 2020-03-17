@@ -3,7 +3,8 @@ import { IRequest } from '@typings';
 import { logRequest, unauthorizedError } from '@utils';
 import { Task } from '@models';
 import { ModelController } from '@controllers';
-import { FORBIDDEN_FIELDS } from '@config';
+import { omit } from 'lodash';
+import { FORBIDDEN_FIELDS, RECORDS_PER_PAGE } from '@config';
 
 class TaskController extends ModelController<typeof Task> {
     constructor() {
@@ -17,24 +18,42 @@ class TaskController extends ModelController<typeof Task> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { owner } = req;
-            const {
-                title,
-                description,
-                deadline,
-                dateBegin,
-                dateEnd,
-            } = req.body;
+            const { owner, team } = req;
+            const { title, description, dateBegin, deadline } = req.body;
 
-            const newTask = await Task.create({
+            const newTask = await team.createTask({
                 title,
                 description,
-                deadline,
                 dateBegin,
-                dateEnd,
+                deadline,
             });
             await newTask.addUser(owner);
             return res.status(201).json(newTask);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async findAll(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        const { team } = req;
+        const page = req.pagination;
+        const filters = req.filters;
+
+        try {
+            const records = await Task.findAll({
+                limit: RECORDS_PER_PAGE,
+                offset: (page - 1) * RECORDS_PER_PAGE,
+                where: { teamId: team.id, ...filters },
+                raw: true,
+            });
+            return res
+                .status(200)
+                .json(records.map(record => omit(record, ...FORBIDDEN_FIELDS)));
         } catch (err) {
             return next(err);
         }
@@ -99,9 +118,8 @@ class TaskController extends ModelController<typeof Task> {
         try {
             task.title = req.body.title || task.title;
             task.description = req.body.description || task.description;
-            task.deadline = req.body.deadline || task.deadline;
             task.dateBegin = req.body.dateBegin || task.dateBegin;
-            task.dateEnd = req.body.dateEnd || task.dateEnd;
+            task.deadline = req.body.deadline || task.deadline;
             await task.save();
             return res.sendStatus(200);
         } catch (err) {

@@ -94,6 +94,11 @@ class SequelizeDb {
             onDelete: 'cascade',
         });
         Team.hasMany(Event);
+        Task.belongsTo(Team, {
+            constraints: true,
+            onDelete: 'cascade',
+        });
+        Team.hasMany(Task);
         Task.belongsToMany(User, { through: TaskUser });
         User.belongsToMany(Task, { through: TaskUser });
     }

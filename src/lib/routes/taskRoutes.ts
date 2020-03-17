@@ -3,10 +3,10 @@ import { BaseRouter } from '@services/router';
 import {
     requireAuth,
     requireAdmin,
-    requireScopeOrAdmin,
     requireValidation,
     requireOwnerOrAdminTeam,
     requireFiltersOrPagination,
+    requireTeamMember,
 } from '@middlewares';
 import { taskController } from '@controllers';
 
@@ -24,9 +24,9 @@ taskRoutes.get(
     requireFiltersOrPagination,
     taskController.findAll
 );
-taskRoutes.get('/:taskId/users', requireAuth, taskController.getTaskUser);
+taskRoutes.get('/:taskId/users', requireTeamMember, taskController.getTaskUser);
 
-taskRoutes.get('/:taskId', taskController.findById);
+taskRoutes.get('/:taskId', requireTeamMember, taskController.findById);
 
 /**
  * Post routes
@@ -40,11 +40,11 @@ taskRoutes.post(
         body('description')
             .trim()
             .isLength({ min: 1 }),
-        body('deadline').trim(),
         body('dateBegin').trim(),
-        body('dateEnd').trim(),
+        body('deadline').trim(),
     ],
     requireValidation,
+    requireOwnerOrAdminTeam,
     taskController.create
 );
 
@@ -58,16 +58,23 @@ taskRoutes.post(
 /**
  * Patch routes
  */
-taskRoutes.patch('/:taskId', requireScopeOrAdmin, taskController.updateById);
+taskRoutes.patch(
+    '/:taskId',
+    requireOwnerOrAdminTeam,
+    taskController.updateById
+);
 
 /**
  * Delete routes
  */
-taskRoutes.delete('/:taskId', requireScopeOrAdmin, taskController.deleteById);
+taskRoutes.delete(
+    '/:taskId',
+    requireOwnerOrAdminTeam,
+    taskController.deleteById
+);
 
 taskRoutes.delete(
     '/:taskId/members/:userId',
-    requireValidation,
     requireOwnerOrAdminTeam,
     taskController.deleteTaskUser
 );
