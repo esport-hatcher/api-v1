@@ -175,6 +175,21 @@ class UserController extends ModelController<typeof User> {
             return next(err);
         }
     }
+
+    @logRequest
+    async getUserTask(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { user } = req;
+            const userTasks = await user.getTasks();
+            return res.status(200).json(userTasks);
+        } catch (err) {
+            return next(err);
+        }
+    }
 }
 
 export const userController = new UserController();
