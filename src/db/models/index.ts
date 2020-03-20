@@ -4,3 +4,4 @@ export * from './User';
 export * from './Event';
 export * from './Task';
 export * from './TaskUser';
+export * from './EventUser';
