@@ -18,7 +18,7 @@ class EventController extends ModelController<typeof Event> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { team } = req;
+            const { team, owner } = req;
             const { title, description, place, dateBegin, dateEnd } = req.body;
 
             const newEvent = await team.createEvent({
@@ -28,6 +28,7 @@ class EventController extends ModelController<typeof Event> {
                 dateBegin,
                 dateEnd,
             });
+            newEvent.addUser(owner);
             return res.status(201).json(newEvent);
         } catch (err) {
             return next(err);

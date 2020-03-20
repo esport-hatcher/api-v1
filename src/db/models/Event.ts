@@ -1,5 +1,11 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
-
+import {
+    Model,
+    DataTypes,
+    Sequelize,
+    BelongsToManyAddAssociationMixin,
+    BelongsToManyGetAssociationsMixin,
+} from 'sequelize';
+import { User, EventUser } from '@models';
 export interface IEventProps {
     title: string;
     description: string;
@@ -17,6 +23,9 @@ export class Event extends Model {
     public dateEnd!: Date;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+
+    public addUser!: BelongsToManyAddAssociationMixin<User, EventUser>;
+    public getUsers!: BelongsToManyGetAssociationsMixin<User>;
 }
 
 export const initEvent = (db: Sequelize) => {
