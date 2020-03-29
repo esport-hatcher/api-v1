@@ -1,9 +1,9 @@
 import { Response, NextFunction } from 'express';
+import { omit } from 'lodash';
 import { IRequest } from '@typings';
 import { logRequest } from '@utils';
 import { Event } from '@models';
 import { ModelController } from '@controllers';
-import { omit } from 'lodash';
 import { FORBIDDEN_FIELDS, RECORDS_PER_PAGE } from '@config';
 
 class EventController extends ModelController<typeof Event> {
