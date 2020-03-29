@@ -4,7 +4,7 @@ import {
     requireAuth,
     requireAdmin,
     requireValidation,
-    requireOwnerOrAdminTeam,
+    requireTeamOwnerOrAdmin,
     requireFiltersOrPagination,
     requireTeamMember,
 } from '@middlewares';
@@ -44,14 +44,14 @@ taskRoutes.post(
         body('deadline').trim(),
     ],
     requireValidation,
-    requireOwnerOrAdminTeam,
+    requireTeamOwnerOrAdmin,
     taskController.create
 );
 
 taskRoutes.post(
     '/:taskId/members/:userId',
     requireValidation,
-    requireOwnerOrAdminTeam,
+    requireTeamOwnerOrAdmin,
     taskController.addTaskUser
 );
 
@@ -60,7 +60,7 @@ taskRoutes.post(
  */
 taskRoutes.patch(
     '/:taskId',
-    requireOwnerOrAdminTeam,
+    requireTeamOwnerOrAdmin,
     taskController.updateById
 );
 
@@ -69,13 +69,13 @@ taskRoutes.patch(
  */
 taskRoutes.delete(
     '/:taskId',
-    requireOwnerOrAdminTeam,
+    requireTeamOwnerOrAdmin,
     taskController.deleteById
 );
 
 taskRoutes.delete(
     '/:taskId/members/:userId',
-    requireOwnerOrAdminTeam,
+    requireTeamOwnerOrAdmin,
     taskController.deleteTaskUser
 );
 

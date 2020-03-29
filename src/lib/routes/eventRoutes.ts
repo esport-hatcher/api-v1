@@ -3,7 +3,7 @@ import { BaseRouter } from '@services/router';
 import {
     requireAuth,
     requireValidation,
-    requireOwnerOrAdminTeam,
+    requireTeamOwnerOrAdmin,
     requireFiltersOrPagination,
     requireTeamMember,
 } from '@middlewares';
@@ -46,7 +46,7 @@ eventRoutes.post(
         body('dateEnd').trim(),
     ],
     requireValidation,
-    requireOwnerOrAdminTeam,
+    requireTeamOwnerOrAdmin,
     eventController.create
 );
 
@@ -56,7 +56,7 @@ eventRoutes.post(
 
 eventRoutes.patch(
     '/:eventId',
-    requireOwnerOrAdminTeam,
+    requireTeamOwnerOrAdmin,
     eventController.updateById
 );
 
@@ -66,7 +66,7 @@ eventRoutes.patch(
 
 eventRoutes.delete(
     '/:eventId',
-    requireOwnerOrAdminTeam,
+    requireTeamOwnerOrAdmin,
     eventController.deleteById
 );
 
