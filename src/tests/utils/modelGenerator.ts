@@ -36,6 +36,11 @@ export const getTeam = async (
     return newTeam;
 };
 
+/**
+ *
+ * @param team - Team from which the event will be created
+ * @param eventProps  - optional
+ */
 export const getEvent = async (
     team: Team,
     eventProps?: IEventProps
@@ -46,6 +51,10 @@ export const getEvent = async (
     );
 };
 
+/**
+ *
+ * @param superAdmin Is the user a super admin
+ */
 export const getUser = async (superAdmin: boolean = false): Promise<User> => {
     const user: IUserProps = getRandomUserProps(superAdmin);
     return User.create(user);
