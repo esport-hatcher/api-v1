@@ -14,6 +14,8 @@ import {
     initTask,
     TaskUser,
     initTaskUser,
+    EventUser,
+    initEventUser,
 } from '@models';
 
 class SequelizeDb {
@@ -72,8 +74,9 @@ class SequelizeDb {
     private registerModels(db: Sequelize) {
         initUser(db);
         initTeam(db);
-        initEvent(db);
         initTeamUser(db);
+        initEvent(db);
+        initEventUser(db);
         initTask(db);
         initTaskUser(db);
     }
@@ -89,16 +92,38 @@ class SequelizeDb {
 
         User.belongsToMany(Team, { through: TeamUser });
         Team.belongsToMany(User, { through: TeamUser });
+
+        /**
+         * Teams can have many events
+         * Events belong to team
+         */
         Event.belongsTo(Team, {
             constraints: true,
             onDelete: 'cascade',
         });
         Team.hasMany(Event);
+
+        /**
+         * An event can have many users
+         * A user can have many events
+         */
+        Event.belongsToMany(User, { through: EventUser });
+        User.belongsToMany(Event, { through: EventUser });
+
+        /**
+         * A team can have many tasks
+         * A task belongs to a team
+         */
         Task.belongsTo(Team, {
             constraints: true,
             onDelete: 'cascade',
         });
         Team.hasMany(Task);
+
+        /**
+         * A task can have many users
+         * A user can have many tasks
+         */
         Task.belongsToMany(User, { through: TaskUser });
         User.belongsToMany(Task, { through: TaskUser });
     }
