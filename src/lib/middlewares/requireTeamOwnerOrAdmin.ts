@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
 import { unauthorizedError } from '@utils';
 
-export const requireOwnerOrAdminTeam = async (
+export const requireTeamOwnerOrAdmin = async (
     req: IRequest,
     _res: Response,
     next: NextFunction
@@ -19,7 +19,9 @@ export const requireOwnerOrAdminTeam = async (
         if (
             !userRequest ||
             (userRequest.TeamUser.role !== 'Owner' &&
-                userRequest.TeamUser.role !== 'Admin')
+                userRequest.TeamUser.role !== 'Admin') ||
+            !userRequest.TeamUser.playerStatus ||
+            !userRequest.TeamUser.teamStatus
         ) {
             return next(unauthorizedError());
         }
