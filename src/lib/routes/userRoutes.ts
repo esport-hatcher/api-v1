@@ -3,7 +3,7 @@ import { BaseRouter } from '@services/router';
 import { userController } from '@controllers';
 import {
     requireValidation,
-    requireScopeOrAdmin,
+    requireScopeOrSuperAdmin,
     requireAuth,
     requireFiltersOrPagination,
 } from '@middlewares';
@@ -89,7 +89,7 @@ userRoutes.post(
 userRoutes.patch(
     '/:userId',
     requireAuth,
-    requireScopeOrAdmin,
+    requireScopeOrSuperAdmin,
     userController.updateById
 );
 
@@ -99,7 +99,7 @@ userRoutes.patch(
 userRoutes.delete(
     '/:userId',
     requireAuth,
-    requireScopeOrAdmin,
+    requireScopeOrSuperAdmin,
     userController.deleteById
 );
 

@@ -94,7 +94,7 @@ describe('when a user try inviting an another user in a team', () => {
 
     void it('should return 201 when a team owner or team admin invite another user', async () => {
         const res = await request(app)
-            .post(`/teams/${team.id}/members/${invitedUser.id}`)
+            .post(`/teams/${team.id}/users/${invitedUser.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${teamOwner.getAccessToken()}`);
         expect(res.status).toBe(201);
@@ -102,7 +102,7 @@ describe('when a user try inviting an another user in a team', () => {
 
     void it('should return 404 when team does not exist', async () => {
         const res = await request(app)
-            .post(`/teams/42/members/${invitedUser.id}`)
+            .post(`/teams/42/users/${invitedUser.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${teamOwner.getAccessToken()}`);
         expect(res.status).toBe(404);
@@ -110,7 +110,7 @@ describe('when a user try inviting an another user in a team', () => {
 
     void it('should return 404 when invited user does not exist', async () => {
         const res = await request(app)
-            .post(`/teams/${team.id}/members/42`)
+            .post(`/teams/${team.id}/users/42`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${teamOwner.getAccessToken()}`);
         expect(res.status).toBe(404);
@@ -118,7 +118,7 @@ describe('when a user try inviting an another user in a team', () => {
 
     void it('should return 401 when user requesting the invitation is not part of the team', async () => {
         const res = await request(app)
-            .post(`/teams/${team.id}/members/${invitedUser.id}`)
+            .post(`/teams/${team.id}/users/${invitedUser.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
         expect(res.status).toBe(401);
@@ -135,7 +135,7 @@ describe('when a user try inviting an another user in a team', () => {
             },
         });
         const res = await request(app)
-            .post(`/teams/${team.id}/members/${invitedUser.id}`)
+            .post(`/teams/${team.id}/users/${invitedUser.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${teamPlayer.getAccessToken()}`);
         expect(res.status).toBe(401);
@@ -150,7 +150,7 @@ describe('when a user try inviting an another user in a team', () => {
             },
         });
         const res = await request(app)
-            .post(`/teams/${team.id}/members/${invitedUser.id}`)
+            .post(`/teams/${team.id}/users/${invitedUser.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${teamOwner.getAccessToken()}`);
         expect(res.status).toBe(201);
