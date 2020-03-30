@@ -68,8 +68,3 @@ export const getRandomEventProps = (): IEventProps => {
         dateEnd: date.future(),
     };
 };
-
-export const getUser = async (superAdmin: boolean = false): Promise<User> => {
-    const user = getRandomUserProps(superAdmin);
-    return User.create(user);
-};

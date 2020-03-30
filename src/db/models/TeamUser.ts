@@ -1,10 +1,12 @@
 import { Model, DataTypes, Sequelize, ENUM } from 'sequelize';
 
+export type TeamUserRole = 'Admin' | 'Staff' | 'Player' | 'Owner';
+
 export class TeamUser extends Model {
     public id!: number;
     public playerStatus!: boolean;
     public teamStatus!: boolean;
-    public role!: string;
+    public role!: TeamUserRole;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }

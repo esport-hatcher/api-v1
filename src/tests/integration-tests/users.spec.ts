@@ -1,7 +1,8 @@
 import * as request from 'supertest';
 import { app } from '@app';
-import { logger, getUser } from '@utils';
+import { logger } from '@utils';
 import { User } from '@models';
+import { getUser } from '@tests/utils/modelGenerator';
 
 describe('when logged in as a normal user', () => {
     let user: User;
@@ -60,6 +61,7 @@ describe('when logged in as a normal user', () => {
 describe('when logged in as an admin user', () => {
     let user: User;
     let admin: User;
+
     beforeAll(async () => {
         logger('Tests', 'Generating access token...');
         user = await getUser();
@@ -103,10 +105,9 @@ describe('when logged in as an admin user', () => {
 
     void it('should not be able to update another user when it does not exist and return 404', async () => {
         const patchedUser = { username: 'Yun Yun' };
-        const userId = 99;
 
         const res = await request(app)
-            .patch(`/users/${userId}`)
+            .patch(`/users/42`)
             .send(patchedUser)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${admin.getAccessToken()}`);
@@ -114,10 +115,8 @@ describe('when logged in as an admin user', () => {
     });
 
     void it('should not be able to delete another user when it does not exist and return 404', async () => {
-        const userId = 99;
-
         const res = await request(app)
-            .delete(`/users/${userId}`)
+            .delete(`/users/42`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${admin.getAccessToken()}`);
         expect(res.status).toBe(404);

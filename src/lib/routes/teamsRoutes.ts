@@ -5,7 +5,7 @@ import {
     requireAdmin,
     requireScopeOrAdmin,
     requireValidation,
-    requireOwnerOrAdminTeam,
+    requireTeamOwnerOrAdmin,
     requireFiltersOrPagination,
 } from '@middlewares';
 import { teamController } from '@controllers';
@@ -52,7 +52,7 @@ teamsRoutes.post(
 teamsRoutes.post(
     '/:teamId/members/:userId',
     requireValidation,
-    requireOwnerOrAdminTeam,
+    requireTeamOwnerOrAdmin,
     teamController.addTeamUser
 );
 
