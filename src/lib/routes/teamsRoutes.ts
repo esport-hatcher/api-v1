@@ -3,7 +3,7 @@ import { BaseRouter } from '@services/router';
 import {
     requireAuth,
     requireAdmin,
-    requireScopeOrAdmin,
+    requireScopeOrSuperAdmin,
     requireValidation,
     requireTeamOwnerOrAdmin,
     requireFiltersOrPagination,
@@ -14,23 +14,15 @@ const teamsRoutes = BaseRouter();
 
 teamsRoutes.use(requireAuth);
 
-/**
- * Get routes
- */
-
 teamsRoutes.get(
     '/',
     requireAdmin,
     requireFiltersOrPagination,
     teamController.findAll
 );
-teamsRoutes.get('/:teamId/users', requireAuth, teamController.getTeamUser);
 
 teamsRoutes.get('/:teamId', teamController.findById);
 
-/**
- * Post routes
- */
 teamsRoutes.post(
     '/',
     [
@@ -49,21 +41,29 @@ teamsRoutes.post(
     teamController.create
 );
 
+teamsRoutes.patch(
+    '/:teamId',
+    requireScopeOrSuperAdmin,
+    teamController.updateById
+);
+
+teamsRoutes.delete(
+    '/:teamId',
+    requireScopeOrSuperAdmin,
+    teamController.deleteById
+);
+
+/**
+ * Routes related to team members
+ */
+
+teamsRoutes.get('/:teamId/users', requireAuth, teamController.getTeamUser);
+
 teamsRoutes.post(
-    '/:teamId/members/:userId',
+    '/:teamId/users/:userId',
     requireValidation,
     requireTeamOwnerOrAdmin,
     teamController.addTeamUser
 );
-
-/**
- * Patch routes
- */
-teamsRoutes.patch('/:teamId', requireScopeOrAdmin, teamController.updateById);
-
-/**
- * Delete routes
- */
-teamsRoutes.delete('/:teamId', requireScopeOrAdmin, teamController.deleteById);
 
 export { teamsRoutes };
