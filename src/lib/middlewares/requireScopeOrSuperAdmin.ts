@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
 import { unauthorizedError, notFoundError } from '@utils';
 
-export const requireScopeOrAdmin = (
+export const requireScopeOrSuperAdmin = (
     req: IRequest,
     _res: Response,
     next: NextFunction
