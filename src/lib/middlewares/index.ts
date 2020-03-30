@@ -1,5 +1,5 @@
 export * from './requireAuth';
-export * from './requireScopeOrAdmin';
+export * from './requireScopeOrSuperAdmin';
 export * from './requireValidation';
 export * from './requireAdmin';
 export * from './requireStagingOrDevEnv';
