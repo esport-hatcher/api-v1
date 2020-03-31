@@ -5,7 +5,8 @@ import {
     requireValidation,
     requireTeamOwnerOrAdmin,
     requireFiltersOrPagination,
-    requireTeamMember,
+    requireOwnerTeamMember,
+    requireUserTeamMember,
 } from '@middlewares';
 import { eventController } from '@controllers';
 
@@ -14,21 +15,17 @@ const eventRoutes = BaseRouter();
 eventRoutes.use(requireAuth);
 
 /**
- * Get routes
+ * CRUD routes
  */
 
 eventRoutes.get(
     '/',
     requireFiltersOrPagination,
-    requireTeamMember,
+    requireOwnerTeamMember,
     eventController.findAll
 );
 
-eventRoutes.get('/:eventId', requireTeamMember, eventController.findById);
-
-/**
- * Post routes
- */
+eventRoutes.get('/:eventId', requireOwnerTeamMember, eventController.findById);
 
 eventRoutes.post(
     '/',
@@ -50,24 +47,54 @@ eventRoutes.post(
     eventController.create
 );
 
-/**
- * Patch routes
- */
-
 eventRoutes.patch(
     '/:eventId',
     requireTeamOwnerOrAdmin,
     eventController.updateById
 );
 
-/**
- * Delete routes
- */
-
 eventRoutes.delete(
     '/:eventId',
     requireTeamOwnerOrAdmin,
     eventController.deleteById
+);
+
+/**
+ * EventUsers Routes
+ */
+
+eventRoutes.get(
+    '/:eventId/users',
+    requireOwnerTeamMember,
+    eventController.getEventUsers
+);
+
+eventRoutes.get(
+    '/:eventId/users/:userId',
+    requireOwnerTeamMember,
+    requireUserTeamMember,
+    eventController.getEventUser
+);
+
+eventRoutes.post(
+    '/:eventId/users/:userId',
+    requireTeamOwnerOrAdmin,
+    requireUserTeamMember,
+    eventController.createEventUser
+);
+
+eventRoutes.patch(
+    '/:eventId/users/:userId',
+    requireTeamOwnerOrAdmin,
+    requireUserTeamMember,
+    eventController.updateEventUser
+);
+
+eventRoutes.delete(
+    '/:eventId/users/:userId',
+    requireTeamOwnerOrAdmin,
+    requireUserTeamMember,
+    eventController.deleteEventUser
 );
 
 export { eventRoutes };
