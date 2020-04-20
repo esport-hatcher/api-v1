@@ -8,16 +8,7 @@ import { hash } from 'bcryptjs';
 import { encode } from 'jwt-simple';
 import { createHashtag } from '@utils';
 import { jwtSecret } from '@config';
-import { Team, TeamUser, Task, TaskUser } from '@models';
-
-// import {
-// 	HasManyGetAssociationsMixin,
-// 	HasManyAddAssociationMixin,
-// 	HasManyHasAssociationMixin,
-// 	Association,
-// 	HasManyCountAssociationsMixin,
-// 	HasManyCreateAssociationMixin
-// } from 'sequelize/lib/associations';
+import { Team, TeamUser, Task, TaskUser, Role, RoleUser } from '@models';
 
 export interface IUserProps {
     firstName: string;
@@ -51,9 +42,11 @@ export class User extends Model {
     public readonly updatedAt!: Date;
     public getTeams!: BelongsToManyGetAssociationsMixin<Team>;
     public getTasks!: BelongsToManyGetAssociationsMixin<Task>;
+    public getRoles!: BelongsToManyGetAssociationsMixin<Role>;
 
     public TeamUser: TeamUser;
     public TaskUser: TaskUser;
+    public RoleUser: RoleUser;
 
     getAccessToken() {
         const timestamp = new Date().getTime();
@@ -145,6 +138,7 @@ export const initUser = (db: Sequelize) => {
         user.password = hashed;
         return Promise.resolve();
     });
+
     User.afterCreate(async user => {
         user.hashtag = createHashtag(user.id);
         await user.save();

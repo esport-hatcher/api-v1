@@ -1,12 +1,13 @@
 import {
     Model,
     DataTypes,
+    Sequelize,
     BelongsToManyAddAssociationMixin,
     BelongsToManyGetAssociationsMixin,
-    Sequelize,
     HasManyCreateAssociationMixin,
+    HasManyGetAssociationsMixin,
 } from 'sequelize';
-import { User, TeamUser, Event, Task } from '@models';
+import { User, TeamUser, Event, Task, Role, RoleUser } from '@models';
 
 export interface ITeamProps {
     name: string;
@@ -29,6 +30,10 @@ export class Team extends Model {
     public getUsers!: BelongsToManyGetAssociationsMixin<User>;
     public createEvent!: HasManyCreateAssociationMixin<Event>;
     public createTask!: HasManyCreateAssociationMixin<Task>;
+
+    public getRoleUsers!: HasManyGetAssociationsMixin<RoleUser>;
+    public createRole!: HasManyCreateAssociationMixin<Role>;
+    public getRoles!: HasManyGetAssociationsMixin<Role>;
 }
 
 export const initTeam = (db: Sequelize) => {

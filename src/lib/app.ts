@@ -2,18 +2,20 @@ import { json } from 'body-parser';
 import * as cors from 'cors';
 import * as express from 'express';
 
-// Routes
 import {
+    // Routes
+    basicRoutes,
     userRoutes,
     jobRoutes,
     teamsRoutes,
     eventRoutes,
     taskRoutes,
+    roleRoutes,
+    // Resolvers
     userResolver,
     teamResolver,
     eventResolver,
     taskResolver,
-    basicRoutes,
 } from '@routes';
 import { IError, IRequest } from '@typings';
 
@@ -29,12 +31,20 @@ app.param('userId', userResolver)
     .param('teamId', teamResolver)
     .param('eventId', eventResolver)
     .param('taskId', taskResolver);
+
+/**
+ * Routes
+ */
 app.use(basicRoutes);
 app.use('/users', userRoutes);
 app.use('/teams', teamsRoutes);
 app.use('/jobs', jobRoutes);
 app.use('/teams/:teamId/events', eventRoutes);
 app.use('/teams/:teamId/tasks', taskRoutes);
+/**
+ * Permissions
+ */
+app.use('/roles', roleRoutes);
 
 // Healthcheck route
 app.get('/', (_req, res) => {

@@ -21,9 +21,13 @@ export interface IRequest extends Request {
      */
     event: Event;
     /**
-     * If there is a :eventId in the route making the request, the event will be stored in this variable
+     * If there is a :taskId in the route making the request, the event will be stored in this variable
      */
     task: Task;
+    /**
+     * If there is a :roleId in the route making the request, the event will be stored in this variable
+     */
+    role: Role;
     /**
      * If there is a filter in the route making the request, the filter will be stored in this variable
      */

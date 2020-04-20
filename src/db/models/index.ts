@@ -1,3 +1,4 @@
+export * from './permissions';
 export * from './Team';
 export * from './TeamUser';
 export * from './User';

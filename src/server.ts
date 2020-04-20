@@ -2,16 +2,18 @@
 import 'module-alias/register';
 import { app } from '@app';
 import { sequelizeDb } from '@db';
-import { User } from '@models';
+import { User, Role, Team } from '@models';
 import { logger } from '@utils';
 
 const executeMigration = async () => {
+    // To replace with a true migration system
     const user = await User.findOne({
         where: { email: 'admin@esport-hatcher.com' },
     });
+
     if (!user) {
         const { BO_ADMIN_PWD } = process.env;
-        await User.create({
+        const newUser = await User.create({
             firstName: 'admin',
             lastName: 'admin',
             username: 'admin',
@@ -22,12 +24,73 @@ const executeMigration = async () => {
             city: 'Paris',
             phoneNumber: '3300000000',
         });
+
+        const team = await Team.findOne({
+            where: { name: 'Esport-Hatcher' },
+        });
+        if (!team) {
+            const newTeam = await Team.create({
+                name: 'Esport-Hatcher',
+                game: 'League of Legends',
+                region: 'EUW',
+                avatarTeamUrl: 'https://google.com',
+                bannerUrl: 'https://google.com',
+            });
+
+            newTeam.addUser(newUser);
+        }
+    }
+
+    /**
+     * Permissions
+     * ---
+     * Roles
+     */
+    let role = await Role.findOne({
+        where: { name: 'Owner' },
+    });
+    if (!role) {
+        await Role.create({
+            name: 'Owner',
+            primary: true,
+        });
+    }
+
+    role = await Role.findOne({
+        where: { name: 'Administrator' },
+    });
+    if (!role) {
+        await Role.create({
+            name: 'Administrator',
+            primary: true,
+        });
+    }
+
+    role = await Role.findOne({
+        where: { name: 'Staff' },
+    });
+    if (!role) {
+        await Role.create({
+            name: 'Staff',
+            primary: true,
+        });
+    }
+
+    role = await Role.findOne({
+        where: { name: 'Player' },
+    });
+    if (!role) {
+        await Role.create({
+            name: 'Player',
+            primary: true,
+        });
     }
 };
 
 sequelizeDb
     .init(
-        process.env.NODE_ENV === 'CI' ||
+        true ||
+            process.env.NODE_ENV === 'CI' ||
             process.env.NODE_ENV === 'production' ||
             process.env.NODE_ENV === 'staging'
     )

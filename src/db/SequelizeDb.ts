@@ -16,6 +16,10 @@ import {
     initTaskUser,
     EventUser,
     initEventUser,
+    Role,
+    initRole,
+    RoleUser,
+    initRoleUser,
 } from '@models';
 
 class SequelizeDb {
@@ -79,6 +83,10 @@ class SequelizeDb {
         initEventUser(db);
         initTask(db);
         initTaskUser(db);
+
+        // Permissions
+        initRole(db);
+        initRoleUser(db);
     }
 
     /**
@@ -126,6 +134,23 @@ class SequelizeDb {
          */
         Task.belongsToMany(User, { through: TaskUser });
         User.belongsToMany(Task, { through: TaskUser });
+
+        /**
+         * Permissions
+         * ***
+         * Roles
+         */
+        Role.belongsToMany(User, { through: RoleUser });
+        User.belongsToMany(Role, { through: RoleUser });
+        Role.belongsTo(Team, {
+            foreignKey: {
+                allowNull: true,
+            },
+            constraints: false,
+        });
+        Team.hasMany(Role);
+        RoleUser.belongsTo(Team);
+        Team.hasMany(RoleUser);
     }
 
     public async close(test: ConstrainBoolean = false) {
