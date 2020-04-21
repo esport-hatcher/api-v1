@@ -19,13 +19,20 @@ class TaskController extends ModelController<typeof Task> {
     ): Promise<void | Response> {
         try {
             const { owner, team } = req;
-            const { title, description, dateBegin, deadline } = req.body;
-
-            const newTask = await team.createTask({
+            const {
                 title,
                 description,
+                dueDate,
                 dateBegin,
-                deadline,
+                dateEnd,
+            } = req.body;
+
+            const newTask = await team.createTask({
+                title: title,
+                description: description,
+                dueDate: dueDate,
+                dateBegin: dateBegin,
+                dateEnd: dateEnd,
             });
             await newTask.addUser(owner);
             return res.status(201).json(newTask);
@@ -118,10 +125,11 @@ class TaskController extends ModelController<typeof Task> {
         try {
             task.title = req.body.title || task.title;
             task.description = req.body.description || task.description;
+            task.dueDate = req.body.dueDate || task.dueDate;
             task.dateBegin = req.body.dateBegin || task.dateBegin;
-            task.deadline = req.body.deadline || task.deadline;
+            task.dateEnd = req.body.deadline || task.dateEnd;
             await task.save();
-            return res.sendStatus(200);
+            return res.sendStatus(200).json(task);
         } catch (err) {
             return next(err);
         }
@@ -139,6 +147,22 @@ class TaskController extends ModelController<typeof Task> {
                 attributes: { exclude: FORBIDDEN_FIELDS },
             });
             return res.status(200).json(taskUsers);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async delete(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        const { task } = req;
+
+        try {
+            await task.destroy();
+            return res.sendStatus(204);
         } catch (err) {
             return next(err);
         }

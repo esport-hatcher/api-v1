@@ -12,6 +12,7 @@ import {
     taskRoutes,
     roleRoutes,
     actionRoutes,
+    permissionRoutes,
     // Resolvers
     userResolver,
     teamResolver,
@@ -19,6 +20,7 @@ import {
     taskResolver,
     roleResolver,
     actionResolver,
+    permissionResolver,
 } from '@routes';
 import { IError, IRequest } from '@typings';
 
@@ -35,7 +37,8 @@ app.param('userId', userResolver)
     .param('eventId', eventResolver)
     .param('taskId', taskResolver)
     .param('roleId', roleResolver)
-    .param('actionId', actionResolver);
+    .param('actionId', actionResolver)
+    .param('permissionId', permissionResolver);
 
 /**
  * Routes
@@ -51,6 +54,7 @@ app.use('/teams/:teamId/tasks', taskRoutes);
  */
 app.use('/teams/:teamId/roles', roleRoutes);
 app.use('/teams/:teamId/actions', actionRoutes);
+app.use('/teams/:teamId/permissions', permissionRoutes);
 
 // Healthcheck route
 app.get('/', (_req, res) => {

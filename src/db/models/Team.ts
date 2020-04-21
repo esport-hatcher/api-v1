@@ -7,7 +7,16 @@ import {
     HasManyCreateAssociationMixin,
     HasManyGetAssociationsMixin,
 } from 'sequelize';
-import { User, TeamUser, Event, Task, Role, RoleUser, Action } from '@models';
+import {
+    User,
+    TeamUser,
+    Event,
+    Task,
+    Role,
+    RoleUser,
+    Action,
+    Permission,
+} from '@models';
 
 export interface ITeamProps {
     name: string;
@@ -31,12 +40,17 @@ export class Team extends Model {
     public createEvent!: HasManyCreateAssociationMixin<Event>;
     public createTask!: HasManyCreateAssociationMixin<Task>;
 
+    // Permissions
+    // Roles
     public getRoleUsers!: HasManyGetAssociationsMixin<RoleUser>;
     public createRole!: HasManyCreateAssociationMixin<Role>;
     public getRoles!: HasManyGetAssociationsMixin<Role>;
-
+    // Actions
     public createAction!: HasManyCreateAssociationMixin<Action>;
     public getActions!: HasManyGetAssociationsMixin<Action>;
+    // Permissions
+    public createPermission!: HasManyCreateAssociationMixin<Permission>;
+    public getPermissions!: HasManyGetAssociationsMixin<Permission>;
 }
 
 export const initTeam = (db: Sequelize) => {

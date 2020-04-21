@@ -33,6 +33,10 @@ export interface IRequest extends Request {
      */
     action: Action;
     /**
+     * If there is a :permissionId in the route making the request, the event will be stored in this variable
+     */
+    permission: Permission;
+    /**
      * If there is a filter in the route making the request, the filter will be stored in this variable
      */
     filters: Dictionary<{

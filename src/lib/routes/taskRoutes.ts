@@ -67,11 +67,7 @@ taskRoutes.patch(
 /**
  * Delete routes
  */
-taskRoutes.delete(
-    '/:taskId',
-    requireTeamOwnerOrAdmin,
-    taskController.deleteById
-);
+taskRoutes.delete('/:taskId', requireTeamOwnerOrAdmin, taskController.delete);
 
 taskRoutes.delete(
     '/:taskId/members/:userId',

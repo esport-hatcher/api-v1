@@ -6,6 +6,7 @@ import {
     taskResolver,
     roleResolver,
     actionResolver,
+    permissionResolver,
 } from '@routes';
 
 export const BaseRouter = (): Router =>
@@ -15,4 +16,5 @@ export const BaseRouter = (): Router =>
         .param('eventId', eventResolver)
         .param('taskId', taskResolver)
         .param('roleId', roleResolver)
-        .param('actionId', actionResolver);
+        .param('actionId', actionResolver)
+        .param('permissionId', permissionResolver);

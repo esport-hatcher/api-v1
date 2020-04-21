@@ -3,7 +3,6 @@ import { IRequest } from '@typings';
 import { logRequest } from '@utils';
 import { Action } from '@models';
 import { ModelController } from '@controllers';
-import { teamController } from '../TeamsController';
 
 class ActionController extends ModelController<typeof Action> {
     constructor() {

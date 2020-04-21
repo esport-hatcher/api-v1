@@ -10,16 +10,18 @@ import { User, TaskUser } from '@models';
 export interface ITaskProps {
     title: string;
     description: string;
+    dueDate: Date;
     dateBegin: Date;
-    deadline: Date;
+    dateEnd: Date;
 }
 
 export class Task extends Model {
     public id!: number;
     public title!: string;
     public description!: string;
+    public dueDate!: Date;
     public dateBegin!: Date;
-    public deadline!: Date;
+    public dateEnd!: Date;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
@@ -43,13 +45,17 @@ export const initTask = (db: Sequelize) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            dueDate: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
             dateBegin: {
                 type: DataTypes.DATE,
                 allowNull: false,
             },
-            deadline: {
+            dateEnd: {
                 type: DataTypes.DATE,
-                allowNull: false,
+                allowNull: true,
             },
         },
         {

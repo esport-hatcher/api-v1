@@ -22,6 +22,12 @@ import {
     initRoleUser,
     Action,
     initAction,
+    initPermission,
+    initPermissionRole,
+    initPermissionAction,
+    Permission,
+    PermissionRole,
+    PermissionAction,
 } from '@models';
 
 class SequelizeDb {
@@ -90,6 +96,9 @@ class SequelizeDb {
         initRole(db);
         initRoleUser(db);
         initAction(db);
+        initPermission(db);
+        initPermissionRole(db);
+        initPermissionAction(db);
     }
 
     /**
@@ -155,6 +164,17 @@ class SequelizeDb {
          */
         Team.hasMany(Action);
         Action.belongsTo(Team);
+
+        /**
+         * Permission
+         */
+        Team.hasMany(Permission);
+        Permission.belongsTo(Team);
+
+        Role.belongsToMany(Permission, { through: PermissionRole });
+        Permission.belongsToMany(Role, { through: PermissionRole });
+        Action.belongsToMany(Permission, { through: PermissionAction });
+        Permission.belongsToMany(Action, { through: PermissionAction });
     }
 
     public async close(test: ConstrainBoolean = false) {
