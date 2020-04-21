@@ -4,6 +4,8 @@ import {
     teamResolver,
     eventResolver,
     taskResolver,
+    roleResolver,
+    actionResolver,
 } from '@routes';
 
 export const BaseRouter = (): Router =>
@@ -11,4 +13,6 @@ export const BaseRouter = (): Router =>
         .param('userId', userResolver)
         .param('teamId', teamResolver)
         .param('eventId', eventResolver)
-        .param('taskId', taskResolver);
+        .param('taskId', taskResolver)
+        .param('roleId', roleResolver)
+        .param('actionId', actionResolver);

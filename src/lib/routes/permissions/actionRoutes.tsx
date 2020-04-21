@@ -5,51 +5,55 @@ import {
     requireValidation,
     requireTeamOwnerOrAdmin,
 } from '@middlewares';
-import { roleController } from '@controllers';
+import { actionController } from '@controllers';
 
-const roleRoutes = BaseRouter();
+const actionRoutes = BaseRouter();
 
-roleRoutes.use(requireAuth);
+actionRoutes.use(requireAuth);
 
 /**
  * Get routes
  */
 
-roleRoutes.get('/', requireAuth, roleController.findAll);
+actionRoutes.get('/', requireAuth, actionController.findAll);
 
 /**
  * Post routes
  */
-roleRoutes.post(
+actionRoutes.post(
     '/',
     [
-        body('name')
+        body('action')
             .trim()
             .isLength({ min: 1, max: 128 }),
     ],
     requireValidation,
     requireTeamOwnerOrAdmin,
-    roleController.create
+    actionController.create
 );
 
 /**
  * Patch routes
  */
-roleRoutes.patch(
-    '/:roleId',
+actionRoutes.patch(
+    '/:actionId',
     [
-        body('name')
+        body('action')
             .trim()
             .isLength({ min: 1, max: 128 }),
     ],
     requireValidation,
     requireTeamOwnerOrAdmin,
-    roleController.updateById
+    actionController.updateById
 );
 
 /**
  * Delete routes
  */
-roleRoutes.delete('/:roleId', requireTeamOwnerOrAdmin, roleController.delete);
+actionRoutes.delete(
+    '/:actionId',
+    requireTeamOwnerOrAdmin,
+    actionController.delete
+);
 
-export { roleRoutes };
+export { actionRoutes };

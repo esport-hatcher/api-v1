@@ -37,7 +37,13 @@ const executeMigration = async () => {
                 bannerUrl: 'https://google.com',
             });
 
-            newTeam.addUser(newUser);
+            newTeam.addUser(newUser, {
+                through: {
+                    role: 'Owner',
+                    playerStatus: true,
+                    teamStatus: true,
+                },
+            });
         }
     }
 

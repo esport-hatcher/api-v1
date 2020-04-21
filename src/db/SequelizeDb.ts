@@ -20,6 +20,8 @@ import {
     initRole,
     RoleUser,
     initRoleUser,
+    Action,
+    initAction,
 } from '@models';
 
 class SequelizeDb {
@@ -87,6 +89,7 @@ class SequelizeDb {
         // Permissions
         initRole(db);
         initRoleUser(db);
+        initAction(db);
     }
 
     /**
@@ -142,15 +145,16 @@ class SequelizeDb {
          */
         Role.belongsToMany(User, { through: RoleUser });
         User.belongsToMany(Role, { through: RoleUser });
-        Role.belongsTo(Team, {
-            foreignKey: {
-                allowNull: true,
-            },
-            constraints: false,
-        });
+        Role.belongsTo(Team);
         Team.hasMany(Role);
         RoleUser.belongsTo(Team);
         Team.hasMany(RoleUser);
+
+        /**
+         * Actions
+         */
+        Team.hasMany(Action);
+        Action.belongsTo(Team);
     }
 
     public async close(test: ConstrainBoolean = false) {

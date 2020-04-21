@@ -29,6 +29,10 @@ export interface IRequest extends Request {
      */
     role: Role;
     /**
+     * If there is a :actionId in the route making the request, the event will be stored in this variable
+     */
+    action: Action;
+    /**
      * If there is a filter in the route making the request, the filter will be stored in this variable
      */
     filters: Dictionary<{

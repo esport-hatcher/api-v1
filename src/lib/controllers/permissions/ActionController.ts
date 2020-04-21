@@ -1,12 +1,13 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
 import { logRequest } from '@utils';
-import { Role } from '@models';
+import { Action } from '@models';
 import { ModelController } from '@controllers';
+import { teamController } from '../TeamsController';
 
-class RoleController extends ModelController<typeof Role> {
+class ActionController extends ModelController<typeof Action> {
     constructor() {
-        super(Role);
+        super(Action);
     }
 
     @logRequest
@@ -17,13 +18,13 @@ class RoleController extends ModelController<typeof Role> {
     ): Promise<void | Response> {
         try {
             const { team } = req;
-            const { name } = req.body;
+            const { action } = req.body;
 
-            const newRole = await team.createRole({
-                name,
+            const newAction = await team.createAction({
+                action: action,
             });
 
-            return res.status(201).json(newRole);
+            return res.status(201).json(newAction);
         } catch (err) {
             return next(err);
         }
@@ -35,10 +36,10 @@ class RoleController extends ModelController<typeof Role> {
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const { role } = req;
+        const { action } = req;
         try {
-            role.name = req.body.name;
-            await role.save();
+            action.action = req.body.action;
+            await action.save();
             return res.sendStatus(200);
         } catch (err) {
             return next(err);
@@ -54,13 +55,13 @@ class RoleController extends ModelController<typeof Role> {
         const { team } = req;
 
         try {
-            const roles = await team.getRoles();
-            let primary_roles = await Role.findAll({
-                where: { primary: true },
+            const actions = await team.getActions();
+            let primary_actions = await Action.findAll({
+                where: { TeamId: team.id },
             });
 
-            primary_roles = primary_roles.concat(roles);
-            return res.status(200).json(primary_roles);
+            primary_actions = primary_actions.concat(actions);
+            return res.status(200).json(primary_actions);
         } catch (err) {
             return next(err);
         }
@@ -72,10 +73,10 @@ class RoleController extends ModelController<typeof Role> {
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const { role } = req;
+        const { action } = req;
 
         try {
-            await role.destroy();
+            await action.destroy();
             return res.sendStatus(204);
         } catch (err) {
             return next(err);
@@ -83,4 +84,4 @@ class RoleController extends ModelController<typeof Role> {
     }
 }
 
-export const roleController = new RoleController();
+export const actionController = new ActionController();
