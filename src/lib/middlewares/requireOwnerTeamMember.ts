@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
 import { unauthorizedError } from '@utils';
 
-export const requireTeamMember = async (
+export const requireOwnerTeamMember = async (
     req: IRequest,
     _res: Response,
     next: NextFunction

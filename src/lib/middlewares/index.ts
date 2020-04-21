@@ -5,4 +5,5 @@ export * from './requireAdmin';
 export * from './requireStagingOrDevEnv';
 export * from './requireTeamOwnerOrAdmin';
 export * from './requireFiltersOrPagination';
-export * from './requireTeamMember';
+export * from './requireOwnerTeamMember';
+export * from './requireUserTeamMember';

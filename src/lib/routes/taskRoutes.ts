@@ -6,7 +6,7 @@ import {
     requireValidation,
     requireTeamOwnerOrAdmin,
     requireFiltersOrPagination,
-    requireTeamMember,
+    requireOwnerTeamMember,
 } from '@middlewares';
 import { taskController } from '@controllers';
 
@@ -24,9 +24,13 @@ taskRoutes.get(
     requireFiltersOrPagination,
     taskController.findAll
 );
-taskRoutes.get('/:taskId/users', requireTeamMember, taskController.getTaskUser);
+taskRoutes.get(
+    '/:taskId/users',
+    requireOwnerTeamMember,
+    taskController.getTaskUser
+);
 
-taskRoutes.get('/:taskId', requireTeamMember, taskController.findById);
+taskRoutes.get('/:taskId', requireOwnerTeamMember, taskController.findById);
 
 /**
  * Post routes

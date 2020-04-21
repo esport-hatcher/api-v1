@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { notFoundError } from '@utils';
+import { notFoundError, logger } from '@utils';
 import { Task } from '@models';
 
 export const taskResolver = async (
@@ -13,6 +13,7 @@ export const taskResolver = async (
         res;
         const task = await Task.findByPk(id);
         if (!task) {
+            logger('Resolver', `Task ${id} not found`);
             return next(notFoundError('Task'));
         }
         req.task = task;

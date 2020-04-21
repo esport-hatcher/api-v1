@@ -22,9 +22,11 @@ export const conflictError = (msg?: string) => {
     return error;
 };
 
-export const unprocessableEntity = (errors: Result, msg?: string) => {
+export const unprocessableEntity = (msg?: string, errors?: Result) => {
     const error: IError = new Error(msg || 'Unprocessable entity');
     error.statusCode = 422;
-    error.data = errors.array();
+    if (errors) {
+        error.data = errors.array();
+    }
     return error;
 };

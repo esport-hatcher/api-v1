@@ -19,20 +19,24 @@ import {
  * @param teamProps  - optional
  */
 export const getTeam = async (
-    teamUser: { user: User; role?: TeamUserRole },
+    teamUser?: { user: User; role?: TeamUserRole },
     teamProps?: ITeamProps
 ): Promise<Team> => {
-    const { user, role } = teamUser;
     const newTeam: Team = await Team.create(
         teamProps ? teamProps : getRandomTeamProps()
     );
-    await newTeam.addUser(user, {
-        through: {
-            role: role ? role : 'Owner',
-            playerStatus: true,
-            teamStatus: true,
-        },
-    });
+
+    if (teamUser) {
+        const { user, role } = teamUser;
+
+        await newTeam.addUser(user, {
+            through: {
+                role: role ? role : 'Owner',
+                playerStatus: true,
+                teamStatus: true,
+            },
+        });
+    }
     return newTeam;
 };
 
