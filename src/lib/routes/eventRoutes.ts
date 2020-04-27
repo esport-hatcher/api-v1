@@ -30,15 +30,9 @@ eventRoutes.get('/:eventId', requireOwnerTeamMember, eventController.findById);
 eventRoutes.post(
     '/',
     [
-        body('title')
-            .trim()
-            .isLength({ min: 1 }),
-        body('description')
-            .trim()
-            .isLength({ min: 1 }),
-        body('place')
-            .trim()
-            .isLength({ min: 1, max: 50 }),
+        body('title').trim().isLength({ min: 1 }),
+        body('description').trim().isLength({ min: 1 }),
+        body('place').trim().isLength({ min: 1, max: 50 }),
         body('dateBegin').trim(),
         body('dateEnd').trim(),
     ],

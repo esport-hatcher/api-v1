@@ -13,8 +13,8 @@ class BaseController {
             }
             const url = await uploader({
                 folder: owner.id.toString(),
-                key,
-                type,
+                key: String(key),
+                type: String(type),
             });
             return res.json({ url });
         } catch (err) {
