@@ -2,7 +2,9 @@ import {
     User,
     Team,
     Event,
+    Task,
     IEventProps,
+    ITaskProps,
     ITeamProps,
     IUserProps,
     TeamUserRole,
@@ -10,6 +12,7 @@ import {
 import {
     getRandomTeamProps,
     getRandomEventProps,
+    getRandomTaskProps,
     getRandomUserProps,
 } from '@utils';
 
@@ -52,6 +55,21 @@ export const getEvent = async (
     return team.createEvent(
         // tslint:disable-next-line: no-any
         (eventProps ? eventProps : getRandomEventProps()) as any
+    );
+};
+
+/**
+ *
+ * @param team - Team from which the task will be created
+ * @param taskProps  - optional
+ */
+export const getTask = async (
+    team: Team,
+    taskProps?: ITaskProps
+): Promise<Task> => {
+    return team.createTask(
+        // tslint:disable-next-line: no-any
+        (taskProps ? taskProps : getRandomTaskProps()) as any
     );
 };
 

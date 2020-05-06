@@ -10,7 +10,7 @@ export const seeder = async (
     const { instances } = req.query;
 
     try {
-        await seedData(instances);
+        await seedData(Number(instances));
         return res.status(200).json({
             status: 'Success',
         });
