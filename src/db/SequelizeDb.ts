@@ -28,16 +28,13 @@ class SequelizeDb {
     }
 
     private createInstance(db: string) {
-        const { NODE_ENV, SEQUELIZE_LOGS } = process.env;
+        const { NODE_ENV } = process.env;
         return new Sequelize(db, sqlUser, sqlPassword, {
             dialect: 'mysql',
             host: sqlHost,
             port: sqlPort,
             logging:
-                SEQUELIZE_LOGS === 'false'
-                    ? // tslint:disable-next-line: no-console
-                      false
-                    : NODE_ENV === 'production' || NODE_ENV === 'CI'
+                NODE_ENV === 'production' || NODE_ENV === 'CI'
                     ? false
                     : // tslint:disable-next-line: no-console
                       console.log,
