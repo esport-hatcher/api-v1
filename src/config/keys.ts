@@ -10,10 +10,7 @@ export const SEQUELIZE_LOGS = Boolean(process.env.SEQUELIZE_LOGS);
 let AWS_ACCESS_KEY: string;
 let AWS_SECRET_KEY: string;
 
-if (
-    process.env.NODE_ENV === 'development' &&
-    !Boolean(process.env.KUBERNETES)
-) {
+if (process.env.NODE_ENV === 'development') {
     // tslint:disable-next-line: no-require-imports
     const LOCAL_KEYS = require('./secretKeys');
     AWS_ACCESS_KEY = LOCAL_KEYS.AWS_ACCESS_KEY;
