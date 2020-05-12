@@ -8,7 +8,7 @@ import { hash } from 'bcryptjs';
 import { encode } from 'jwt-simple';
 import { createHashtag } from '@utils';
 import { jwtSecret } from '@config';
-import { Team, TeamUser } from '@models';
+import { Team, TeamUser, Task, TaskUser, EventUser } from '@models';
 
 // import {
 // 	HasManyGetAssociationsMixin,
@@ -50,8 +50,11 @@ export class User extends Model {
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public getTeams!: BelongsToManyGetAssociationsMixin<Team>;
+    public getTasks!: BelongsToManyGetAssociationsMixin<Task>;
 
     public TeamUser: TeamUser;
+    public TaskUser: TaskUser;
+    public EventUser: EventUser;
 
     getAccessToken() {
         const timestamp = new Date().getTime();

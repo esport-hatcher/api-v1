@@ -10,6 +10,12 @@ import {
     initEvent,
     TeamUser,
     initTeamUser,
+    Task,
+    initTask,
+    TaskUser,
+    initTaskUser,
+    EventUser,
+    initEventUser,
 } from '@models';
 
 class SequelizeDb {
@@ -40,7 +46,10 @@ class SequelizeDb {
 
     private getDb(test: boolean = false) {
         if (!this.db && !test) {
-            logger('Database', 'Creating standard instance...');
+            logger(
+                'Database',
+                `Creating standard instance...\nHost: ${sqlHost}\nUser: ${sqlUser}\nPwd: ${sqlPassword}\nPort: ${sqlPort}\nDatabase: ${sqlDb}`
+            );
             this.db = this.createInstance(sqlDb);
         }
         if (!this.dbTest && test) {
@@ -63,11 +72,13 @@ class SequelizeDb {
      * Register the models into the sequelize instance
      */
     private registerModels(db: Sequelize) {
-        logger('Database', 'Initializing models');
         initUser(db);
         initTeam(db);
-        initEvent(db);
         initTeamUser(db);
+        initEvent(db);
+        initEventUser(db);
+        initTask(db);
+        initTaskUser(db);
     }
 
     /**
@@ -78,14 +89,43 @@ class SequelizeDb {
          * User can have many teams
          * Teams can have many users
          */
-        logger('Database', 'Initializing relations');
+
         User.belongsToMany(Team, { through: TeamUser });
         Team.belongsToMany(User, { through: TeamUser });
+
+        /**
+         * Teams can have many events
+         * Events belong to team
+         */
         Event.belongsTo(Team, {
             constraints: true,
             onDelete: 'cascade',
         });
         Team.hasMany(Event);
+
+        /**
+         * An event can have many users
+         * A user can have many events
+         */
+        Event.belongsToMany(User, { through: EventUser });
+        User.belongsToMany(Event, { through: EventUser });
+
+        /**
+         * A team can have many tasks
+         * A task belongs to a team
+         */
+        Task.belongsTo(Team, {
+            constraints: true,
+            onDelete: 'cascade',
+        });
+        Team.hasMany(Task);
+
+        /**
+         * A task can have many users
+         * A user can have many tasks
+         */
+        Task.belongsToMany(User, { through: TaskUser });
+        User.belongsToMany(Task, { through: TaskUser });
     }
 
     public async close(test: ConstrainBoolean = false) {
@@ -108,13 +148,17 @@ class SequelizeDb {
         if (test && this.db) {
             await this.db.close();
         }
+        logger('Database', 'Fetching database instance...');
         const db = this.getDb(test);
+        logger('Database', 'Initializing models...');
         this.registerModels(db);
+        logger('Database', 'Initializing relations...');
         this.registerRelations();
+        logger('Database', 'Authenticating to database...');
         await this.connect(test);
         logger('Database', 'Syncing database...');
         await this.sync(force, test);
-        logger('Database', 'Initialization ok');
+        logger('Database', 'Initialization ok.');
     }
 }
 

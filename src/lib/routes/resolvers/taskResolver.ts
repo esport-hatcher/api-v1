@@ -1,9 +1,9 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
 import { notFoundError, logger } from '@utils';
-import { Team } from '@models';
+import { Task } from '@models';
 
-export const teamResolver = async (
+export const taskResolver = async (
     req: IRequest,
     res: Response,
     next: NextFunction,
@@ -11,12 +11,12 @@ export const teamResolver = async (
 ) => {
     try {
         res;
-        const team = await Team.findByPk(id);
-        if (!team) {
-            logger('Resolver', `Team ${id} not found`);
-            return next(notFoundError('Team'));
+        const task = await Task.findByPk(id);
+        if (!task) {
+            logger('Resolver', `Task ${id} not found`);
+            return next(notFoundError('Task'));
         }
-        req.team = team;
+        req.task = task;
         return next();
     } catch (err) {
         return next(err);

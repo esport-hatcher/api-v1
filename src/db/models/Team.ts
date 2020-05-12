@@ -4,9 +4,9 @@ import {
     BelongsToManyAddAssociationMixin,
     BelongsToManyGetAssociationsMixin,
     Sequelize,
-    BelongsToCreateAssociationMixin,
+    HasManyCreateAssociationMixin,
 } from 'sequelize';
-import { User, TeamUser } from '@models';
+import { User, TeamUser, Event, Task } from '@models';
 
 export interface ITeamProps {
     name: string;
@@ -27,7 +27,28 @@ export class Team extends Model {
 
     public addUser!: BelongsToManyAddAssociationMixin<User, TeamUser>;
     public getUsers!: BelongsToManyGetAssociationsMixin<User>;
-    public createEvent!: BelongsToCreateAssociationMixin<Event>;
+    public createEvent!: HasManyCreateAssociationMixin<Event>;
+    public createTask!: HasManyCreateAssociationMixin<Task>;
+
+    async addPlayer(newPlayer: User) {
+        return this.addUser(newPlayer, {
+            through: {
+                role: 'Player',
+                teamStatus: true,
+                playerStatus: true,
+            },
+        });
+    }
+
+    async addAdmin(newAdmin: User) {
+        return this.addUser(newAdmin, {
+            through: {
+                role: 'Admin',
+                teamStatus: true,
+                playerStatus: true,
+            },
+        });
+    }
 }
 
 export const initTeam = (db: Sequelize) => {

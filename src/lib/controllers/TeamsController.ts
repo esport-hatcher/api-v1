@@ -39,6 +39,48 @@ class TeamsController extends ModelController<typeof Team> {
     }
 
     @logRequest
+    async updateById(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        const { team } = req;
+
+        try {
+            team.name = req.body.username || team.name;
+            team.game = req.body.avatarUrl || team.game;
+            team.region = req.body.country || team.region;
+            team.avatarTeamUrl = req.body.city || team.avatarTeamUrl;
+            team.bannerUrl = req.body.bannerUrl || team.bannerUrl;
+            await team.save();
+            return res.sendStatus(200);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    /**
+     * Methods related to team members
+     */
+
+    @logRequest
+    async getTeamUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { team } = req;
+            const teamUsers = await team.getUsers({
+                attributes: { exclude: FORBIDDEN_FIELDS },
+            });
+            return res.status(200).json(teamUsers);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
     async addTeamUser(
         req: IRequest,
         res: Response,
@@ -70,43 +112,6 @@ class TeamsController extends ModelController<typeof Team> {
                 },
             });
             return res.sendStatus(201);
-        } catch (err) {
-            return next(err);
-        }
-    }
-
-    @logRequest
-    async updateById(
-        req: IRequest,
-        res: Response,
-        next: NextFunction
-    ): Promise<void | Response> {
-        const { team } = req;
-
-        try {
-            team.name = req.body.username || team.name;
-            team.game = req.body.avatarUrl || team.game;
-            team.region = req.body.country || team.region;
-            team.avatarTeamUrl = req.body.city || team.avatarTeamUrl;
-            team.bannerUrl = req.body.bannerUrl || team.bannerUrl;
-            await team.save();
-            return res.sendStatus(200);
-        } catch (err) {
-            return next(err);
-        }
-    }
-    @logRequest
-    async getTeamUser(
-        req: IRequest,
-        res: Response,
-        next: NextFunction
-    ): Promise<void | Response> {
-        try {
-            const { team } = req;
-            const teamUsers = await team.getUsers({
-                attributes: { exclude: FORBIDDEN_FIELDS },
-            });
-            return res.status(200).json(teamUsers);
         } catch (err) {
             return next(err);
         }

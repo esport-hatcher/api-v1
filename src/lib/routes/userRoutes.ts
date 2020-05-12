@@ -3,7 +3,7 @@ import { BaseRouter } from '@services/router';
 import { userController } from '@controllers';
 import {
     requireValidation,
-    requireScopeOrAdmin,
+    requireScopeOrSuperAdmin,
     requireAuth,
     requireFiltersOrPagination,
 } from '@middlewares';
@@ -23,6 +23,7 @@ userRoutes.get(
 userRoutes.get('/me', requireAuth, userController.getMe);
 
 userRoutes.get('/:userId/teams', requireAuth, userController.getUserTeam);
+userRoutes.get('/:userId/tasks', requireAuth, userController.getUserTask);
 userRoutes.get('/:userId', requireAuth, userController.findById);
 
 /**
@@ -31,22 +32,14 @@ userRoutes.get('/:userId', requireAuth, userController.findById);
 userRoutes.post(
     '/',
     [
-        body('email')
-            .isEmail()
-            .withMessage('Please enter a valid email'),
+        body('email').isEmail().withMessage('Please enter a valid email'),
         body('password')
             .trim()
             .isLength({ min: 5, max: 20 })
             .withMessage('Please enter a password between 5 and 20 characters'),
-        body('firstName')
-            .trim()
-            .isString(),
-        body('lastName')
-            .trim()
-            .isString(),
-        body('username')
-            .trim()
-            .isLength({ min: 2, max: 25 }),
+        body('firstName').trim().isString(),
+        body('lastName').trim().isString(),
+        body('username').trim().isLength({ min: 2, max: 25 }),
     ],
     requireValidation,
     userController.create
@@ -54,11 +47,7 @@ userRoutes.post(
 
 userRoutes.post(
     '/token',
-    [
-        body('email')
-            .isEmail()
-            .withMessage('Please enter a valid email'),
-    ],
+    [body('email').isEmail().withMessage('Please enter a valid email')],
     requireValidation,
     userController.getToken
 );
@@ -72,11 +61,7 @@ userRoutes.post(
 
 userRoutes.post(
     '/:userId/teams/:teamId',
-    [
-        body('role')
-            .trim()
-            .withMessage('Please enter a role'),
-    ],
+    [body('role').trim().withMessage('Please enter a role')],
     requireValidation,
     requireAuth,
     userController.userJoinTeam
@@ -88,7 +73,7 @@ userRoutes.post(
 userRoutes.patch(
     '/:userId',
     requireAuth,
-    requireScopeOrAdmin,
+    requireScopeOrSuperAdmin,
     userController.updateById
 );
 
@@ -98,7 +83,7 @@ userRoutes.patch(
 userRoutes.delete(
     '/:userId',
     requireAuth,
-    requireScopeOrAdmin,
+    requireScopeOrSuperAdmin,
     userController.deleteById
 );
 

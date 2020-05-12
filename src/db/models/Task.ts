@@ -5,31 +5,30 @@ import {
     BelongsToManyAddAssociationMixin,
     BelongsToManyGetAssociationsMixin,
 } from 'sequelize';
-import { User, EventUser } from '@models';
-export interface IEventProps {
+import { User, TaskUser } from '@models';
+
+export interface ITaskProps {
     title: string;
     description: string;
-    place: string;
     dateBegin: Date;
-    dateEnd: Date;
+    deadline: Date;
 }
 
-export class Event extends Model {
+export class Task extends Model {
     public id!: number;
     public title!: string;
     public description!: string;
-    public place!: string;
     public dateBegin!: Date;
-    public dateEnd!: Date;
+    public deadline!: Date;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
-    public addUser!: BelongsToManyAddAssociationMixin<User, EventUser>;
+    public addUser!: BelongsToManyAddAssociationMixin<User, TaskUser>;
     public getUsers!: BelongsToManyGetAssociationsMixin<User>;
 }
 
-export const initEvent = (db: Sequelize) => {
-    Event.init(
+export const initTask = (db: Sequelize) => {
+    Task.init(
         {
             id: {
                 type: DataTypes.INTEGER.UNSIGNED,
@@ -44,21 +43,17 @@ export const initEvent = (db: Sequelize) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            place: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
             dateBegin: {
                 type: DataTypes.DATE,
                 allowNull: false,
             },
-            dateEnd: {
+            deadline: {
                 type: DataTypes.DATE,
                 allowNull: false,
             },
         },
         {
-            tableName: 'Events',
+            tableName: 'Tasks',
             sequelize: db,
         }
     );

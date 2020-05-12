@@ -1,14 +1,14 @@
 import { Response, NextFunction } from 'express';
-import { omit } from 'lodash';
 import { IRequest } from '@typings';
 import { logRequest, unprocessableEntity } from '@utils';
-import { Event } from '@models';
+import { Task } from '@models';
 import { ModelController } from '@controllers';
+import { omit } from 'lodash';
 import { FORBIDDEN_FIELDS, RECORDS_PER_PAGE } from '@config';
 
-class EventController extends ModelController<typeof Event> {
+class TaskController extends ModelController<typeof Task> {
     constructor() {
-        super(Event);
+        super(Task);
     }
 
     @logRequest
@@ -19,16 +19,15 @@ class EventController extends ModelController<typeof Event> {
     ): Promise<void | Response> {
         try {
             const { team } = req;
-            const { title, description, place, dateBegin, dateEnd } = req.body;
+            const { title, description, dateBegin, deadline } = req.body;
 
-            const newEvent = await team.createEvent({
+            const newTask = await team.createTask({
                 title,
                 description,
-                place,
                 dateBegin,
-                dateEnd,
+                deadline,
             });
-            return res.status(201).json(newEvent);
+            return res.status(201).json(newTask);
         } catch (err) {
             return next(err);
         }
@@ -45,7 +44,7 @@ class EventController extends ModelController<typeof Event> {
         const filters = req.filters;
 
         try {
-            const records = await Event.findAll({
+            const records = await Task.findAll({
                 limit: RECORDS_PER_PAGE,
                 offset: (page - 1) * RECORDS_PER_PAGE,
                 where: { teamId: team.id, ...filters },
@@ -65,14 +64,13 @@ class EventController extends ModelController<typeof Event> {
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const { event } = req;
+        const { task } = req;
         try {
-            event.title = req.body.title || event.title;
-            event.description = req.body.description || event.description;
-            event.place = req.body.place || event.place;
-            event.dateBegin = req.body.dateBegin || event.dateBegin;
-            event.dateEnd = req.body.dateEnd || event.dateEnd;
-            await event.save();
+            task.title = req.body.title || task.title;
+            task.description = req.body.description || task.description;
+            task.dateBegin = req.body.dateBegin || task.dateBegin;
+            task.deadline = req.body.deadline || task.deadline;
+            await task.save();
             return res.sendStatus(200);
         } catch (err) {
             return next(err);
@@ -80,14 +78,14 @@ class EventController extends ModelController<typeof Event> {
     }
 
     @logRequest
-    async createEventUser(
+    async createTaskUser(
         req: IRequest,
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const { event, user } = req;
+        const { task, user } = req;
         try {
-            await event.addUser(user);
+            await task.addUser(user);
             return res.sendStatus(201);
         } catch (err) {
             return next(err);
@@ -95,54 +93,54 @@ class EventController extends ModelController<typeof Event> {
     }
 
     @logRequest
-    async getEventUsers(
+    async getTaskUsers(
         req: IRequest,
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const { event } = req;
+        const { task } = req;
         try {
-            const usersInEvent = await event.getUsers();
-            return res.status(200).json(usersInEvent);
+            const usersInTask = await task.getUsers();
+            return res.status(200).json(usersInTask);
         } catch (err) {
             return next(err);
         }
     }
 
     @logRequest
-    async getEventUser(
+    async getTaskUser(
         req: IRequest,
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const { event, user } = req;
+        const { task, user } = req;
         try {
-            const userInEvent = (await event.getUsers()).find(
+            const userInTask = (await task.getUsers()).find(
                 _user => _user.id === user.id
             );
-            if (!userInEvent) {
-                return next(unprocessableEntity('User not in event'));
+            if (!userInTask) {
+                return next(unprocessableEntity('User not in task'));
             }
-            return res.status(200).json(userInEvent);
+            return res.status(200).json(userInTask);
         } catch (err) {
             return next(err);
         }
     }
 
     @logRequest
-    async updateEventUser(
+    async updateTaskUser(
         req: IRequest,
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { event, user } = req;
+            const { task, user } = req;
 
-            const userInEvent = (await event.getUsers()).find(
+            const userInTask = (await task.getUsers()).find(
                 _user => _user.id === user.id
             );
-            if (!userInEvent) {
-                return next(unprocessableEntity('User not in event'));
+            if (!userInTask) {
+                return next(unprocessableEntity('User not in task'));
             }
             return res.sendStatus(200);
         } catch (err) {
@@ -151,21 +149,21 @@ class EventController extends ModelController<typeof Event> {
     }
 
     @logRequest
-    async deleteEventUser(
+    async deleteTaskUser(
         req: IRequest,
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { user, event } = req;
+            const { user, task } = req;
 
-            const eventUsers = await event.getUsers();
-            const eventUser = eventUsers.find(_user => _user.id === user.id);
+            const taskUsers = await task.getUsers();
+            const taskUser = taskUsers.find(_user => _user.id === user.id);
 
-            if (!eventUser) {
-                return next(unprocessableEntity('User not in event'));
+            if (!taskUser) {
+                return next(unprocessableEntity('User not in task'));
             }
-            await eventUser.EventUser.destroy();
+            await taskUser.TaskUser.destroy();
             return res.sendStatus(200);
         } catch (err) {
             return next(err);
@@ -173,4 +171,4 @@ class EventController extends ModelController<typeof Event> {
     }
 }
 
-export const eventController = new EventController();
+export const taskController = new TaskController();

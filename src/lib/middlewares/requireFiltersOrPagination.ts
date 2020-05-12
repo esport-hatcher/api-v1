@@ -10,8 +10,8 @@ export const requireFiltersOrPagination = async (
     _res: Response,
     next: NextFunction
 ) => {
-    const page = req.query.page || 1;
-    const count = req.query.count || false;
+    const page = Number(req.query.page) || 1;
+    const count = Boolean(req.query.count) || false;
     const queryFilters = omit(req.query, ...CONFIG_FIELDS);
 
     const filtersArray = Object.entries(queryFilters).map(([key, value]) => {

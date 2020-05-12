@@ -9,12 +9,12 @@ class BaseController {
             const { type, key } = req.query;
 
             if (!type || !key || !type) {
-                return next(unprocessableEntity(null));
+                return next(unprocessableEntity());
             }
             const url = await uploader({
                 folder: owner.id.toString(),
-                key,
-                type,
+                key: String(key),
+                type: String(type),
             });
             return res.json({ url });
         } catch (err) {

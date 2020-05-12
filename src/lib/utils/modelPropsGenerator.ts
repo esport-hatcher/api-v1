@@ -8,7 +8,14 @@ import {
     random,
     date,
 } from 'faker';
-import { User, IUserProps, Team, ITeamProps, IEventProps } from '@models';
+import {
+    User,
+    IUserProps,
+    Team,
+    ITeamProps,
+    IEventProps,
+    ITaskProps,
+} from '@models';
 
 export const getRandomUserProps = (superAdmin: boolean = false): IUserProps => {
     const firstName = name.firstName();
@@ -69,7 +76,11 @@ export const getRandomEventProps = (): IEventProps => {
     };
 };
 
-export const getUser = async (superAdmin: boolean = false): Promise<User> => {
-    const user = getRandomUserProps(superAdmin);
-    return User.create(user);
+export const getRandomTaskProps = (): ITaskProps => {
+    return {
+        title: company.companyName(),
+        description: company.catchPhraseDescriptor(),
+        dateBegin: date.past(),
+        deadline: date.future(),
+    };
 };
