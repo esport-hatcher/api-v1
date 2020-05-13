@@ -1,4 +1,8 @@
 export const logger = (about: string, msg: string) => {
-    // tslint:disable-next-line: no-console
-    console.log(`[${about}] => ${msg}.`);
+    const { LOGGER } = process.env;
+
+    if (LOGGER) {
+        // tslint:disable-next-line: no-console
+        console.log(`[${about}] => ${msg}.`);
+    }
 };
