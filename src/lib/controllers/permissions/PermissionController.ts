@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { logRequest, logger } from '@utils';
+import { logRequest } from '@utils';
 import { Permission, Role, Action } from '@models';
 import { ModelController } from '@controllers';
 

@@ -2,12 +2,14 @@ import { Model, DataTypes, Sequelize } from 'sequelize';
 
 export interface IActionProps {
     action: string;
+    label: string;
     primary: boolean;
 }
 
 export class Action extends Model {
     public id!: number;
     public action!: string;
+    public label!: string;
     public primary!: boolean;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -23,7 +25,13 @@ export const initAction = (db: Sequelize) => {
             },
             action: {
                 type: new DataTypes.STRING(128),
+                unique: true,
                 allowNull: false,
+            },
+            label: {
+                type: DataTypes.STRING(128),
+                unique: true,
+                allowNull: true,
             },
             primary: {
                 type: DataTypes.BOOLEAN,

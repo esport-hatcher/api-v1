@@ -6,3 +6,4 @@ export * from './logger';
 export * from './validators';
 export * from './modelPropsGenerator';
 export * from './uploader';
+export * from './action-register';
