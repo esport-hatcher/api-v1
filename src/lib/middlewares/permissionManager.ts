@@ -7,6 +7,7 @@ export const handlePermissions = async (
     res: Response,
     next: NextFunction
 ) => {
+    res.header.toString();
     logger('Permissions', 'Middleware running');
     logger('Permissions', req.originalUrl);
     return next();

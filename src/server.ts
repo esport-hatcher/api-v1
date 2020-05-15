@@ -7,13 +7,9 @@ import { logger } from '@utils';
 
 const executeMigration = async () => {
     // To replace with a true migration system
-    const user = await User.findOne({
-        where: { email: 'admin@esport-hatcher.com' },
-    });
-
-    if (!user) {
-        const { BO_ADMIN_PWD } = process.env;
-        const newUser = await User.create({
+    const { BO_ADMIN_PWD } = process.env;
+    await User.findCreateFind({
+        where: {
             firstName: 'admin',
             lastName: 'admin',
             username: 'admin',
@@ -23,74 +19,60 @@ const executeMigration = async () => {
             country: 'France',
             city: 'Paris',
             phoneNumber: '3300000000',
-        });
-
-        const team = await Team.findOne({
-            where: { name: 'Esport-Hatcher' },
-        });
-        if (!team) {
-            const newTeam = await Team.create({
+        },
+    }).then(async userResult => {
+        await Team.findCreateFind({
+            where: {
                 name: 'Esport-Hatcher',
                 game: 'League of Legends',
                 region: 'EUW',
                 avatarTeamUrl: 'https://google.com',
                 bannerUrl: 'https://google.com',
-            });
-
-            newTeam.addUser(newUser, {
+            },
+        }).then(teamResult => {
+            teamResult[0].addUser(userResult[0], {
                 through: {
                     role: 'Owner',
                     playerStatus: true,
                     teamStatus: true,
                 },
             });
-        }
-    }
+        });
+    });
 
     /**
      * Permissions
      * ---
      * Roles
      */
-    let role = await Role.findOne({
-        where: { name: 'Owner' },
-    });
-    if (!role) {
-        await Role.create({
+
+    await Role.findCreateFind({
+        where: {
             name: 'Owner',
             primary: true,
-        });
-    }
-
-    role = await Role.findOne({
-        where: { name: 'Administrator' },
+        },
     });
-    if (!role) {
-        await Role.create({
+
+    await Role.findCreateFind({
+        where: {
             name: 'Administrator',
             primary: true,
-        });
-    }
-
-    role = await Role.findOne({
-        where: { name: 'Staff' },
+        },
     });
-    if (!role) {
-        await Role.create({
+
+    await Role.findCreateFind({
+        where: {
             name: 'Staff',
             primary: true,
-        });
-    }
-
-    role = await Role.findOne({
-        where: { name: 'Player' },
+        },
     });
-    if (!role) {
-        await Role.create({
+
+    await Role.findCreateFind({
+        where: {
             name: 'Player',
             primary: true,
-        });
-    }
+        },
+    });
 };
 
 sequelizeDb
