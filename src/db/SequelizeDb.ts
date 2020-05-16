@@ -41,6 +41,7 @@ class SequelizeDb {
 
     private createInstance(db: string) {
         const { NODE_ENV, SEQUELIZE_LOGS } = process.env;
+
         return new Sequelize(db, sqlUser, sqlPassword, {
             dialect: 'mysql',
             host: sqlHost,

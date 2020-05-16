@@ -25,7 +25,6 @@ import {
     permissionResolver,
 } from '@routes';
 import { IError, IRequest } from '@typings';
-import { registerActions } from '@utils';
 
 // Express app creation
 const app = express();
@@ -61,8 +60,6 @@ app.use('/teams/:teamId/tasks', taskRoutes);
 app.use('/teams/:teamId/roles', roleRoutes);
 app.use('/teams/:teamId/actions', actionRoutes);
 app.use('/teams/:teamId/permissions', permissionRoutes);
-
-registerActions(app);
 
 // Healthcheck route
 app.get('/', (_req, res) => {

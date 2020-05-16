@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
 import { logRequest } from '@utils';
-import { Team } from '@models';
+import { Team, Role, RoleUser } from '@models';
 import { ModelController } from '@controllers';
 import { FORBIDDEN_FIELDS } from '@config';
 
@@ -112,6 +112,46 @@ class TeamsController extends ModelController<typeof Team> {
                 },
             });
             return res.sendStatus(201);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async assignRoleToUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { user, team, role } = req;
+            const teamRoles: Array<Role> = await team.getRoles();
+
+            const existingRoleUser = await RoleUser.findOne({
+                where: {
+                    UserId: user.id,
+                },
+            });
+
+            if (existingRoleUser) {
+                existingRoleUser.destroy();
+            }
+
+            if (role.primary || teamRoles.includes(role)) {
+                await role.addUser(user);
+                await RoleUser.findOne({
+                    where: {
+                        RoleId: role.id,
+                        UserId: user.id,
+                    },
+                }).then(roleUser => {
+                    roleUser.setTeam(team);
+
+                    return null;
+                });
+            }
+
+            return res.sendStatus(204);
         } catch (err) {
             return next(err);
         }

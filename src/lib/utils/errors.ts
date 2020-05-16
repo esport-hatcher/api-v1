@@ -8,6 +8,14 @@ export const unauthorizedError = (msg: string = 'Unauthorized') => {
     return error;
 };
 
+export const forbiddenError = (msg: string = '403 Forbidden') => {
+    const error: IError = new Error(msg);
+    error.statusCode = 403;
+    error.message = msg;
+
+    return error;
+};
+
 export const notFoundError = (entity: string) => {
     const error: IError = new Error(`${entity} not found`);
     error.statusCode = 404;

@@ -1,11 +1,13 @@
 import * as express from 'express';
 import { logger } from '@utils';
+import { Action } from '@models';
 
 interface IRouting {
     routes: Array<string>;
     methods: Array<string>;
     regexp: Array<string>;
-    action: Array<string>;
+    primary: Array<boolean>;
+    actions: Array<string>;
 }
 
 const retrieveRoutes = (app: express.Application): IRouting => {
@@ -13,7 +15,8 @@ const retrieveRoutes = (app: express.Application): IRouting => {
         routes: [],
         methods: [],
         regexp: [],
-        action: null,
+        primary: [],
+        actions: null,
     };
 
     app._router.stack.forEach(middleware => {
@@ -41,31 +44,30 @@ const removeLastCharByOccurence = (str: string, occurence: string): string => {
     return str;
 };
 
-const purifyRegexpName = (regexp: Array<string>): Array<string> => {
-    regexp.forEach((expression, index) => {
+const purifyRegexpName = (data: IRouting): IRouting => {
+    data.regexp.forEach((expression, index) => {
         let tmp_expression: string;
 
         tmp_expression = expression.replace('/^\\', '');
         tmp_expression = tmp_expression.replace('?(?=\\/|$)/i', '');
         tmp_expression = tmp_expression.split('/(?:([^\\/]+?))\\').join('_\\');
         tmp_expression = tmp_expression.split('/').join('');
+        data.primary.push(
+            tmp_expression.split('\\')[0] === 'teams' ? false : true
+        );
 
         tmp_expression = removeLastCharByOccurence(tmp_expression, '\\');
-        regexp[index] = tmp_expression;
+        data.regexp[index] = tmp_expression;
     });
 
-    return regexp;
+    return data;
 };
 
 const purifyRouteName = (routes: Array<string>): Array<string> => {
     routes.forEach((route, index) => {
         let tmp_route: string;
 
-        tmp_route = route.replace(/(:)/g, '');
-        tmp_route = tmp_route.replace(
-            /[A-Z]/g,
-            letter => `_${letter.toLowerCase()}`
-        );
+        tmp_route = route.replace(/(:\w+)/g, '_');
         tmp_route = tmp_route.replace('//', '/');
 
         if (tmp_route.charAt(0) === '/') {
@@ -73,6 +75,7 @@ const purifyRouteName = (routes: Array<string>): Array<string> => {
         }
 
         tmp_route = removeLastCharByOccurence(tmp_route, '/');
+
         routes[index] = tmp_route;
     });
 
@@ -100,11 +103,32 @@ const setupActionNames = (data: IRouting) => {
 };
 
 export const registerActions = (app: express.Application) => {
-    const data: IRouting = retrieveRoutes(app);
+    let data: IRouting = retrieveRoutes(app);
 
     data.routes = purifyRouteName(data.routes);
-    data.regexp = purifyRegexpName(data.regexp);
-    data.action = setupActionNames(data);
+    data = purifyRegexpName(data);
+    data.actions = setupActionNames(data);
 
-    logger('Actions', 'Display actions', data.action);
+    data.actions.forEach(async (action, index) => {
+        await Action.findCreateFind({
+            where: {
+                action: action,
+                label: action,
+                primary: data.primary[index],
+            },
+        })
+            .then(actionResult => {
+                if (actionResult[1] === true) {
+                    logger(
+                        'ActionRegister',
+                        'Created ' + actionResult[0].label
+                    );
+                }
+
+                return null;
+            })
+            .catch(error => {
+                throw error;
+            });
+    });
 };

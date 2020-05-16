@@ -1,9 +1,17 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+import {
+    Model,
+    DataTypes,
+    Sequelize,
+    BelongsToSetAssociationMixin,
+} from 'sequelize';
+import { Team } from '@models';
 
 export class RoleUser extends Model {
     public id!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+
+    public setTeam!: BelongsToSetAssociationMixin<Team, string>;
 }
 
 export const initRoleUser = (db: Sequelize) => {

@@ -3,7 +3,7 @@ import 'module-alias/register';
 import { app } from '@app';
 import { sequelizeDb } from '@db';
 import { User, Role, Team } from '@models';
-import { logger } from '@utils';
+import { logger, registerActions } from '@utils';
 
 const executeMigration = async () => {
     // To replace with a true migration system
@@ -29,15 +29,23 @@ const executeMigration = async () => {
                 avatarTeamUrl: 'https://google.com',
                 bannerUrl: 'https://google.com',
             },
-        }).then(teamResult => {
-            teamResult[0].addUser(userResult[0], {
-                through: {
-                    role: 'Owner',
-                    playerStatus: true,
-                    teamStatus: true,
-                },
-            });
+        }).then(async teamResult => {
+            const teamUsers: Array<User> = await teamResult[0].getUsers();
+
+            if (!teamUsers.includes(userResult[0])) {
+                teamResult[0].addUser(userResult[0], {
+                    through: {
+                        role: 'Owner',
+                        playerStatus: true,
+                        teamStatus: true,
+                    },
+                });
+            }
+
+            return null;
         });
+
+        return null;
     });
 
     /**
@@ -75,25 +83,38 @@ const executeMigration = async () => {
     });
 };
 
-sequelizeDb
-    .init(
-        //true ||
-        process.env.NODE_ENV === 'CI' ||
-            process.env.NODE_ENV === 'production' ||
-            process.env.NODE_ENV === 'staging'
-    )
-    .then(() => {
-        app.listen(process.env.PORT_API, () => {
-            executeMigration()
-                .then(() => logger('Seeders', 'Seeding successful'))
-                .catch((err: Error) => {
-                    logger('Seeders', 'Seeding failed');
-                    logger('Seeders', `${err}`);
-                });
-            logger('Server', `Executed in ${process.env.NODE_ENV} mode`);
-            logger('Server', `Server listening on ${process.env.PORT_API}`);
+const initSequelize = async (): Promise<void> => {
+    sequelizeDb
+        .init(
+            //true ||
+            process.env.NODE_ENV === 'CI' ||
+                process.env.NODE_ENV === 'production' ||
+                process.env.NODE_ENV === 'staging'
+        )
+        .then(() => {
+            app.listen(process.env.PORT_API, () => {
+                executeMigration()
+                    .then(() => logger('Seeders', 'Seeding successful'))
+                    .catch((err: Error) => {
+                        logger('Seeders', 'Seeding failed');
+                        logger('Seeders', `${err}`);
+                    });
+                logger('Server', `Executed in ${process.env.NODE_ENV} mode`);
+                logger('Server', `Server listening on ${process.env.PORT_API}`);
+            });
+        })
+        .catch((err: Error) => {
+            logger('Database', `Failed to initialize database: ${err}`);
         });
-    })
-    .catch((err: Error) => {
-        logger('Database', `Failed to initialize database: ${err}`);
-    });
+
+    return null;
+};
+
+const entryPoint = async (): Promise<void> => {
+    await initSequelize();
+    registerActions(app);
+};
+
+entryPoint().catch(err => {
+    logger('Server', err);
+});

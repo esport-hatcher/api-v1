@@ -66,4 +66,10 @@ teamsRoutes.post(
     teamController.addTeamUser
 );
 
+teamsRoutes.post(
+    '/:teamId/users/:userId/assign-role/:roleId',
+    requireAuth,
+    teamController.assignRoleToUser
+);
+
 export { teamsRoutes };
