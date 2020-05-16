@@ -2,85 +2,17 @@
 import 'module-alias/register';
 import { app } from '@app';
 import { sequelizeDb } from '@db';
-import { User, Role, Team } from '@models';
 import { logger, registerActions } from '@utils';
+import { migrateUsers, migrateRoles, migratePermissions } from '@migrations';
 
 const executeMigration = async () => {
-    // To replace with a true migration system
-    const { BO_ADMIN_PWD } = process.env;
-    await User.findCreateFind({
-        where: {
-            firstName: 'admin',
-            lastName: 'admin',
-            username: 'admin',
-            password: BO_ADMIN_PWD,
-            email: 'admin@esport-hatcher.com',
-            superAdmin: true,
-            country: 'France',
-            city: 'Paris',
-            phoneNumber: '3300000000',
-        },
-    }).then(async userResult => {
-        await Team.findCreateFind({
-            where: {
-                name: 'Esport-Hatcher',
-                game: 'League of Legends',
-                region: 'EUW',
-                avatarTeamUrl: 'https://google.com',
-                bannerUrl: 'https://google.com',
-            },
-        }).then(async teamResult => {
-            const teamUsers: Array<User> = await teamResult[0].getUsers();
+    // Possible improvements to be applied but folder structure is somehow done.
+    // Migration system halfway to be something flexible and useful.
+    await migrateUsers();
+    await migrateRoles();
+    await migratePermissions();
 
-            if (!teamUsers.includes(userResult[0])) {
-                teamResult[0].addUser(userResult[0], {
-                    through: {
-                        role: 'Owner',
-                        playerStatus: true,
-                        teamStatus: true,
-                    },
-                });
-            }
-
-            return null;
-        });
-
-        return null;
-    });
-
-    /**
-     * Permissions
-     * ---
-     * Roles
-     */
-
-    await Role.findCreateFind({
-        where: {
-            name: 'Owner',
-            primary: true,
-        },
-    });
-
-    await Role.findCreateFind({
-        where: {
-            name: 'Administrator',
-            primary: true,
-        },
-    });
-
-    await Role.findCreateFind({
-        where: {
-            name: 'Staff',
-            primary: true,
-        },
-    });
-
-    await Role.findCreateFind({
-        where: {
-            name: 'Player',
-            primary: true,
-        },
-    });
+    registerActions(app);
 };
 
 const initSequelize = async (): Promise<void> => {
@@ -112,7 +44,6 @@ const initSequelize = async (): Promise<void> => {
 
 const entryPoint = async (): Promise<void> => {
     await initSequelize();
-    registerActions(app);
 };
 
 entryPoint().catch(err => {

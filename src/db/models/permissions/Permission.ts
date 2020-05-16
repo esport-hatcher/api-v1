@@ -29,6 +29,16 @@ export class Permission extends Model {
         Action,
         PermissionAction
     >;
+
+    public addActionByName(actionName: string) {
+        Action.findOne({
+            where: { action: actionName },
+        }).then(actionResult => {
+            if (actionResult && actionResult[0]) {
+                this.addAction(actionResult[0]);
+            }
+        });
+    }
 }
 
 export const initPermission = (db: Sequelize) => {

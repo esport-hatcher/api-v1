@@ -50,6 +50,7 @@ const purifyRegexpName = (data: IRouting): IRouting => {
 
         tmp_expression = expression.replace('/^\\', '');
         tmp_expression = tmp_expression.replace('?(?=\\/|$)/i', '');
+        tmp_expression = tmp_expression.replace(/-/g, '_');
         tmp_expression = tmp_expression.split('/(?:([^\\/]+?))\\').join('_\\');
         tmp_expression = tmp_expression.split('/').join('');
         data.primary.push(
@@ -68,6 +69,7 @@ const purifyRouteName = (routes: Array<string>): Array<string> => {
         let tmp_route: string;
 
         tmp_route = route.replace(/(:\w+)/g, '_');
+        tmp_route = tmp_route.replace(/-/g, '_');
         tmp_route = tmp_route.replace('//', '/');
 
         if (tmp_route.charAt(0) === '/') {

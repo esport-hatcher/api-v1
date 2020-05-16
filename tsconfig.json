@@ -39,7 +39,8 @@
 			"@config": ["config"],
 			"@tests/*": ["tests/*"],
 			"@app": ["lib/app.ts"],
-			"@db": ["db/index.ts"]
+			"@db": ["db/index.ts"],
+			"@migrations": ["db/migrations"]
 		}
 	},
 	"include": ["./src/**/*", "environment.js"],

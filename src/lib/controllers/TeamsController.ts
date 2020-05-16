@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { logRequest } from '@utils';
-import { Team, Role, RoleUser } from '@models';
+import { logRequest, forbiddenError, debug } from '@utils';
+import { Team, Role, RoleUser, User } from '@models';
 import { ModelController } from '@controllers';
 import { FORBIDDEN_FIELDS } from '@config';
 
@@ -126,33 +126,43 @@ class TeamsController extends ModelController<typeof Team> {
         try {
             const { user, team, role } = req;
             const teamRoles: Array<Role> = await team.getRoles();
+            const teamUsers: Array<User> = await team.getUsers();
 
-            const existingRoleUser = await RoleUser.findOne({
-                where: {
-                    UserId: user.id,
-                },
+            teamUsers.forEach(user => {
+                debug('Test', user.id.toString());
             });
 
-            if (existingRoleUser) {
-                existingRoleUser.destroy();
-            }
-
-            if (role.primary || teamRoles.includes(role)) {
-                await role.addUser(user);
-                await RoleUser.findOne({
+            if (teamUsers.includes(user)) {
+                const existingRoleUser = await RoleUser.findOne({
                     where: {
-                        RoleId: role.id,
                         UserId: user.id,
                     },
-                }).then(roleUser => {
-                    roleUser.setTeam(team);
-
-                    return null;
                 });
+
+                if (existingRoleUser) {
+                    existingRoleUser.destroy();
+                }
+
+                if (role.primary || teamRoles.includes(role)) {
+                    await role.addUser(user);
+                    await RoleUser.findOne({
+                        where: {
+                            RoleId: role.id,
+                            UserId: user.id,
+                        },
+                    }).then(roleUser => {
+                        roleUser.setTeam(team);
+
+                        return null;
+                    });
+                }
+
+                return res.sendStatus(204);
             }
 
-            return res.sendStatus(204);
+            return next(forbiddenError);
         } catch (err) {
+            debug('Something went wrong');
             return next(err);
         }
     }

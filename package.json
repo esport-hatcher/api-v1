@@ -91,6 +91,7 @@
     "@config": "build/config",
     "@tests": "build/tests",
     "@app": "build/lib/app.js",
-    "@db": "build/db/index.js"
+    "@db": "build/db/index.js",
+    "@migrations": "build/db/migrations"
   }
 }
