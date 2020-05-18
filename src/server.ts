@@ -8,11 +8,11 @@ import { migrateUsers, migrateRoles, migratePermissions } from '@migrations';
 const executeMigration = async () => {
     // Possible improvements to be applied but folder structure is somehow done.
     // Migration system halfway to be something flexible and useful.
+    registerActions(app);
+
     await migrateUsers();
     await migrateRoles();
     await migratePermissions();
-
-    registerActions(app);
 };
 
 const initSequelize = async (): Promise<void> => {

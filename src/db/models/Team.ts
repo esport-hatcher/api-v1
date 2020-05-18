@@ -51,6 +51,19 @@ export class Team extends Model {
     // Permissions
     public createPermission!: HasManyCreateAssociationMixin<Permission>;
     public getPermissions!: HasManyGetAssociationsMixin<Permission>;
+
+    public async findRoleByUser(user: User): Promise<Role> {
+        const roleUsers: RoleUser[] = await this.getRoleUsers();
+        let role: Promise<Role> = null;
+
+        roleUsers.forEach((roleUser: RoleUser) => {
+            if (roleUser.UserId === user.id) {
+                role = Role.findByPk(roleUser.RoleId);
+            }
+        });
+
+        return role;
+    }
 }
 
 export const initTeam = (db: Sequelize) => {

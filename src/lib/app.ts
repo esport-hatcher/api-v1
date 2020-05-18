@@ -2,7 +2,7 @@ import { json } from 'body-parser';
 import * as cors from 'cors';
 import * as express from 'express';
 
-import { handlePermissions } from '@middlewares';
+import { requireAuth, handlePermissions } from '@middlewares';
 
 import {
     // Routes
@@ -33,9 +33,6 @@ const app = express();
 app.use(cors());
 app.use(json());
 
-// Middleware Register
-app.use(handlePermissions);
-
 // Redirect every url beginning by auth to authRoutes
 app.param('userId', userResolver)
     .param('teamId', teamResolver)
@@ -44,6 +41,9 @@ app.param('userId', userResolver)
     .param('roleId', roleResolver)
     .param('actionId', actionResolver)
     .param('permissionId', permissionResolver);
+
+// Middleware Register
+app.use(requireAuth, handlePermissions);
 
 /**
  * Routes

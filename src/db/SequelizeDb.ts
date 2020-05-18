@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { logger } from '@utils';
+import { logger, debug } from '@utils';
 import { sqlDb, sqlHost, sqlPassword, sqlPort, sqlUser } from '@config';
 import {
     User,
@@ -24,10 +24,8 @@ import {
     initAction,
     initPermission,
     initPermissionRole,
-    initPermissionAction,
     Permission,
     PermissionRole,
-    PermissionAction,
 } from '@models';
 
 class SequelizeDb {
@@ -99,7 +97,6 @@ class SequelizeDb {
         initAction(db);
         initPermission(db);
         initPermissionRole(db);
-        initPermissionAction(db);
     }
 
     /**
@@ -161,12 +158,6 @@ class SequelizeDb {
         Team.hasMany(RoleUser);
 
         /**
-         * Actions
-         */
-        Team.hasMany(Action);
-        Action.belongsTo(Team);
-
-        /**
          * Permission
          */
         Team.hasMany(Permission);
@@ -174,8 +165,9 @@ class SequelizeDb {
 
         Role.belongsToMany(Permission, { through: PermissionRole });
         Permission.belongsToMany(Role, { through: PermissionRole });
-        Action.belongsToMany(Permission, { through: PermissionAction });
-        Permission.belongsToMany(Action, { through: PermissionAction });
+        Action.hasMany(Permission);
+        Permission.belongsTo(Action);
+        debug('test');
     }
 
     public async close(test: ConstrainBoolean = false) {

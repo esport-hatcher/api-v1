@@ -10,7 +10,7 @@ export class Action extends Model {
     public id!: number;
     public action!: string;
     public label!: string;
-    public primary!: boolean;
+    public requireAuth!: boolean;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -33,7 +33,7 @@ export const initAction = (db: Sequelize) => {
                 unique: true,
                 allowNull: true,
             },
-            primary: {
+            requireAuth: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
                 defaultValue: false,

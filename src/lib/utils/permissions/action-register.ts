@@ -6,7 +6,6 @@ interface IRouting {
     routes: Array<string>;
     methods: Array<string>;
     regexp: Array<string>;
-    primary: Array<boolean>;
     actions: Array<string>;
 }
 
@@ -15,7 +14,6 @@ const retrieveRoutes = (app: express.Application): IRouting => {
         routes: [],
         methods: [],
         regexp: [],
-        primary: [],
         actions: null,
     };
 
@@ -53,9 +51,6 @@ const purifyRegexpName = (data: IRouting): IRouting => {
         tmp_expression = tmp_expression.replace(/-/g, '_');
         tmp_expression = tmp_expression.split('/(?:([^\\/]+?))\\').join('_\\');
         tmp_expression = tmp_expression.split('/').join('');
-        data.primary.push(
-            tmp_expression.split('\\')[0] === 'teams' ? false : true
-        );
 
         tmp_expression = removeLastCharByOccurence(tmp_expression, '\\');
         data.regexp[index] = tmp_expression;
@@ -111,12 +106,12 @@ export const registerActions = (app: express.Application) => {
     data = purifyRegexpName(data);
     data.actions = setupActionNames(data);
 
-    data.actions.forEach(async (action, index) => {
+    data.actions.forEach(async action => {
         await Action.findCreateFind({
             where: {
                 action: action,
                 label: action,
-                primary: data.primary[index],
+                requireAuth: action.includes('teams._') ? true : false,
             },
         })
             .then(actionResult => {

@@ -1,5 +1,4 @@
 import { IRequest } from '@typings';
-//import { logger } from '@utils';
 
 const convertUrlToAction = (raw: string): string => {
     const actionPart: Array<string> = raw.split('/');
@@ -22,7 +21,7 @@ export const retrieveActionFromPath = (req: IRequest): string => {
     let action: string;
 
     action = req.method.toString().toLowerCase();
-    action += convertUrlToAction(req.originalUrl);
+    action += convertUrlToAction(req.originalUrl.replace(/-/g, '_'));
 
     return action;
 };

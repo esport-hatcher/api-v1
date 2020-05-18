@@ -5,12 +5,18 @@ import {
     HasManyGetAssociationsMixin,
     HasManyAddAssociationMixin,
     HasManyRemoveAssociationMixin,
+    HasOneSetAssociationMixin,
+    HasOneGetAssociationMixin,
 } from 'sequelize';
-import { Role, PermissionRole, Action, PermissionAction } from '@models';
+import { Role, PermissionRole, Action } from '@models';
 
 export interface IPermissionProps {
     scope: string;
     primary: boolean;
+
+    // Fields for hydratation only
+    Action: Action;
+    Role: Role[];
 }
 
 export class Permission extends Model {
@@ -20,22 +26,22 @@ export class Permission extends Model {
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
+    // Fields for hydratation only
+    public Action!: Action;
+    public Role!: Role[];
+
     public getRoles!: HasManyGetAssociationsMixin<Role>;
     public addRole!: HasManyAddAssociationMixin<Role, PermissionRole>;
     public removeRole!: HasManyRemoveAssociationMixin<Role, PermissionRole>;
-    public getActions!: HasManyGetAssociationsMixin<Action>;
-    public addAction!: HasManyAddAssociationMixin<Action, PermissionAction>;
-    public removeAction!: HasManyRemoveAssociationMixin<
-        Action,
-        PermissionAction
-    >;
+    public getActions!: HasOneGetAssociationMixin<Action>;
+    public setAction!: HasOneSetAssociationMixin<Action, string>;
 
-    public addActionByName(actionName: string) {
+    public setActionByName(actionName: string) {
         Action.findOne({
             where: { action: actionName },
         }).then(actionResult => {
-            if (actionResult && actionResult[0]) {
-                this.addAction(actionResult[0]);
+            if (actionResult) {
+                this.setAction(actionResult);
             }
         });
     }

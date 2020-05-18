@@ -1,27 +1,70 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { retrieveActionFromPath, forbiddenError } from '@utils';
-import { Action } from '@models';
+import { retrieveActionFromPath, logger, unauthorizedError } from '@utils';
+import { Permission, Action, Team, Role, User } from '@models';
+
+const getUserRole = async (teamId: number, owner: User): Promise<Role> => {
+    if (teamId) {
+        const team: Team = await Team.findByPk(teamId);
+
+        if (team) {
+            logger('PermissionManager', 'On passe');
+            return team.findRoleByUser(owner);
+        }
+
+        return null;
+    }
+
+    return null;
+};
+
+const retrieveTeamIdIfExist = async (url: string): Promise<number> => {
+    let teamId: string = url.match(/teams\/\d+\//g)[0];
+
+    if (!teamId) {
+        teamId = url.match(/teams\/\d+$/g)[0];
+    }
+
+    if (!teamId) {
+        return null;
+    }
+
+    return parseInt(teamId.split('/')[1]);
+};
 
 export const handlePermissions = async (
     req: IRequest,
     _res: Response,
     next: NextFunction
 ) => {
-    //const { owner, team } = req;
+    const { owner } = req;
     const action: string = retrieveActionFromPath(req);
 
-    const actionEntity: Action = await Action.findOne({
+    const permission: Permission = await Permission.findOne({
         where: {
-            action: action,
+            scope: action,
         },
+        include: [Action],
     });
 
-    if (actionEntity && !actionEntity.primary) {
+    logger(
+        'PermissionManager',
+        owner ? 'Is authenticated' : 'Anonymous request'
+    );
+
+    if (permission && permission.Action.requireAuth && owner) {
+        const role: Role = await getUserRole(
+            await retrieveTeamIdIfExist(req.originalUrl),
+            owner
+        );
+
+        if (!role) {
+            return next(unauthorizedError());
+        }
+
         return next();
-        return next(forbiddenError());
-    } else {
-        return next();
+    } else if (permission && permission.Action.requireAuth) {
+        return next(unauthorizedError());
     }
 
     return next();
