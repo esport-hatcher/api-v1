@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { logger, debug } from '@utils';
+import { logger } from '@utils';
 import { sqlDb, sqlHost, sqlPassword, sqlPort, sqlUser } from '@config';
 import {
     User,
@@ -167,7 +167,6 @@ class SequelizeDb {
         Permission.belongsToMany(Role, { through: PermissionRole });
         Action.hasMany(Permission);
         Permission.belongsTo(Action);
-        debug('test');
     }
 
     public async close(test: ConstrainBoolean = false) {

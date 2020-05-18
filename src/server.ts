@@ -10,9 +10,12 @@ const executeMigration = async () => {
     // Migration system halfway to be something flexible and useful.
     registerActions(app);
 
-    await migrateUsers();
-    await migrateRoles();
-    await migratePermissions();
+    await migrateRoles().then(async () => {
+        await migrateUsers();
+        await migratePermissions();
+
+        return null;
+    });
 };
 
 const initSequelize = async (): Promise<void> => {

@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { logRequest, forbiddenError, debug } from '@utils';
+import { logRequest, forbiddenError } from '@utils';
 import { Team, Role, RoleUser, User } from '@models';
 import { ModelController } from '@controllers';
 import { FORBIDDEN_FIELDS } from '@config';
@@ -31,6 +31,23 @@ class TeamsController extends ModelController<typeof Team> {
                     playerStatus: true,
                     teamStatus: true,
                 },
+            });
+
+            Role.findOne({
+                where: {
+                    name: 'Owner',
+                    primary: true,
+                },
+            }).then(role => {
+                role.addUser(owner);
+                RoleUser.findOne({
+                    where: {
+                        UserId: owner.id,
+                        RoleId: role.id,
+                    },
+                }).then(roleUser => {
+                    roleUser.setTeam(newTeam);
+                });
             });
             return res.status(201).json(newTeam);
         } catch (err) {
@@ -128,10 +145,6 @@ class TeamsController extends ModelController<typeof Team> {
             const teamRoles: Array<Role> = await team.getRoles();
             const teamUsers: Array<User> = await team.getUsers();
 
-            teamUsers.forEach(user => {
-                debug('Test', user.id.toString());
-            });
-
             if (teamUsers.includes(user)) {
                 const existingRoleUser = await RoleUser.findOne({
                     where: {
@@ -162,7 +175,6 @@ class TeamsController extends ModelController<typeof Team> {
 
             return next(forbiddenError);
         } catch (err) {
-            debug('Something went wrong');
             return next(err);
         }
     }

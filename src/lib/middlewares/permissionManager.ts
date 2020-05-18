@@ -8,7 +8,6 @@ const getUserRole = async (teamId: number, owner: User): Promise<Role> => {
         const team: Team = await Team.findByPk(teamId);
 
         if (team) {
-            logger('PermissionManager', 'On passe');
             return team.findRoleByUser(owner);
         }
 
@@ -57,8 +56,16 @@ export const handlePermissions = async (
             await retrieveTeamIdIfExist(req.originalUrl),
             owner
         );
+        const permissionRoles: Role[] = await permission.getRoles();
+        let requestAllowed: boolean = false;
 
-        if (!role) {
+        permissionRoles.forEach(permRole => {
+            if (permRole.id === role.id) {
+                requestAllowed = true;
+            }
+        });
+
+        if (!role || !requestAllowed) {
             return next(unauthorizedError());
         }
 

@@ -1,4 +1,4 @@
-import { User, Team } from '@models';
+import { User, Team, Role, RoleUser } from '@models';
 
 export const migrateUsers = async (): Promise<void> => {
     const { BO_ADMIN_PWD } = process.env;
@@ -35,6 +35,23 @@ export const migrateUsers = async (): Promise<void> => {
                         playerStatus: true,
                         teamStatus: true,
                     },
+                });
+
+                Role.findOne({
+                    where: {
+                        name: 'Owner',
+                        primary: true,
+                    },
+                }).then(role => {
+                    role.addUser(userResult[0]);
+                    RoleUser.findCreateFind({
+                        where: {
+                            UserId: userResult[0].id,
+                            RoleId: role.id,
+                        },
+                    }).then(roleUser => {
+                        roleUser[0].setTeam(teamResult[0]);
+                    });
                 });
             }
 
