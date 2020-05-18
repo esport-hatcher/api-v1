@@ -1,18 +1,22 @@
 import { inspect } from 'util';
 
-export const logger = (about: string, msg: string, object: Object = null) => {
-    // tslint:disable-next-line: no-console
-    console.log(`[${about}] => ${msg}.`);
+const { LOGGER } = process.env;
 
-    if (object) {
-        const stringObject: string = inspect(object, false, null, true);
+export const logger = (about: string, msg: string, object: Object = null) => {
+    if (LOGGER) {
         // tslint:disable-next-line: no-console
-        console.log(`${stringObject}`);
+        console.log(`[${about}] => ${msg}.`);
+
+        if (object) {
+            const stringObject: string = inspect(object, false, null, true);
+            // tslint:disable-next-line: no-console
+            console.log(`${stringObject}`);
+        }
     }
 };
 
 export const debug = (msg: string, object: Object = null) => {
-    if (object) {
+    if (LOGGER && object) {
         const stringObject: string = inspect(object, false, null, true);
         // tslint:disable-next-line: no-console
         console.log(`[DEBUG] ${msg}\n${stringObject ? stringObject : ''}`);
