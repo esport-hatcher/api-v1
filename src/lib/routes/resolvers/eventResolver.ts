@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { notFoundError } from '@utils';
+import { notFoundError, logger } from '@utils';
 import { Event } from '@models';
 
 export const eventResolver = async (
@@ -13,6 +13,7 @@ export const eventResolver = async (
         res;
         const event = await Event.findByPk(id);
         if (!event) {
+            logger('Resolver', `Event ${id} not found`);
             return next(notFoundError('Event'));
         }
         req.event = event;

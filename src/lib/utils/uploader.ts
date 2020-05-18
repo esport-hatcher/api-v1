@@ -1,11 +1,14 @@
 import { S3 } from 'aws-sdk';
-import { AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_BUCKET_NAME } from '@config';
 
 interface IUploadable {
     folder: string;
     key: string;
     type: string;
 }
+
+const AWS_ACCESS_KEY = 'blank';
+const AWS_SECRET_KEY = 'blank';
+const AWS_BUCKET_NAME = 'blank';
 
 export const s3 = new S3({
     accessKeyId: AWS_ACCESS_KEY,

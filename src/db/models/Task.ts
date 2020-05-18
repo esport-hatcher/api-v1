@@ -10,18 +10,16 @@ import { User, TaskUser } from '@models';
 export interface ITaskProps {
     title: string;
     description: string;
-    dueDate: Date;
     dateBegin: Date;
-    dateEnd: Date;
+    deadline: Date;
 }
 
 export class Task extends Model {
     public id!: number;
     public title!: string;
     public description!: string;
-    public dueDate!: Date;
     public dateBegin!: Date;
-    public dateEnd!: Date;
+    public deadline!: Date;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 

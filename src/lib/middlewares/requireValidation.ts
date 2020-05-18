@@ -13,7 +13,7 @@ export const requireValidation = (
     const errors = validationResult(req);
     res;
     if (!errors.isEmpty()) {
-        return next(unprocessableEntity(errors));
+        return next(unprocessableEntity('Validation errors', errors));
     }
     next();
 };

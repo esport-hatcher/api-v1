@@ -8,7 +8,15 @@ import { hash } from 'bcryptjs';
 import { encode } from 'jwt-simple';
 import { createHashtag } from '@utils';
 import { jwtSecret } from '@config';
-import { Team, TeamUser, Task, TaskUser, Role, RoleUser } from '@models';
+import {
+    Team,
+    TeamUser,
+    Task,
+    TaskUser,
+    Role,
+    RoleUser,
+    EventUser,
+} from '@models';
 
 export interface IUserProps {
     firstName: string;
@@ -47,6 +55,7 @@ export class User extends Model {
     public TeamUser: TeamUser;
     public TaskUser: TaskUser;
     public RoleUser: RoleUser;
+    public EventUser: EventUser;
 
     getAccessToken() {
         const timestamp = new Date().getTime();

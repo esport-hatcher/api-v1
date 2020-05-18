@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { omit } from 'lodash';
 import { IRequest } from '@typings';
-import { logRequest } from '@utils';
+import { logRequest, unprocessableEntity } from '@utils';
 import { Event } from '@models';
 import { ModelController } from '@controllers';
 import { FORBIDDEN_FIELDS, RECORDS_PER_PAGE } from '@config';
@@ -18,7 +18,7 @@ class EventController extends ModelController<typeof Event> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { team, owner } = req;
+            const { team } = req;
             const { title, description, place, dateBegin, dateEnd } = req.body;
 
             const newEvent = await team.createEvent({
@@ -28,7 +28,6 @@ class EventController extends ModelController<typeof Event> {
                 dateBegin,
                 dateEnd,
             });
-            newEvent.addUser(owner);
             return res.status(201).json(newEvent);
         } catch (err) {
             return next(err);
@@ -74,6 +73,99 @@ class EventController extends ModelController<typeof Event> {
             event.dateBegin = req.body.dateBegin || event.dateBegin;
             event.dateEnd = req.body.dateEnd || event.dateEnd;
             await event.save();
+            return res.sendStatus(200);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async createEventUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        const { event, user } = req;
+        try {
+            await event.addUser(user);
+            return res.sendStatus(201);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async getEventUsers(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        const { event } = req;
+        try {
+            const usersInEvent = await event.getUsers();
+            return res.status(200).json(usersInEvent);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async getEventUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        const { event, user } = req;
+        try {
+            const userInEvent = (await event.getUsers()).find(
+                _user => _user.id === user.id
+            );
+            if (!userInEvent) {
+                return next(unprocessableEntity('User not in event'));
+            }
+            return res.status(200).json(userInEvent);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async updateEventUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { event, user } = req;
+
+            const userInEvent = (await event.getUsers()).find(
+                _user => _user.id === user.id
+            );
+            if (!userInEvent) {
+                return next(unprocessableEntity('User not in event'));
+            }
+            return res.sendStatus(200);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async deleteEventUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { user, event } = req;
+
+            const eventUsers = await event.getUsers();
+            const eventUser = eventUsers.find(_user => _user.id === user.id);
+
+            if (!eventUser) {
+                return next(unprocessableEntity('User not in event'));
+            }
+            await eventUser.EventUser.destroy();
             return res.sendStatus(200);
         } catch (err) {
             return next(err);

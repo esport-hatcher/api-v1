@@ -64,6 +64,26 @@ export class Team extends Model {
 
         return role;
     }
+
+    async addPlayer(newPlayer: User) {
+        return this.addUser(newPlayer, {
+            through: {
+                role: 'Player',
+                teamStatus: true,
+                playerStatus: true,
+            },
+        });
+    }
+
+    async addAdmin(newAdmin: User) {
+        return this.addUser(newAdmin, {
+            through: {
+                role: 'Admin',
+                teamStatus: true,
+                playerStatus: true,
+            },
+        });
+    }
 }
 
 export const initTeam = (db: Sequelize) => {

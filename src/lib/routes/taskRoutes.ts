@@ -2,11 +2,11 @@ import { body } from 'express-validator/check';
 import { BaseRouter } from '@services/router';
 import {
     requireAuth,
-    requireAdmin,
     requireValidation,
     requireTeamOwnerOrAdmin,
     requireFiltersOrPagination,
-    requireTeamMember,
+    requireOwnerTeamMember,
+    requireUserTeamMember,
 } from '@middlewares';
 import { taskController } from '@controllers';
 
@@ -15,22 +15,18 @@ const taskRoutes = BaseRouter();
 taskRoutes.use(requireAuth);
 
 /**
- * Get routes
+ * CRUD routes
  */
 
 taskRoutes.get(
     '/',
-    requireAdmin,
     requireFiltersOrPagination,
+    requireOwnerTeamMember,
     taskController.findAll
 );
-taskRoutes.get('/:taskId/users', requireTeamMember, taskController.getTaskUser);
 
-taskRoutes.get('/:taskId', requireTeamMember, taskController.findById);
+taskRoutes.get('/:taskId', requireOwnerTeamMember, taskController.findById);
 
-/**
- * Post routes
- */
 taskRoutes.post(
     '/',
     [
@@ -48,30 +44,53 @@ taskRoutes.post(
     taskController.create
 );
 
-taskRoutes.post(
-    '/:taskId/members/:userId',
-    requireValidation,
-    requireTeamOwnerOrAdmin,
-    taskController.addTaskUser
-);
-
-/**
- * Patch routes
- */
 taskRoutes.patch(
     '/:taskId',
     requireTeamOwnerOrAdmin,
     taskController.updateById
 );
 
+taskRoutes.delete(
+    '/:taskId',
+    requireTeamOwnerOrAdmin,
+    taskController.deleteById
+);
+
 /**
- * Delete routes
+ * TaskUsers Routes
  */
-taskRoutes.delete('/:taskId', requireTeamOwnerOrAdmin, taskController.delete);
+
+taskRoutes.get(
+    '/:taskId/users',
+    requireOwnerTeamMember,
+    taskController.getTaskUsers
+);
+
+taskRoutes.get(
+    '/:taskId/users/:userId',
+    requireOwnerTeamMember,
+    requireUserTeamMember,
+    taskController.getTaskUser
+);
+
+taskRoutes.post(
+    '/:taskId/users/:userId',
+    requireTeamOwnerOrAdmin,
+    requireUserTeamMember,
+    taskController.createTaskUser
+);
+
+taskRoutes.patch(
+    '/:taskId/users/:userId',
+    requireTeamOwnerOrAdmin,
+    requireUserTeamMember,
+    taskController.updateTaskUser
+);
 
 taskRoutes.delete(
-    '/:taskId/members/:userId',
+    '/:taskId/users/:userId',
     requireTeamOwnerOrAdmin,
+    requireUserTeamMember,
     taskController.deleteTaskUser
 );
 
