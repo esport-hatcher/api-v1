@@ -34,7 +34,6 @@ class UserController extends ModelController<typeof User> {
             }
             const user = await User.create(req.body);
             return res.status(201).json({
-                user: omit(user.get({ plain: true }), ...FORBIDDEN_FIELDS),
                 token: user.getAccessToken(),
             });
         } catch (err) {
@@ -60,7 +59,6 @@ class UserController extends ModelController<typeof User> {
                 return next(unauthorizedError('Invalid credentials'));
             }
             return res.status(200).json({
-                user: omit(user.get({ plain: true }), ...FORBIDDEN_FIELDS),
                 token: user.getAccessToken(),
             });
         } catch (err) {
@@ -94,6 +92,7 @@ class UserController extends ModelController<typeof User> {
 
         try {
             user.username = req.body.username || user.username;
+            user.email = req.body.email || user.email;
             user.avatarUrl = req.body.avatarUrl || user.avatarUrl;
             user.country = req.body.country || user.country;
             user.city = req.body.city || user.city;
