@@ -17,8 +17,8 @@ export interface ITaskProps {
 export class Task extends Model {
     public id!: number;
     public title!: string;
-    public description!: string;
-    public dateBegin!: Date;
+    public description: string;
+    public dateBegin: Date;
     public deadline!: Date;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -41,11 +41,13 @@ export const initTask = (db: Sequelize) => {
             },
             description: {
                 type: DataTypes.STRING,
-                allowNull: false,
+                allowNull: true,
+                defaultValue: '',
             },
             dateBegin: {
                 type: DataTypes.DATE,
                 allowNull: false,
+                defaultValue: new Date(),
             },
             deadline: {
                 type: DataTypes.DATE,
