@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { User, Team, Event, Task, Role } from '@models';
+import { User, Team, Event, Task, Role, Permission, Action } from '@models';
 import { Dictionary } from 'lodash';
 import { Op } from 'sequelize';
 

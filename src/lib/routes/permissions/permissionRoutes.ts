@@ -22,11 +22,7 @@ permissionRoutes.get('/', requireAuth, permissionController.findAll);
  */
 permissionRoutes.post(
     '/',
-    [
-        body('scope')
-            .trim()
-            .isLength({ min: 1, max: 128 }),
-    ],
+    [body('scope').trim().isLength({ min: 1, max: 128 })],
     requireValidation,
     requireTeamOwnerOrAdmin,
     permissionController.create
@@ -34,11 +30,7 @@ permissionRoutes.post(
 
 permissionRoutes.post(
     '/:permissionId/role',
-    [
-        body('roleId')
-            .trim()
-            .isInt(),
-    ],
+    [body('roleId').trim().isInt()],
     requireValidation,
     requireTeamOwnerOrAdmin,
     permissionController.addRole
@@ -46,11 +38,7 @@ permissionRoutes.post(
 
 permissionRoutes.post(
     '/:permissionId/action',
-    [
-        body('actionId')
-            .trim()
-            .isInt(),
-    ],
+    [body('actionId').trim().isInt()],
     requireValidation,
     requireTeamOwnerOrAdmin,
     permissionController.addAction
@@ -61,11 +49,7 @@ permissionRoutes.post(
  */
 permissionRoutes.patch(
     '/:permissionId',
-    [
-        body('scope')
-            .trim()
-            .isLength({ min: 1, max: 128 }),
-    ],
+    [body('scope').trim().isLength({ min: 1, max: 128 })],
     requireValidation,
     requireTeamOwnerOrAdmin,
     permissionController.updateById
@@ -82,26 +66,10 @@ permissionRoutes.delete(
 
 permissionRoutes.delete(
     '/:permissionId/role',
-    [
-        body('roleId')
-            .trim()
-            .isInt(),
-    ],
+    [body('roleId').trim().isInt()],
     requireValidation,
     requireTeamOwnerOrAdmin,
     permissionController.removeRole
-);
-
-permissionRoutes.delete(
-    '/:permissionId/action',
-    [
-        body('actionId')
-            .trim()
-            .isInt(),
-    ],
-    requireValidation,
-    requireTeamOwnerOrAdmin,
-    permissionController.removeAction
 );
 
 export { permissionRoutes };

@@ -98,7 +98,7 @@ class PermissionController extends ModelController<typeof Permission> {
                 where: { id: req.body.roleId },
             });
 
-            permission.addRole(role);
+            await permission.addRole(role);
             res.sendStatus(200).json(permission);
         } catch (err) {
             return next(err);
@@ -118,7 +118,7 @@ class PermissionController extends ModelController<typeof Permission> {
                 where: { id: req.body.actionId },
             });
 
-            permission.addAction(action);
+            await permission.setAction(action);
             res.sendStatus(200).json(permission);
         } catch (err) {
             return next(err);
@@ -139,26 +139,6 @@ class PermissionController extends ModelController<typeof Permission> {
             });
 
             permission.removeRole(role);
-            res.sendStatus(200).json(permission);
-        } catch (err) {
-            return next(err);
-        }
-    }
-
-    @logRequest
-    async removeAction(
-        req: IRequest,
-        res: Response,
-        next: NextFunction
-    ): Promise<void | Response> {
-        const { permission } = req;
-
-        try {
-            const action = await Action.findOne({
-                where: { id: req.body.actionId },
-            });
-
-            permission.removeAction(action);
             res.sendStatus(200).json(permission);
         } catch (err) {
             return next(err);

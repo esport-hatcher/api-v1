@@ -7,6 +7,7 @@ import {
     HasManyRemoveAssociationMixin,
     HasOneSetAssociationMixin,
     HasOneGetAssociationMixin,
+    HasOne,
 } from 'sequelize';
 import { Role, PermissionRole, Action } from '@models';
 
