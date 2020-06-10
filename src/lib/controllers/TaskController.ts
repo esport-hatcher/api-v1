@@ -27,7 +27,7 @@ class TaskController extends ModelController<typeof Task> {
                 dateBegin,
                 deadline,
             });
-            return res.status(201).json(newTask);
+            return res.status(201).json(newTask.get({ plain: true }));
         } catch (err) {
             return next(err);
         }
@@ -71,7 +71,7 @@ class TaskController extends ModelController<typeof Task> {
             task.dateBegin = req.body.dateBegin || task.dateBegin;
             task.deadline = req.body.deadline || task.deadline;
             await task.save();
-            return res.sendStatus(200);
+            return res.status(200).json(task.get({ plain: true }));
         } catch (err) {
             return next(err);
         }
