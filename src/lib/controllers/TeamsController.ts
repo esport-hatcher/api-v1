@@ -74,7 +74,7 @@ class TeamsController extends ModelController<typeof Team> {
             const teamUsers = await team.getUsers({
                 attributes: { exclude: FORBIDDEN_FIELDS },
             });
-            return res.status(201).json(teamUsers);
+            return res.status(200).json(teamUsers);
         } catch (err) {
             return next(err);
         }
