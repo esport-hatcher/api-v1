@@ -74,7 +74,7 @@ class TeamsController extends ModelController<typeof Team> {
             const teamUsers = await team.getUsers({
                 attributes: { exclude: FORBIDDEN_FIELDS },
             });
-            return res.status(200).json(teamUsers);
+            return res.status(201).json(teamUsers);
         } catch (err) {
             return next(err);
         }
@@ -100,7 +100,7 @@ class TeamsController extends ModelController<typeof Team> {
              */
             if (userInTeam) {
                 await userInTeam.TeamUser.update({ teamStatus: true });
-                return res.sendStatus(201);
+                return res.status(201).json(userInTeam);
             }
             /**
              * Invite a user in the team by putting the teamStatus on "true"
@@ -111,7 +111,7 @@ class TeamsController extends ModelController<typeof Team> {
                     playerStatus: false,
                 },
             });
-            return res.sendStatus(201);
+            return res.status(201).json(user);
         } catch (err) {
             return next(err);
         }
