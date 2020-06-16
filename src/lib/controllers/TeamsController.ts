@@ -100,7 +100,7 @@ class TeamsController extends ModelController<typeof Team> {
              */
             if (userInTeam) {
                 await userInTeam.TeamUser.update({ teamStatus: true });
-                return res.status(201).json(userInTeam);
+                return res.sendStatus(201);
             }
             /**
              * Invite a user in the team by putting the teamStatus on "true"
@@ -111,7 +111,7 @@ class TeamsController extends ModelController<typeof Team> {
                     playerStatus: false,
                 },
             });
-            return res.status(201).json(user);
+            return res.sendStatus(201);
         } catch (err) {
             return next(err);
         }
