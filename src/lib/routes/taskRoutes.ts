@@ -29,7 +29,7 @@ taskRoutes.get('/:taskId', requireOwnerTeamMember, taskController.findById);
 
 taskRoutes.post(
     '/',
-    [body('title').trim().isLength({ min: 1 }), body('deadline').trim()],
+    [body('title').trim().isLength({ min: 1 }), body('dateEnd').trim()],
     requireValidation,
     requireTeamOwnerOrAdmin,
     taskController.create
