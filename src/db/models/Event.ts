@@ -41,7 +41,7 @@ export const initEvent = (db: Sequelize) => {
                 allowNull: false,
             },
             description: {
-                type: DataTypes.STRING,
+                type: DataTypes.TEXT,
                 allowNull: false,
             },
             place: {

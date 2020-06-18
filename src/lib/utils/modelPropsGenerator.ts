@@ -81,6 +81,6 @@ export const getRandomTaskProps = (): ITaskProps => {
         title: company.companyName(),
         description: company.catchPhraseDescriptor(),
         dateBegin: date.past(),
-        deadline: date.future(),
+        dateEnd: date.future(),
     };
 };

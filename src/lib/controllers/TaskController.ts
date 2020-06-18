@@ -19,15 +19,15 @@ class TaskController extends ModelController<typeof Task> {
     ): Promise<void | Response> {
         try {
             const { team } = req;
-            const { title, description, dateBegin, deadline } = req.body;
+            const { title, description, dateBegin, dateEnd } = req.body;
 
             const newTask = await team.createTask({
                 title,
                 description,
                 dateBegin,
-                deadline,
+                dateEnd,
             });
-            return res.status(201).json(newTask);
+            return res.status(201).json(newTask.get({ plain: true }));
         } catch (err) {
             return next(err);
         }
@@ -69,9 +69,10 @@ class TaskController extends ModelController<typeof Task> {
             task.title = req.body.title || task.title;
             task.description = req.body.description || task.description;
             task.dateBegin = req.body.dateBegin || task.dateBegin;
-            task.deadline = req.body.deadline || task.deadline;
+            task.dateEnd = req.body.dateEnd || task.dateEnd;
+            task.completed = req.body.completed || task.completed;
             await task.save();
-            return res.sendStatus(200);
+            return res.status(200).json(task.get({ plain: true }));
         } catch (err) {
             return next(err);
         }
