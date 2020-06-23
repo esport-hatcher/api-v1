@@ -14,10 +14,7 @@ export abstract class ModelController<
     private readonly modelName: string;
 
     constructor(private readonly model: T) {
-        this.modelName = this.model
-            .toString()
-            .split(' ')[1]
-            .toLowerCase();
+        this.modelName = this.model.toString().split(' ')[1].toLowerCase();
         this.findAll = this.findAll.bind(this);
         this.findById = this.findById.bind(this);
         this.deleteById = this.deleteById.bind(this);

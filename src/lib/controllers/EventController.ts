@@ -18,16 +18,28 @@ class EventController extends ModelController<typeof Event> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { team } = req;
+            const { team, user } = req;
             const { title, description, place, dateBegin, dateEnd } = req.body;
+            let newEvent: Event;
 
-            const newEvent = await team.createEvent({
-                title,
-                description,
-                place,
-                dateBegin,
-                dateEnd,
-            });
+            if (team) {
+                newEvent = await team.createEvent({
+                    title,
+                    description,
+                    place,
+                    dateBegin,
+                    dateEnd,
+                });
+            } else {
+                newEvent = await Event.create({
+                    title,
+                    description,
+                    place,
+                    dateBegin,
+                    dateEnd,
+                });
+                await user.addEvent(newEvent);
+            }
             return res.status(201).json(newEvent);
         } catch (err) {
             return next(err);
@@ -54,6 +66,22 @@ class EventController extends ModelController<typeof Event> {
             return res
                 .status(200)
                 .json(records.map(record => omit(record, ...FORBIDDEN_FIELDS)));
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async findAllByUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        const { user } = req;
+
+        try {
+            const events = await user.getEvents();
+            return res.status(200).json(events);
         } catch (err) {
             return next(err);
         }

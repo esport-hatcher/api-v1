@@ -13,7 +13,7 @@ describe('when logged in as a normal user', () => {
         secondUser = await getUser();
     });
 
-    void it('can fetch all users', async () => {
+    void it('can fetch all users and it returns 200', async () => {
         const res = await request(app)
             .get('/users')
             .set('Content-Type', 'application/json')
@@ -21,19 +21,11 @@ describe('when logged in as a normal user', () => {
         expect(res.status).toBe(200);
     });
 
-    void it('change his records', async () => {
+    void it('change his records and it returns 200', async () => {
         const patchedUser = { username: 'Yun Yun' };
         const res = await request(app)
             .patch(`/users/${user.id}`)
             .send(patchedUser)
-            .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${user.getAccessToken()}`);
-        expect(res.status).toBe(200);
-    });
-
-    void it('delete his account', async () => {
-        const res = await request(app)
-            .delete(`/users/${user.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(200);
@@ -55,6 +47,14 @@ describe('when logged in as a normal user', () => {
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(401);
+    });
+
+    void it('should return 200 when deleting his account', async () => {
+        const res = await request(app)
+            .delete(`/users/${user.id}`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(200);
     });
 });
 

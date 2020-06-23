@@ -1,6 +1,6 @@
 import { body } from 'express-validator/check';
 import { BaseRouter } from '@services/router';
-import { userController } from '@controllers';
+import { userController, eventController } from '@controllers';
 import {
     requireValidation,
     requireScopeOrSuperAdmin,
@@ -85,6 +85,21 @@ userRoutes.delete(
     requireAuth,
     requireScopeOrSuperAdmin,
     userController.deleteById
+);
+
+/** EVENTS */
+userRoutes.post(
+    '/:userId/events',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    eventController.create
+);
+
+userRoutes.get(
+    '/:userId/events',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    eventController.findAllByUser
 );
 
 export { userRoutes };

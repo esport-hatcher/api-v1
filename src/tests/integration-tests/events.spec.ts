@@ -4,6 +4,50 @@ import { app } from '@app';
 import { logger, getRandomEventProps } from '@utils';
 import { User, Team, Event } from '@models';
 
+describe('A regular user', () => {
+    let user: User;
+    let secondUser: User;
+
+    beforeAll(async () => {
+        user = await getUser();
+        secondUser = await getUser();
+    });
+
+    void it('can create a personal event and it returns 201', async () => {
+        const res = await request(app)
+            .post(`/users/${user.id}/events`)
+            .send(getRandomEventProps())
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(201);
+    });
+
+    void it('can fetch all events and it returns 200', async () => {
+        const res = await request(app)
+            .get(`/users/${user.id}/events`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(200);
+    });
+
+    void it('cannot create personal events for another user and it returns 401', async () => {
+        const res = await request(app)
+            .post(`/users/${user.id}/events`)
+            .send(getRandomEventProps())
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${secondUser.getAccessToken()}`);
+        expect(res.status).toBe(401);
+    });
+
+    void it('cannot fetch the events of another user and it returns 401', async () => {
+        const res = await request(app)
+            .get(`/users/${user.id}/events`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${secondUser.getAccessToken()}`);
+        expect(res.status).toBe(401);
+    });
+});
+
 describe('A team owner', () => {
     let teamOwner: User;
     let team: Team;
@@ -78,7 +122,7 @@ describe('A team owner', () => {
         expect(res.status).toBe(404);
     });
 
-    void it('cannot delete an eevent who does not exist and it returns 404', async () => {
+    void it('cannot delete an event who does not exist and it returns 404', async () => {
         const res = await request(app)
             .delete(`/teams/${team.id}/events/42`)
             .set('Content-Type', 'application/json')
@@ -280,7 +324,7 @@ describe('A team admin', () => {
         expect(res.status).toBe(404);
     });
 
-    void it('cannot delete an eevent who does not exist and it returns 404', async () => {
+    void it('cannot delete an event who does not exist and it returns 404', async () => {
         const res = await request(app)
             .delete(`/teams/${team.id}/events/42`)
             .set('Content-Type', 'application/json')
