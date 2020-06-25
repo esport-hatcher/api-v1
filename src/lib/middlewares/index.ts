@@ -7,3 +7,4 @@ export * from './requireTeamOwnerOrAdmin';
 export * from './requireFiltersOrPagination';
 export * from './requireOwnerTeamMember';
 export * from './requireUserTeamMember';
+export * from './requirePersonalEvent';

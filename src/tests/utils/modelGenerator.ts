@@ -44,18 +44,22 @@ export const getTeam = async (
 };
 
 /**
- *
+ * @param user - User from which the event will be created
  * @param team - Team from which the event will be created
  * @param eventProps  - optional
  */
 export const getEvent = async (
-    team: Team,
-    eventProps?: IEventProps
+    user: User | null = null,
+    team: Team | null = null,
+    eventProps: IEventProps = getRandomEventProps()
 ): Promise<Event> => {
-    return team.createEvent(
+    if (team) {
         // tslint:disable-next-line: no-any
-        (eventProps ? eventProps : getRandomEventProps()) as any
-    );
+        return team.createEvent(eventProps as any);
+    }
+    const event = await Event.create(eventProps);
+    await user.addEvent(event);
+    return event;
 };
 
 /**

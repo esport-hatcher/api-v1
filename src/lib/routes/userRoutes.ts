@@ -6,6 +6,7 @@ import {
     requireScopeOrSuperAdmin,
     requireAuth,
     requireFiltersOrPagination,
+    requirePersonalEvent,
 } from '@middlewares';
 
 const userRoutes = BaseRouter();
@@ -100,6 +101,30 @@ userRoutes.get(
     requireAuth,
     requireScopeOrSuperAdmin,
     eventController.findAllByUser
+);
+
+userRoutes.get(
+    '/:userId/events/:eventId',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requirePersonalEvent,
+    eventController.findById
+);
+
+userRoutes.patch(
+    '/:userId/events/:eventId',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requirePersonalEvent,
+    eventController.updateById
+);
+
+userRoutes.delete(
+    '/:userId/events/:eventId',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requirePersonalEvent,
+    eventController.deleteById
 );
 
 export { userRoutes };

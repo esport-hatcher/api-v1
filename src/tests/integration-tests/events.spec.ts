@@ -7,10 +7,12 @@ import { User, Team, Event } from '@models';
 describe('A regular user', () => {
     let user: User;
     let secondUser: User;
+    let event: Event;
 
     beforeAll(async () => {
         user = await getUser();
         secondUser = await getUser();
+        event = await getEvent(user);
     });
 
     void it('can create a personal event and it returns 201', async () => {
@@ -25,6 +27,31 @@ describe('A regular user', () => {
     void it('can fetch all events and it returns 200', async () => {
         const res = await request(app)
             .get(`/users/${user.id}/events`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(200);
+    });
+
+    void it('can fetch an event by his id and it returns 200', async () => {
+        const res = await request(app)
+            .get(`/users/${user.id}/events/${event.id}`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(200);
+    });
+
+    void it('can update an event and it returns 200', async () => {
+        const res = await request(app)
+            .patch(`/users/${user.id}/events/${event.id}`)
+            .send(getRandomEventProps())
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(200);
+    });
+
+    void it('can fetch all events and it returns 200', async () => {
+        const res = await request(app)
+            .delete(`/users/${user.id}/events/${event.id}`)
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${user.getAccessToken()}`);
         expect(res.status).toBe(200);
@@ -57,7 +84,7 @@ describe('A team owner', () => {
         logger('Tests', 'Generating access token...');
         teamOwner = await getUser();
         team = await getTeam({ user: teamOwner });
-        event = await getEvent(team);
+        event = await getEvent(null, team);
     });
 
     void it('can create an event and it returns 201', async () => {
@@ -135,7 +162,7 @@ describe('A team owner', () => {
 
         beforeAll(async () => {
             otherTeamUser = await getUser();
-            event = await getEvent(team);
+            event = await getEvent(null, team);
             await team.addPlayer(otherTeamUser);
         });
 
@@ -259,7 +286,7 @@ describe('A team admin', () => {
         logger('Tests', 'Generating access token...');
         teamAdmin = await getUser();
         team = await getTeam({ user: teamAdmin, role: 'Admin' });
-        event = await getEvent(team);
+        event = await getEvent(null, team);
     });
 
     void it('can create an event and it returns 201', async () => {
@@ -337,7 +364,7 @@ describe('A team admin', () => {
 
         beforeAll(async () => {
             otherTeamUser = await getUser();
-            event = await getEvent(team);
+            event = await getEvent(null, team);
             await team.addPlayer(otherTeamUser);
         });
 
@@ -460,7 +487,7 @@ describe('A team player', () => {
         logger('Tests', 'Generating access token...');
         teamPlayer = await getUser();
         team = await getTeam({ user: teamPlayer, role: 'Player' });
-        event = await getEvent(team);
+        event = await getEvent(null, team);
     });
 
     void it('cannot create an event and it returns 401', async () => {
@@ -522,7 +549,7 @@ describe('A team player', () => {
 
         beforeAll(async () => {
             otherTeamUser = await getUser();
-            event = await getEvent(team);
+            event = await getEvent(null, team);
             await team.addPlayer(otherTeamUser);
             await event.addUser(otherTeamUser);
         });
@@ -586,7 +613,7 @@ describe('A random user who is not in the team', () => {
         logger('Tests', 'Generating access token...');
         randomUser = await getUser();
         team = await getTeam();
-        event = await getEvent(team);
+        event = await getEvent(null, team);
     });
 
     void it('cannot create an event and it returns 401', async () => {
@@ -638,7 +665,7 @@ describe('A random user who is not in the team', () => {
 
         beforeAll(async () => {
             otherTeamUser = await getUser();
-            event = await getEvent(team);
+            event = await getEvent(null, team);
             await team.addPlayer(otherTeamUser);
         });
 
