@@ -9,17 +9,19 @@ import { User, TaskUser } from '@models';
 
 export interface ITaskProps {
     title: string;
-    description: string;
-    dateBegin: Date;
-    deadline: Date;
+    description?: string;
+    dateBegin?: Date;
+    dateEnd: Date;
+    completed?: boolean;
 }
 
 export class Task extends Model {
     public id!: number;
     public title!: string;
-    public description!: string;
-    public dateBegin!: Date;
-    public deadline!: Date;
+    public description: string;
+    public dateBegin: Date;
+    public dateEnd!: Date;
+    public completed: boolean;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
@@ -40,8 +42,9 @@ export const initTask = (db: Sequelize) => {
                 allowNull: false,
             },
             description: {
-                type: DataTypes.STRING,
-                allowNull: false,
+                type: DataTypes.TEXT,
+                allowNull: true,
+                defaultValue: '',
             },
             dueDate: {
                 type: DataTypes.DATE,
@@ -50,10 +53,16 @@ export const initTask = (db: Sequelize) => {
             dateBegin: {
                 type: DataTypes.DATE,
                 allowNull: false,
+                defaultValue: new Date(),
             },
             dateEnd: {
                 type: DataTypes.DATE,
                 allowNull: true,
+            },
+            completed: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false,
             },
         },
         {
