@@ -21,8 +21,8 @@ const executeMigration = async () => {
 const initSequelize = async (): Promise<void> => {
     sequelizeDb
         .init(
-            true ||
-                process.env.NODE_ENV === 'CI' ||
+            //true ||
+            process.env.NODE_ENV === 'CI' ||
                 process.env.NODE_ENV === 'production' ||
                 process.env.NODE_ENV === 'staging'
         )
