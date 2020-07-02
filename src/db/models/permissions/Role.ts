@@ -42,6 +42,11 @@ export const initRole = (db: Sequelize) => {
                 allowNull: false,
                 defaultValue: false,
             },
+            global: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false,
+            },
         },
         {
             tableName: 'Roles',

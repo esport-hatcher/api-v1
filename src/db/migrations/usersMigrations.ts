@@ -67,8 +67,6 @@ export const migrateUsers = async (): Promise<void> => {
                             UserId: userResult[0].id,
                             RoleId: role.id,
                         },
-                    }).then(roleUser => {
-                        roleUser[0].setTeam(teamResult[0]);
                     });
                 });
             }

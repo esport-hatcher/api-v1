@@ -10,6 +10,7 @@ export class RoleUser extends Model {
     public id!: number;
     public RoleId!: number;
     public UserId!: number;
+    public TeamId!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 

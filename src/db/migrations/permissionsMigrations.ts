@@ -23,7 +23,27 @@ export const migratePermissions = async (): Promise<void> => {
 
                     return null;
                 });
+
+                Role.findOne({
+                    where: {
+                        name: 'Admin',
+                        primary: true,
+                    },
+                }).then(role => {
+                    permission.addRole(role);
+
+                    return null;
+                });
             });
         });
     });
+
+    const action: Action = await Action.findOne({
+        where: {
+            label: 'post.teams',
+        },
+    });
+
+    action.requireAuth = true;
+    action.save();
 };

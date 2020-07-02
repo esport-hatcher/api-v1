@@ -61,24 +61,6 @@ export class User extends Model {
         const timestamp = new Date().getTime();
         return encode({ sub: this.id, iat: timestamp }, jwtSecret);
     }
-
-    // Since TS cannot determine model association at compile time
-    // we have to declare them here purely virtually
-    // these will not exist until `Model.init` was called.
-
-    // public getProjects!: HasManyGetAssociationsMixin<Project>; // Note the null assertions!
-    // public addProject!: HasManyAddAssociationMixin<Project, number>;
-    // public hasProject!: HasManyHasAssociationMixin<Project, number>;
-    // public countProjects!: HasManyCountAssociationsMixin;
-    // public createProject!: HasManyCreateAssociationMixin<Project>;
-
-    // // You can also pre-declare possible inclusions, these will only be populated if you
-    // // actively include a relation.
-    // public readonly projects?: Project[]; // Note this is optional since it's only populated when explicitly requested in code
-
-    // public static associations: {
-    // 	projects: Association<User, Project>;
-    // };
 }
 
 export const initUser = (db: Sequelize) => {

@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
 import { retrieveActionFromPath, logger, unauthorizedError } from '@utils';
-import { Permission, Action, Team, Role, User } from '@models';
+import { Permission, Action, Team, Role, User, RoleUser } from '@models';
 
 const getUserRole = async (teamId: number, owner: User): Promise<Role> => {
     if (teamId) {
@@ -52,10 +52,23 @@ export const handlePermissions = async (
     );
 
     if (permission && permission.Action.requireAuth && owner) {
-        const role: Role = await getUserRole(
-            await retrieveTeamIdIfExist(req.originalUrl),
-            owner
-        );
+        let role: Role;
+
+        if (permission.Action.requireTeam) {
+            role = await getUserRole(
+                await retrieveTeamIdIfExist(req.originalUrl),
+                owner
+            );
+        } else {
+            const roleUser: RoleUser = await RoleUser.findOne({
+                where: {
+                    UserId: owner.id,
+                    TeamId: null,
+                },
+            });
+            role = await Role.findByPk(roleUser.RoleId);
+        }
+
         const permissionRoles: Role[] = await permission.getRoles();
         let requestAllowed: boolean = false;
 
