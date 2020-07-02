@@ -53,6 +53,24 @@ export const migrateUsers = async (): Promise<void> => {
                         roleUser[0].setTeam(teamResult[0]);
                     });
                 });
+
+                Role.findOne({
+                    where: {
+                        name: 'Admin',
+                        primary: true,
+                        global: true,
+                    },
+                }).then(role => {
+                    role.addUser(userResult[0]);
+                    RoleUser.findCreateFind({
+                        where: {
+                            UserId: userResult[0].id,
+                            RoleId: role.id,
+                        },
+                    }).then(roleUser => {
+                        roleUser[0].setTeam(teamResult[0]);
+                    });
+                });
             }
 
             return null;

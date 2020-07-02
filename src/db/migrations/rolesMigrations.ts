@@ -5,6 +5,7 @@ export const migrateRoles = async (): Promise<void> => {
         where: {
             name: 'Owner',
             primary: true,
+            global: false,
         },
     });
 
@@ -12,6 +13,7 @@ export const migrateRoles = async (): Promise<void> => {
         where: {
             name: 'Administrator',
             primary: true,
+            global: false,
         },
     });
 
@@ -19,6 +21,7 @@ export const migrateRoles = async (): Promise<void> => {
         where: {
             name: 'Staff',
             primary: true,
+            global: false,
         },
     });
 
@@ -26,6 +29,23 @@ export const migrateRoles = async (): Promise<void> => {
         where: {
             name: 'Player',
             primary: true,
+            global: false,
+        },
+    });
+
+    await Role.findCreateFind({
+        where: {
+            name: 'Admin',
+            primary: true,
+            global: true,
+        },
+    });
+
+    await Role.findCreateFind({
+        where: {
+            name: 'User',
+            primary: true,
+            global: true,
         },
     });
 };

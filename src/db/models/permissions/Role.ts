@@ -10,12 +10,14 @@ import { User, RoleUser } from '@models';
 export interface IRoleProps {
     name: string;
     primary: boolean;
+    global: boolean;
 }
 
 export class Role extends Model {
     public id!: number;
     public name!: string;
     public primary!: boolean;
+    public global!: boolean;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 

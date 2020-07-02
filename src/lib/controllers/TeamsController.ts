@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { logRequest, forbiddenError } from '@utils';
+import { logRequest, forbiddenError, logger } from '@utils';
 import { Team, Role, RoleUser, User } from '@models';
 import { ModelController } from '@controllers';
 import { FORBIDDEN_FIELDS } from '@config';
@@ -8,6 +8,7 @@ import { FORBIDDEN_FIELDS } from '@config';
 class TeamsController extends ModelController<typeof Team> {
     constructor() {
         super(Team);
+        logger('Test', 'Test');
     }
 
     @logRequest
@@ -144,8 +145,15 @@ class TeamsController extends ModelController<typeof Team> {
             const { user, team, role } = req;
             const teamRoles: Array<Role> = await team.getRoles();
             const teamUsers: Array<User> = await team.getUsers();
+            let userIsInTeam: boolean = false;
 
-            if (teamUsers.includes(user)) {
+            teamUsers.forEach(teamUser => {
+                if (teamUser.id === user.id) {
+                    userIsInTeam = true;
+                }
+            });
+
+            if (userIsInTeam) {
                 const existingRoleUser = await RoleUser.findOne({
                     where: {
                         UserId: user.id,
@@ -173,7 +181,7 @@ class TeamsController extends ModelController<typeof Team> {
                 return res.sendStatus(204);
             }
 
-            return next(forbiddenError);
+            return next(forbiddenError());
         } catch (err) {
             return next(err);
         }

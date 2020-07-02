@@ -111,7 +111,8 @@ export const registerActions = (app: express.Application) => {
             where: {
                 action: action,
                 label: action,
-                requireAuth: action.includes('teams._') ? true : false,
+                requireTeam: action.includes('teams._') ? true : false,
+                requireAuth: false,
             },
         })
             .then(actionResult => {

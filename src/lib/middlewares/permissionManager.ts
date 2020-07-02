@@ -59,13 +59,17 @@ export const handlePermissions = async (
         const permissionRoles: Role[] = await permission.getRoles();
         let requestAllowed: boolean = false;
 
+        if (!role) {
+            return next(unauthorizedError());
+        }
+
         permissionRoles.forEach(permRole => {
             if (permRole.id === role.id) {
                 requestAllowed = true;
             }
         });
 
-        if (!role || !requestAllowed) {
+        if (!requestAllowed) {
             return next(unauthorizedError());
         }
 

@@ -1,6 +1,7 @@
 import { inspect } from 'util';
 
-const { LOGGER } = process.env;
+// const { LOGGER } = process.env;
+const LOGGER = true;
 
 export const logger = (about: string, msg: string, object: Object = null) => {
     if (LOGGER) {

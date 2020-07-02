@@ -4,6 +4,8 @@ export interface IActionProps {
     action: string;
     label: string;
     primary: boolean;
+    requireAuth: boolean;
+    requireTeam: boolean;
 }
 
 export class Action extends Model {
@@ -11,6 +13,7 @@ export class Action extends Model {
     public action!: string;
     public label!: string;
     public requireAuth!: boolean;
+    public requireTeam!: boolean;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -37,6 +40,11 @@ export const initAction = (db: Sequelize) => {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
                 defaultValue: false,
+            },
+            requireTeam: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: true,
             },
         },
         {
