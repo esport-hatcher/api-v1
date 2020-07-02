@@ -112,7 +112,7 @@ export const registerActions = (app: express.Application) => {
                 action: action,
                 label: action,
                 requireTeam: action.includes('teams._') ? true : false,
-                requireAuth: false,
+                requireAuth: action.includes('teams._') ? true : false,
             },
         })
             .then(actionResult => {
