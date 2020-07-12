@@ -1,6 +1,11 @@
 import { body } from 'express-validator/check';
 import { BaseRouter } from '@services/router';
-import { userController, eventController, taskController } from '@controllers';
+import {
+    userController,
+    teamController,
+    eventController,
+    taskController,
+} from '@controllers';
 import {
     requireValidation,
     requireScopeOrSuperAdmin,
@@ -23,9 +28,12 @@ userRoutes.get(
 );
 
 userRoutes.get('/me', requireAuth, userController.getMe);
-
-userRoutes.get('/:userId/teams', requireAuth, userController.getUserTeam);
-userRoutes.get('/:userId/tasks', requireAuth, userController.getUserTask);
+userRoutes.get(
+    '/:userId/teams',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    teamController.findAllByUser
+);
 userRoutes.get('/:userId', requireAuth, userController.findById);
 
 /**

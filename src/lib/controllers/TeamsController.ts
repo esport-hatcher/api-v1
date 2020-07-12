@@ -39,6 +39,22 @@ class TeamsController extends ModelController<typeof Team> {
     }
 
     @logRequest
+    async findAllByUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        const { user } = req;
+
+        try {
+            const teams = await user.getTeams();
+            return res.status(200).json(teams);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
     async updateById(
         req: IRequest,
         res: Response,
