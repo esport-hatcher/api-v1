@@ -26,8 +26,7 @@
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --config .prettierrc.json --write",
-      "tslint -t stylish --project tsconfig.json --config tslint.json",
-      "git add"
+      "tslint -t stylish --project tsconfig.json --config tslint.json"
     ]
   },
   "dependencies": {
