@@ -114,8 +114,7 @@ class SequelizeDb {
          * A task belongs to a team
          */
         Task.belongsTo(Team, {
-            constraints: true,
-            onDelete: 'cascade',
+            constraints: false,
         });
         Team.hasMany(Task);
 
@@ -123,7 +122,7 @@ class SequelizeDb {
          * A task can have many users
          * A user can have many tasks
          */
-        Task.belongsToMany(User, { through: TaskUser });
+        Task.belongsToMany(User, { through: TaskUser, onDelete: 'cascade' });
         User.belongsToMany(Task, { through: TaskUser });
     }
 

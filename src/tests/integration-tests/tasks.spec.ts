@@ -4,6 +4,77 @@ import { app } from '@app';
 import { logger, getRandomTaskProps } from '@utils';
 import { User, Team, Task } from '@models';
 
+describe('A regular user', () => {
+    let user: User;
+    let secondUser: User;
+    let task: Task;
+
+    beforeAll(async () => {
+        user = await getUser();
+        secondUser = await getUser();
+        task = await getTask(user);
+    });
+
+    void it('can create a personal task and it returns 201', async () => {
+        const res = await request(app)
+            .post(`/users/${user.id}/tasks`)
+            .send(getRandomTaskProps())
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(201);
+    });
+
+    void it('can fetch all tasks and it returns 200', async () => {
+        const res = await request(app)
+            .get(`/users/${user.id}/tasks`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(200);
+    });
+
+    void it('can fetch an task by his id and it returns 200', async () => {
+        const res = await request(app)
+            .get(`/users/${user.id}/tasks/${task.id}`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(200);
+    });
+
+    void it('can update an task and it returns 200', async () => {
+        const res = await request(app)
+            .patch(`/users/${user.id}/tasks/${task.id}`)
+            .send(getRandomTaskProps())
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(200);
+    });
+
+    void it('can fetch all tasks and it returns 200', async () => {
+        const res = await request(app)
+            .delete(`/users/${user.id}/tasks/${task.id}`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${user.getAccessToken()}`);
+        expect(res.status).toBe(200);
+    });
+
+    void it('cannot create personal tasks for another user and it returns 401', async () => {
+        const res = await request(app)
+            .post(`/users/${user.id}/tasks`)
+            .send(getRandomTaskProps())
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${secondUser.getAccessToken()}`);
+        expect(res.status).toBe(401);
+    });
+
+    void it('cannot fetch the tasks of another user and it returns 401', async () => {
+        const res = await request(app)
+            .get(`/users/${user.id}/tasks`)
+            .set('Content-Type', 'application/json')
+            .set('Authorization', `Bearer ${secondUser.getAccessToken()}`);
+        expect(res.status).toBe(401);
+    });
+});
+
 describe('A team owner', () => {
     let teamOwner: User;
     let team: Team;
@@ -13,7 +84,7 @@ describe('A team owner', () => {
         logger('Tests', 'Generating access token...');
         teamOwner = await getUser();
         team = await getTeam({ user: teamOwner });
-        task = await getTask(team);
+        task = await getTask(null, team);
     });
 
     void it('can create an task and it returns 201', async () => {
@@ -78,7 +149,7 @@ describe('A team owner', () => {
         expect(res.status).toBe(404);
     });
 
-    void it('cannot delete an etask who does not exist and it returns 404', async () => {
+    void it('cannot delete an task who does not exist and it returns 404', async () => {
         const res = await request(app)
             .delete(`/teams/${team.id}/tasks/42`)
             .set('Content-Type', 'application/json')
@@ -91,7 +162,7 @@ describe('A team owner', () => {
 
         beforeAll(async () => {
             otherTeamUser = await getUser();
-            task = await getTask(team);
+            task = await getTask(null, team);
             await team.addPlayer(otherTeamUser);
         });
 
@@ -215,7 +286,7 @@ describe('A team admin', () => {
         logger('Tests', 'Generating access token...');
         teamAdmin = await getUser();
         team = await getTeam({ user: teamAdmin, role: 'Admin' });
-        task = await getTask(team);
+        task = await getTask(null, team);
     });
 
     void it('can create an task and it returns 201', async () => {
@@ -280,7 +351,7 @@ describe('A team admin', () => {
         expect(res.status).toBe(404);
     });
 
-    void it('cannot delete an etask who does not exist and it returns 404', async () => {
+    void it('cannot delete an task who does not exist and it returns 404', async () => {
         const res = await request(app)
             .delete(`/teams/${team.id}/tasks/42`)
             .set('Content-Type', 'application/json')
@@ -293,7 +364,7 @@ describe('A team admin', () => {
 
         beforeAll(async () => {
             otherTeamUser = await getUser();
-            task = await getTask(team);
+            task = await getTask(null, team);
             await team.addPlayer(otherTeamUser);
         });
 
@@ -416,7 +487,7 @@ describe('A team player', () => {
         logger('Tests', 'Generating access token...');
         teamPlayer = await getUser();
         team = await getTeam({ user: teamPlayer, role: 'Player' });
-        task = await getTask(team);
+        task = await getTask(null, team);
     });
 
     void it('cannot create an task and it returns 401', async () => {
@@ -478,7 +549,7 @@ describe('A team player', () => {
 
         beforeAll(async () => {
             otherTeamUser = await getUser();
-            task = await getTask(team);
+            task = await getTask(null, team);
             await team.addPlayer(otherTeamUser);
             await task.addUser(otherTeamUser);
         });
@@ -542,7 +613,7 @@ describe('A random user who is not in the team', () => {
         logger('Tests', 'Generating access token...');
         randomUser = await getUser();
         team = await getTeam();
-        task = await getTask(team);
+        task = await getTask(null, team);
     });
 
     void it('cannot create an task and it returns 401', async () => {
@@ -594,7 +665,7 @@ describe('A random user who is not in the team', () => {
 
         beforeAll(async () => {
             otherTeamUser = await getUser();
-            task = await getTask(team);
+            task = await getTask(null, team);
             await team.addPlayer(otherTeamUser);
         });
 

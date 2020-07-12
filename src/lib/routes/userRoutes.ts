@@ -1,12 +1,13 @@
 import { body } from 'express-validator/check';
 import { BaseRouter } from '@services/router';
-import { userController, eventController } from '@controllers';
+import { userController, eventController, taskController } from '@controllers';
 import {
     requireValidation,
     requireScopeOrSuperAdmin,
     requireAuth,
     requireFiltersOrPagination,
     requirePersonalEvent,
+    requirePersonalTask,
 } from '@middlewares';
 
 const userRoutes = BaseRouter();
@@ -125,6 +126,45 @@ userRoutes.delete(
     requireScopeOrSuperAdmin,
     requirePersonalEvent,
     eventController.deleteById
+);
+
+/** TASKS */
+userRoutes.post(
+    '/:userId/tasks',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    taskController.create
+);
+
+userRoutes.get(
+    '/:userId/tasks',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    taskController.findAllByUser
+);
+
+userRoutes.get(
+    '/:userId/tasks/:taskId',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requirePersonalTask,
+    taskController.findById
+);
+
+userRoutes.patch(
+    '/:userId/tasks/:taskId',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requirePersonalTask,
+    taskController.updateById
+);
+
+userRoutes.delete(
+    '/:userId/tasks/:taskId',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requirePersonalTask,
+    taskController.deleteById
 );
 
 export { userRoutes };

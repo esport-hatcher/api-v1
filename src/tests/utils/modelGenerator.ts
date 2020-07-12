@@ -63,18 +63,22 @@ export const getEvent = async (
 };
 
 /**
- *
+ * @param user - User from which the task will be created
  * @param team - Team from which the task will be created
  * @param taskProps  - optional
  */
 export const getTask = async (
-    team: Team,
-    taskProps?: ITaskProps
+    user: User | null = null,
+    team: Team | null = null,
+    taskProps: ITaskProps = getRandomTaskProps()
 ): Promise<Task> => {
-    return team.createTask(
+    if (team) {
         // tslint:disable-next-line: no-any
-        (taskProps ? taskProps : getRandomTaskProps()) as any
-    );
+        return team.createTask(taskProps as any);
+    }
+    const task = await Task.create(taskProps);
+    await user.addTask(task);
+    return task;
 };
 
 /**

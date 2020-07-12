@@ -18,15 +18,26 @@ class TaskController extends ModelController<typeof Task> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { team } = req;
+            const { team, user } = req;
             const { title, description, dateBegin, dateEnd } = req.body;
+            let newTask: Task;
 
-            const newTask = await team.createTask({
-                title,
-                description,
-                dateBegin,
-                dateEnd,
-            });
+            if (team) {
+                newTask = await team.createTask({
+                    title,
+                    description,
+                    dateBegin,
+                    dateEnd,
+                });
+            } else {
+                newTask = await Task.create({
+                    title,
+                    description,
+                    dateBegin,
+                    dateEnd,
+                });
+                await user.addTask(newTask);
+            }
             return res.status(201).json(newTask.get({ plain: true }));
         } catch (err) {
             return next(err);
@@ -53,6 +64,22 @@ class TaskController extends ModelController<typeof Task> {
             return res
                 .status(200)
                 .json(records.map(record => omit(record, ...FORBIDDEN_FIELDS)));
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async findAllByUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        const { user } = req;
+
+        try {
+            const tasks = await user.getTasks();
+            return res.status(200).json(tasks);
         } catch (err) {
             return next(err);
         }
