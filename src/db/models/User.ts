@@ -3,6 +3,7 @@ import {
     DataTypes,
     Sequelize,
     BelongsToManyGetAssociationsMixin,
+    BelongsToManyAddAssociationMixin,
 } from 'sequelize';
 import { hash } from 'bcryptjs';
 import { encode } from 'jwt-simple';
@@ -51,6 +52,9 @@ export class User extends Model {
     public readonly updatedAt!: Date;
     public getTeams!: BelongsToManyGetAssociationsMixin<Team>;
     public getTasks!: BelongsToManyGetAssociationsMixin<Task>;
+    public getEvents!: BelongsToManyGetAssociationsMixin<Event>;
+
+    public addEvent!: BelongsToManyAddAssociationMixin<Event, EventUser>;
 
     public TeamUser: TeamUser;
     public TaskUser: TaskUser;

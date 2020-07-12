@@ -1,11 +1,12 @@
 import { body } from 'express-validator/check';
 import { BaseRouter } from '@services/router';
-import { userController } from '@controllers';
+import { userController, eventController } from '@controllers';
 import {
     requireValidation,
     requireScopeOrSuperAdmin,
     requireAuth,
     requireFiltersOrPagination,
+    requirePersonalEvent,
 } from '@middlewares';
 
 const userRoutes = BaseRouter();
@@ -85,6 +86,45 @@ userRoutes.delete(
     requireAuth,
     requireScopeOrSuperAdmin,
     userController.deleteById
+);
+
+/** EVENTS */
+userRoutes.post(
+    '/:userId/events',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    eventController.create
+);
+
+userRoutes.get(
+    '/:userId/events',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    eventController.findAllByUser
+);
+
+userRoutes.get(
+    '/:userId/events/:eventId',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requirePersonalEvent,
+    eventController.findById
+);
+
+userRoutes.patch(
+    '/:userId/events/:eventId',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requirePersonalEvent,
+    eventController.updateById
+);
+
+userRoutes.delete(
+    '/:userId/events/:eventId',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requirePersonalEvent,
+    eventController.deleteById
 );
 
 export { userRoutes };
