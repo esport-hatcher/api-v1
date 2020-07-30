@@ -132,6 +132,31 @@ class TeamsController extends ModelController<typeof Team> {
             return next(err);
         }
     }
+
+    @logRequest
+    async patchTeamUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { owner, user } = req;
+
+            if (
+                owner.TeamUser.role === 'Owner' ||
+                owner.TeamUser.role === 'Admin'
+            ) {
+                user.TeamUser.role = req.body.role || user.TeamUser.role;
+            }
+            if (owner.id === user.id) {
+                user.TeamUser.color = req.body.color || user.TeamUser.color;
+            }
+            await user.TeamUser.save();
+            return res.status(200).json(user.get({ plain: true }));
+        } catch (err) {
+            return next(err);
+        }
+    }
 }
 
 export const teamController = new TeamsController();

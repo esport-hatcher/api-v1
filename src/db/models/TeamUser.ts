@@ -1,4 +1,5 @@
 import { Model, DataTypes, Sequelize, ENUM } from 'sequelize';
+import { getRandomLightColor } from '@utils';
 
 export type TeamUserRole = 'Admin' | 'Staff' | 'Player' | 'Owner';
 
@@ -7,6 +8,7 @@ export class TeamUser extends Model {
     public playerStatus!: boolean;
     public teamStatus!: boolean;
     public role!: TeamUserRole;
+    public color!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -33,6 +35,11 @@ export const initTeamUser = (db: Sequelize) => {
                 type: ENUM('Admin', 'Staff', 'Player', 'Owner'),
                 allowNull: false,
                 defaultValue: 'Player',
+            },
+            color: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                defaultValue: getRandomLightColor(),
             },
         },
         {
