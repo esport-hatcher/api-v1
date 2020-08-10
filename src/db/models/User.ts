@@ -9,7 +9,7 @@ import { hash } from 'bcryptjs';
 import { encode } from 'jwt-simple';
 import { createHashtag } from '@utils';
 import { jwtSecret } from '@config';
-import { Team, TeamUser, Task, TaskUser, EventUser } from '@models';
+import { Team, TeamUser, Event, EventUser, Task, TaskUser } from '@models';
 
 // import {
 // 	HasManyGetAssociationsMixin,
@@ -51,10 +51,11 @@ export class User extends Model {
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
     public getTeams!: BelongsToManyGetAssociationsMixin<Team>;
-    public getTasks!: BelongsToManyGetAssociationsMixin<Task>;
     public getEvents!: BelongsToManyGetAssociationsMixin<Event>;
+    public getTasks!: BelongsToManyGetAssociationsMixin<Task>;
 
     public addEvent!: BelongsToManyAddAssociationMixin<Event, EventUser>;
+    public addTask!: BelongsToManyAddAssociationMixin<Task, TaskUser>;
 
     public TeamUser: TeamUser;
     public TaskUser: TaskUser;

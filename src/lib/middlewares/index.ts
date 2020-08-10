@@ -8,4 +8,5 @@ export * from './requireFiltersOrPagination';
 export * from './requireOwnerTeamMember';
 export * from './requireUserTeamMember';
 export * from './requirePersonalEvent';
+export * from './requirePersonalTask';
 export * from './requireOwnerUserOrTeamAdmin';

@@ -22,6 +22,7 @@ export class Task extends Model {
     public dateBegin: Date;
     public dateEnd!: Date;
     public completed: boolean;
+    public readonly TeamId: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 
