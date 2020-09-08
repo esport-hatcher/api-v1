@@ -1,9 +1,10 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { omit, fromPairs, map } from 'lodash';
+import { omit, fromPairs, map, pick } from 'lodash';
 import { Op } from 'sequelize';
 
 const CONFIG_FIELDS = ['page', 'count'];
+const DATE_FIELDS = ['dateBegin', 'dateEnd'];
 
 export const requireFiltersOrPagination = async (
     req: IRequest,
@@ -12,16 +13,43 @@ export const requireFiltersOrPagination = async (
 ) => {
     const page = Number(req.query.page) || 1;
     const count = Boolean(req.query.count) || false;
-    const queryFilters = omit(req.query, ...CONFIG_FIELDS);
+    const dateFilters = pick(req.query, ...DATE_FIELDS);
+    const queryFilters = omit(req.query, ...CONFIG_FIELDS, ...DATE_FIELDS);
+    let dateFiltersQuery: undefined | object = undefined;
 
-    const filtersArray = Object.entries(queryFilters).map(([key, value]) => {
-        return {
-            key,
-            operator: { [Op.like]: `${value}%` },
+    if (dateFilters) {
+        dateFiltersQuery = {
+            [Op.or]: [
+                {
+                    dateBegin: {
+                        [Op.between]: [
+                            dateFilters['dateBegin'],
+                            dateFilters['dateEnd'],
+                        ],
+                    },
+                },
+                {
+                    dateEnd: {
+                        [Op.between]: [
+                            dateFilters['dateBegin'],
+                            dateFilters['dateEnd'],
+                        ],
+                    },
+                },
+            ],
         };
-    });
-    const filters = fromPairs(map(filtersArray, i => [i.key, i.operator]));
+    }
+    const queryFiltersArray = Object.entries(queryFilters).map(
+        ([key, value]) => {
+            return {
+                key,
+                operator: { [Op.like]: `${value}%` },
+            };
+        }
+    );
+    const filters = fromPairs(map(queryFiltersArray, i => [i.key, i.operator]));
 
+    req.dateFiltersQuery = dateFiltersQuery;
     req.filters = filters;
     req.pagination = page;
     req.count = count;

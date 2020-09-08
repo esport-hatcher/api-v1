@@ -46,7 +46,6 @@ class EventController extends ModelController<typeof Event> {
         }
     }
 
-    @logRequest
     async findAll(
         req: IRequest,
         res: Response,
@@ -55,12 +54,13 @@ class EventController extends ModelController<typeof Event> {
         const { team } = req;
         const page = req.pagination;
         const filters = req.filters;
+        const dateQuery = req.dateFiltersQuery;
 
         try {
             const records = await Event.findAll({
                 limit: RECORDS_PER_PAGE,
                 offset: (page - 1) * RECORDS_PER_PAGE,
-                where: { teamId: team.id, ...filters },
+                where: { teamId: team.id, ...filters, ...dateQuery },
                 raw: true,
             });
             return res

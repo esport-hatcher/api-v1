@@ -30,6 +30,8 @@ export interface IRequest extends Request {
     filters: Dictionary<{
         [Op.like]: string;
     }>;
+
+    dateFiltersQuery?: object;
     /**
      * If there is a pagination in the route making the request, the pagination will be stored in this variable
      */
