@@ -109,6 +109,7 @@ userRoutes.get(
     '/:userId/events',
     requireAuth,
     requireScopeOrSuperAdmin,
+    requireFiltersOrPagination,
     eventController.findAllByUser
 );
 

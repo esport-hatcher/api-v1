@@ -51,7 +51,7 @@ export const requireFiltersOrPagination = async (
 
     req.dateFiltersQuery = dateFiltersQuery;
     req.filters = filters;
-    req.pagination = page;
+    req.page = page;
     req.count = count;
     return next();
 };

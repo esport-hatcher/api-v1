@@ -50,9 +50,7 @@ class TaskController extends ModelController<typeof Task> {
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const { team } = req;
-        const page = req.pagination;
-        const filters = req.filters;
+        const { team, page, filters } = req;
 
         try {
             const records = await Task.findAll({

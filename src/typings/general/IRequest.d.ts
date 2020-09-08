@@ -35,7 +35,7 @@ export interface IRequest extends Request {
     /**
      * If there is a pagination in the route making the request, the pagination will be stored in this variable
      */
-    pagination: number;
+    page: number;
     /**
      * If the count mode is true then the findAll with just perform a findAndCountAll instead of a findAll
      */
