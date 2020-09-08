@@ -16,12 +16,7 @@ const teamsRoutes = BaseRouter();
 
 teamsRoutes.use(requireAuth);
 
-teamsRoutes.get(
-    '/',
-    requireAdmin,
-    requireFiltersOrPagination,
-    teamController.findAll
-);
+teamsRoutes.get('/', requireFiltersOrPagination, teamController.findAll);
 
 teamsRoutes.get('/:teamId', teamController.findById);
 
