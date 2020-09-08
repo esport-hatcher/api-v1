@@ -17,7 +17,7 @@ export const requireFiltersOrPagination = async (
     const queryFilters = omit(req.query, ...CONFIG_FIELDS, ...DATE_FIELDS);
     let dateFiltersQuery: undefined | object = undefined;
 
-    if (dateFilters) {
+    if (dateFilters['dateBegin'] && dateFilters['dateEnd']) {
         dateFiltersQuery = {
             [Op.or]: [
                 {
