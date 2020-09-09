@@ -92,7 +92,7 @@ describe('when a user try inviting an another user in a team', () => {
         team = await getTeam({ user: teamOwner });
     });
 
-    void it('should return 201 when a team owner or team admin invite another user', async () => {
+    void it('should return 201 when someone invite another user', async () => {
         const res = await request(app)
             .post(`/teams/${team.id}/users/${invitedUser.id}`)
             .set('Content-Type', 'application/json')
@@ -114,31 +114,6 @@ describe('when a user try inviting an another user in a team', () => {
             .set('Content-Type', 'application/json')
             .set('Authorization', `Bearer ${teamOwner.getAccessToken()}`);
         expect(res.status).toBe(404);
-    });
-
-    void it('should return 401 when user requesting the invitation is not part of the team', async () => {
-        const res = await request(app)
-            .post(`/teams/${team.id}/users/${invitedUser.id}`)
-            .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${invitedUser.getAccessToken()}`);
-        expect(res.status).toBe(401);
-    });
-
-    void it('should return 401 when user requesting the invitation is not admin or owner', async () => {
-        const teamPlayer = await getUser();
-
-        await team.addUser(teamPlayer, {
-            through: {
-                role: 'Player',
-                teamStatus: true,
-                playerStatus: true,
-            },
-        });
-        const res = await request(app)
-            .post(`/teams/${team.id}/users/${invitedUser.id}`)
-            .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${teamPlayer.getAccessToken()}`);
-        expect(res.status).toBe(401);
     });
 
     void it('should return 201 when user accept the request of another user', async () => {

@@ -2,10 +2,8 @@ import { body } from 'express-validator/check';
 import { BaseRouter } from '@services/router';
 import {
     requireAuth,
-    requireAdmin,
     requireScopeOrSuperAdmin,
     requireValidation,
-    requireTeamOwnerOrAdmin,
     requireFiltersOrPagination,
     requireOwnerUserOrTeamAdmin,
     requireOwnerTeamMember,
@@ -16,12 +14,7 @@ const teamsRoutes = BaseRouter();
 
 teamsRoutes.use(requireAuth);
 
-teamsRoutes.get(
-    '/',
-    requireAdmin,
-    requireFiltersOrPagination,
-    teamController.findAll
-);
+teamsRoutes.get('/', requireFiltersOrPagination, teamController.findAll);
 
 teamsRoutes.get('/:teamId', teamController.findById);
 
@@ -65,7 +58,6 @@ teamsRoutes.get(
 teamsRoutes.post(
     '/:teamId/users/:userId',
     requireValidation,
-    requireTeamOwnerOrAdmin,
     teamController.addTeamUser
 );
 
