@@ -43,6 +43,13 @@ export const initTeamUser = (db: Sequelize) => {
             },
         },
         {
+            hooks: {
+                beforeBulkCreate: TeamUser => {
+                    for (const teamUser of TeamUser) {
+                        teamUser.color = getRandomLightColor();
+                    }
+                },
+            },
             tableName: 'TeamUsers',
             sequelize: db,
         }

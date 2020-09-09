@@ -18,7 +18,7 @@ class EventController extends ModelController<typeof Event> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { team, user } = req;
+            const { team, user, owner } = req;
             const { title, description, place, dateBegin, dateEnd } = req.body;
             let newEvent: Event;
 
@@ -30,6 +30,7 @@ class EventController extends ModelController<typeof Event> {
                     dateBegin,
                     dateEnd,
                 });
+                await owner.addEvent(newEvent);
             } else {
                 newEvent = await Event.create({
                     title,
@@ -46,21 +47,18 @@ class EventController extends ModelController<typeof Event> {
         }
     }
 
-    @logRequest
     async findAll(
         req: IRequest,
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const { team } = req;
-        const page = req.pagination;
-        const filters = req.filters;
+        const { team, page, filters, dateFiltersQuery } = req;
 
         try {
             const records = await Event.findAll({
                 limit: RECORDS_PER_PAGE,
                 offset: (page - 1) * RECORDS_PER_PAGE,
-                where: { teamId: team.id, ...filters },
+                where: { teamId: team.id, ...filters, ...dateFiltersQuery },
                 raw: true,
             });
             return res
@@ -77,10 +75,14 @@ class EventController extends ModelController<typeof Event> {
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const { user } = req;
+        const { user, page, filters, dateFiltersQuery } = req;
 
         try {
-            const events = await user.getEvents();
+            const events = await user.getEvents({
+                limit: RECORDS_PER_PAGE,
+                offset: (page - 1) * RECORDS_PER_PAGE,
+                where: { ...filters, ...dateFiltersQuery },
+            });
             return res.status(200).json(events);
         } catch (err) {
             return next(err);

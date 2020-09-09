@@ -32,13 +32,13 @@ export abstract class ModelController<
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const { pagination, filters, count } = req;
+        const { page, filters, count } = req;
 
         try {
             if (!count) {
                 const records = await this.model.findAll({
                     limit: RECORDS_PER_PAGE,
-                    offset: (pagination - 1) * RECORDS_PER_PAGE,
+                    offset: (page - 1) * RECORDS_PER_PAGE,
                     where: filters,
                     raw: true,
                 });
