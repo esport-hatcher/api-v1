@@ -1,2 +1,2 @@
 export const getRandomLightColor = () =>
-    'hsl(' + Math.random() * 360 + ', 100%, 75%)';
+    'hsla(' + ~~(360 * Math.random()) + ',' + '70%,' + '80%,1)';
