@@ -2,10 +2,8 @@ import { body } from 'express-validator/check';
 import { BaseRouter } from '@services/router';
 import {
     requireAuth,
-    requireAdmin,
     requireScopeOrSuperAdmin,
     requireValidation,
-    requireTeamOwnerOrAdmin,
     requireFiltersOrPagination,
     requireOwnerUserOrTeamAdmin,
     requireOwnerTeamMember,
