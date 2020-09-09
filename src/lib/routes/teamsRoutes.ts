@@ -60,7 +60,6 @@ teamsRoutes.get(
 teamsRoutes.post(
     '/:teamId/users/:userId',
     requireValidation,
-    requireTeamOwnerOrAdmin,
     teamController.addTeamUser
 );
 
