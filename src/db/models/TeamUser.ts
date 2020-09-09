@@ -1,4 +1,5 @@
 import { Model, DataTypes, Sequelize, ENUM } from 'sequelize';
+import { getRandomLightColor } from '@utils';
 
 export type TeamUserRole = 'Admin' | 'Staff' | 'Player' | 'Owner';
 
@@ -7,6 +8,7 @@ export class TeamUser extends Model {
     public playerStatus!: boolean;
     public teamStatus!: boolean;
     public role!: TeamUserRole;
+    public color!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -34,8 +36,20 @@ export const initTeamUser = (db: Sequelize) => {
                 allowNull: false,
                 defaultValue: 'Player',
             },
+            color: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                defaultValue: getRandomLightColor(),
+            },
         },
         {
+            hooks: {
+                beforeBulkCreate: TeamUser => {
+                    for (const teamUser of TeamUser) {
+                        teamUser.color = getRandomLightColor();
+                    }
+                },
+            },
             tableName: 'TeamUsers',
             sequelize: db,
         }

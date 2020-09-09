@@ -44,33 +44,41 @@ export const getTeam = async (
 };
 
 /**
- *
+ * @param user - User from which the event will be created
  * @param team - Team from which the event will be created
  * @param eventProps  - optional
  */
 export const getEvent = async (
-    team: Team,
-    eventProps?: IEventProps
+    user: User | null = null,
+    team: Team | null = null,
+    eventProps: IEventProps = getRandomEventProps()
 ): Promise<Event> => {
-    return team.createEvent(
+    if (team) {
         // tslint:disable-next-line: no-any
-        (eventProps ? eventProps : getRandomEventProps()) as any
-    );
+        return team.createEvent(eventProps as any);
+    }
+    const event = await Event.create(eventProps);
+    await user.addEvent(event);
+    return event;
 };
 
 /**
- *
+ * @param user - User from which the task will be created
  * @param team - Team from which the task will be created
  * @param taskProps  - optional
  */
 export const getTask = async (
-    team: Team,
-    taskProps?: ITaskProps
+    user: User | null = null,
+    team: Team | null = null,
+    taskProps: ITaskProps = getRandomTaskProps()
 ): Promise<Task> => {
-    return team.createTask(
+    if (team) {
         // tslint:disable-next-line: no-any
-        (taskProps ? taskProps : getRandomTaskProps()) as any
-    );
+        return team.createTask(taskProps as any);
+    }
+    const task = await Task.create(taskProps);
+    await user.addTask(task);
+    return task;
 };
 
 /**

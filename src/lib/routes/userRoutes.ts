@@ -1,11 +1,18 @@
 import { body } from 'express-validator/check';
 import { BaseRouter } from '@services/router';
-import { userController } from '@controllers';
+import {
+    userController,
+    teamController,
+    eventController,
+    taskController,
+} from '@controllers';
 import {
     requireValidation,
     requireScopeOrSuperAdmin,
     requireAuth,
     requireFiltersOrPagination,
+    requirePersonalEvent,
+    requirePersonalTask,
 } from '@middlewares';
 
 const userRoutes = BaseRouter();
@@ -21,9 +28,12 @@ userRoutes.get(
 );
 
 userRoutes.get('/me', requireAuth, userController.getMe);
-
-userRoutes.get('/:userId/teams', requireAuth, userController.getUserTeam);
-userRoutes.get('/:userId/tasks', requireAuth, userController.getUserTask);
+userRoutes.get(
+    '/:userId/teams',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    teamController.findAllByUser
+);
 userRoutes.get('/:userId', requireAuth, userController.findById);
 
 /**
@@ -85,6 +95,85 @@ userRoutes.delete(
     requireAuth,
     requireScopeOrSuperAdmin,
     userController.deleteById
+);
+
+/** EVENTS */
+userRoutes.post(
+    '/:userId/events',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    eventController.create
+);
+
+userRoutes.get(
+    '/:userId/events',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requireFiltersOrPagination,
+    eventController.findAllByUser
+);
+
+userRoutes.get(
+    '/:userId/events/:eventId',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requirePersonalEvent,
+    eventController.findById
+);
+
+userRoutes.patch(
+    '/:userId/events/:eventId',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requirePersonalEvent,
+    eventController.updateById
+);
+
+userRoutes.delete(
+    '/:userId/events/:eventId',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requirePersonalEvent,
+    eventController.deleteById
+);
+
+/** TASKS */
+userRoutes.post(
+    '/:userId/tasks',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    taskController.create
+);
+
+userRoutes.get(
+    '/:userId/tasks',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    taskController.findAllByUser
+);
+
+userRoutes.get(
+    '/:userId/tasks/:taskId',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requirePersonalTask,
+    taskController.findById
+);
+
+userRoutes.patch(
+    '/:userId/tasks/:taskId',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requirePersonalTask,
+    taskController.updateById
+);
+
+userRoutes.delete(
+    '/:userId/tasks/:taskId',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    requirePersonalTask,
+    taskController.deleteById
 );
 
 export { userRoutes };

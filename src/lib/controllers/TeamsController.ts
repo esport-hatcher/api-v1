@@ -39,6 +39,22 @@ class TeamsController extends ModelController<typeof Team> {
     }
 
     @logRequest
+    async findAllByUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        const { user } = req;
+
+        try {
+            const teams = await user.getTeams();
+            return res.status(200).json(teams);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
     async updateById(
         req: IRequest,
         res: Response,
@@ -100,7 +116,7 @@ class TeamsController extends ModelController<typeof Team> {
              */
             if (userInTeam) {
                 await userInTeam.TeamUser.update({ teamStatus: true });
-                return res.sendStatus(201);
+                return res.status(201).json(userInTeam.get({ plain: true }));
             }
             /**
              * Invite a user in the team by putting the teamStatus on "true"
@@ -111,7 +127,32 @@ class TeamsController extends ModelController<typeof Team> {
                     playerStatus: false,
                 },
             });
-            return res.sendStatus(201);
+            return res.status(201).json(user.get({ plain: true }));
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async patchTeamUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { owner, user } = req;
+
+            if (
+                owner.TeamUser.role === 'Owner' ||
+                owner.TeamUser.role === 'Admin'
+            ) {
+                user.TeamUser.role = req.body.role || user.TeamUser.role;
+            }
+            if (owner.id === user.id) {
+                user.TeamUser.color = req.body.color || user.TeamUser.color;
+            }
+            await user.TeamUser.save();
+            return res.status(200).json(user.get({ plain: true }));
         } catch (err) {
             return next(err);
         }

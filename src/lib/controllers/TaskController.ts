@@ -18,16 +18,27 @@ class TaskController extends ModelController<typeof Task> {
         next: NextFunction
     ): Promise<void | Response> {
         try {
-            const { team } = req;
-            const { title, description, dateBegin, deadline } = req.body;
+            const { team, user } = req;
+            const { title, description, dateBegin, dateEnd } = req.body;
+            let newTask: Task;
 
-            const newTask = await team.createTask({
-                title,
-                description,
-                dateBegin,
-                deadline,
-            });
-            return res.status(201).json(newTask);
+            if (team) {
+                newTask = await team.createTask({
+                    title,
+                    description,
+                    dateBegin,
+                    dateEnd,
+                });
+            } else {
+                newTask = await Task.create({
+                    title,
+                    description,
+                    dateBegin,
+                    dateEnd,
+                });
+                await user.addTask(newTask);
+            }
+            return res.status(201).json(newTask.get({ plain: true }));
         } catch (err) {
             return next(err);
         }
@@ -39,9 +50,7 @@ class TaskController extends ModelController<typeof Task> {
         res: Response,
         next: NextFunction
     ): Promise<void | Response> {
-        const { team } = req;
-        const page = req.pagination;
-        const filters = req.filters;
+        const { team, page, filters } = req;
 
         try {
             const records = await Task.findAll({
@@ -59,6 +68,22 @@ class TaskController extends ModelController<typeof Task> {
     }
 
     @logRequest
+    async findAllByUser(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        const { user } = req;
+
+        try {
+            const tasks = await user.getTasks();
+            return res.status(200).json(tasks);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
     async updateById(
         req: IRequest,
         res: Response,
@@ -69,9 +94,10 @@ class TaskController extends ModelController<typeof Task> {
             task.title = req.body.title || task.title;
             task.description = req.body.description || task.description;
             task.dateBegin = req.body.dateBegin || task.dateBegin;
-            task.deadline = req.body.deadline || task.deadline;
+            task.dateEnd = req.body.dateEnd || task.dateEnd;
+            task.completed = req.body.completed || task.completed;
             await task.save();
-            return res.sendStatus(200);
+            return res.status(200).json(task.get({ plain: true }));
         } catch (err) {
             return next(err);
         }

@@ -7,6 +7,8 @@ import {
     requireValidation,
     requireTeamOwnerOrAdmin,
     requireFiltersOrPagination,
+    requireOwnerUserOrTeamAdmin,
+    requireOwnerTeamMember,
 } from '@middlewares';
 import { teamController } from '@controllers';
 
@@ -53,7 +55,12 @@ teamsRoutes.delete(
  * Routes related to team members
  */
 
-teamsRoutes.get('/:teamId/users', requireAuth, teamController.getTeamUser);
+teamsRoutes.get(
+    '/:teamId/users',
+    requireAuth,
+    requireOwnerTeamMember,
+    teamController.getTeamUser
+);
 
 teamsRoutes.post(
     '/:teamId/users/:userId',
@@ -62,4 +69,9 @@ teamsRoutes.post(
     teamController.addTeamUser
 );
 
+teamsRoutes.patch(
+    '/:teamId/users/:userId',
+    requireOwnerUserOrTeamAdmin,
+    teamController.patchTeamUser
+);
 export { teamsRoutes };

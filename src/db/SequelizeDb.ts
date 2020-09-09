@@ -98,8 +98,7 @@ class SequelizeDb {
          * Events belong to team
          */
         Event.belongsTo(Team, {
-            constraints: true,
-            onDelete: 'cascade',
+            constraints: false,
         });
         Team.hasMany(Event);
 
@@ -107,7 +106,7 @@ class SequelizeDb {
          * An event can have many users
          * A user can have many events
          */
-        Event.belongsToMany(User, { through: EventUser });
+        Event.belongsToMany(User, { through: EventUser, onDelete: 'cascade' });
         User.belongsToMany(Event, { through: EventUser });
 
         /**
@@ -115,8 +114,7 @@ class SequelizeDb {
          * A task belongs to a team
          */
         Task.belongsTo(Team, {
-            constraints: true,
-            onDelete: 'cascade',
+            constraints: false,
         });
         Team.hasMany(Task);
 
@@ -124,7 +122,7 @@ class SequelizeDb {
          * A task can have many users
          * A user can have many tasks
          */
-        Task.belongsToMany(User, { through: TaskUser });
+        Task.belongsToMany(User, { through: TaskUser, onDelete: 'cascade' });
         User.belongsToMany(Task, { through: TaskUser });
     }
 
