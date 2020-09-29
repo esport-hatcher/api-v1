@@ -16,7 +16,8 @@
     "launch-tests": "jest -i",
     "test": "sh launch-tests.sh",
     "test:watch": "jest --watch",
-    "shell": "sh launch-shell.sh"
+    "shell": "sh launch-shell.sh",
+    "seed": "sh launch-seeding.sh"
   },
   "husky": {
     "hooks": {
@@ -74,7 +75,8 @@
     "jest": "^25.4.0",
     "prettier": "^2.0.5",
     "ts-jest": "^25.4.0",
-    "ts-node": "^8.3.0",
+    "ts-node": "^9.0.0",
+    "tsconfig-paths": "^3.9.0",
     "tslint": "^6.1.2",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",
