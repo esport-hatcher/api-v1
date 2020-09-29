@@ -13,6 +13,7 @@ import {
     requireFiltersOrPagination,
     requirePersonalEvent,
     requirePersonalTask,
+    requireOwnerPartOfEvent,
 } from '@middlewares';
 
 const userRoutes = BaseRouter();
@@ -117,7 +118,7 @@ userRoutes.get(
     '/:userId/events/:eventId',
     requireAuth,
     requireScopeOrSuperAdmin,
-    requirePersonalEvent,
+    requireOwnerPartOfEvent,
     eventController.findById
 );
 
