@@ -72,7 +72,6 @@ userRoutes.post(
 
 userRoutes.post(
     '/:userId/teams/:teamId',
-    [body('role').trim().withMessage('Please enter a role')],
     requireValidation,
     requireAuth,
     userController.userJoinTeam
