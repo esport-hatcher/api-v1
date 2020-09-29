@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import { omit } from 'lodash';
 import { IRequest } from '@typings';
 import { logRequest, unprocessableEntity } from '@utils';
-import { Event } from '@models';
+import { Event, Team, User } from '@models';
 import { ModelController } from '@controllers';
 import { FORBIDDEN_FIELDS, RECORDS_PER_PAGE } from '@config';
 
@@ -64,6 +64,25 @@ class EventController extends ModelController<typeof Event> {
             return res
                 .status(200)
                 .json(records.map(record => omit(record, ...FORBIDDEN_FIELDS)));
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async findById(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { event } = req;
+
+            const populatedEvent = await Event.findByPk(event.id, {
+                include: [Team, User],
+                plain: true,
+            });
+            return res.status(200).json(populatedEvent);
         } catch (err) {
             return next(err);
         }
