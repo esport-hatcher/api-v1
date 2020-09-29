@@ -1,4 +1,3 @@
-import { helpers } from 'faker';
 import { User, Team } from '@models';
 import {
     logger,
@@ -19,41 +18,42 @@ const getInstances = (functionToExecute: Function, instances: number) => {
 };
 
 const seedUsers = async (instances: number) => {
-    const users = getInstances(
-        () => getRandomUserProps(helpers.randomize([true, false])),
-        instances
-    );
-    usersDb = await User.bulkCreate(users);
+    const { BO_ADMIN_PWD } = process.env;
+
+    const users = getInstances(() => getRandomUserProps(false), instances);
+    usersDb = await User.bulkCreate([
+        {
+            firstName: 'admin',
+            lastName: 'admin',
+            username: 'admin',
+            password: BO_ADMIN_PWD,
+            email: 'admin@esport-hatcher.com',
+            superAdmin: true,
+            country: 'France',
+            city: 'Paris',
+            phoneNumber: '3300000000',
+        },
+        ...users,
+    ]);
 };
 
 const seedTeams = async (instances: number) => {
-    const teams = getInstances(getRandomTeamProps, instances);
+    const teams = getInstances(getRandomTeamProps, instances / 4);
     teamsDb = await Team.bulkCreate(teams);
 };
 
 const seedTeamsUsers = async (instances: number) => {
     const teamUsers = getInstances(
         () => getRandomTeamUser(teamsDb, usersDb),
-        instances
+        instances * 4
     );
     return Promise.all(teamUsers);
 };
 
 export const seedData = async (instances: number = 50) => {
     logger('Seeders', `Trying to seed ${instances} instances...`);
-    try {
-        await seedUsers(instances);
-        await seedTeams(instances);
-        await seedTeamsUsers(instances);
-        logger('Seeders', `Successfully seeded ${instances} instances.`);
-    } catch (err) {
-        logger(
-            'Seeders',
-            `
-            Failed to seed ${instances} instances.
-            Reason: ${err}
-            The seeding may have worked partially. Try putting a lower value to instances
-        `
-        );
-    }
+    await seedUsers(instances);
+    await seedTeams(instances);
+    await seedTeamsUsers(instances);
+    logger('Seeders', `Successfully seeded ${instances} instances.`);
 };
