@@ -13,6 +13,7 @@ import {
     requireFiltersOrPagination,
     requirePersonalEvent,
     requirePersonalTask,
+    requireOwnerPartOfEvent,
 } from '@middlewares';
 
 const userRoutes = BaseRouter();
@@ -71,7 +72,6 @@ userRoutes.post(
 
 userRoutes.post(
     '/:userId/teams/:teamId',
-    [body('role').trim().withMessage('Please enter a role')],
     requireValidation,
     requireAuth,
     userController.userJoinTeam
@@ -117,7 +117,7 @@ userRoutes.get(
     '/:userId/events/:eventId',
     requireAuth,
     requireScopeOrSuperAdmin,
-    requirePersonalEvent,
+    requireOwnerPartOfEvent,
     eventController.findById
 );
 

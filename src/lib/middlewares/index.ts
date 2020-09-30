@@ -10,3 +10,4 @@ export * from './requireUserTeamMember';
 export * from './requirePersonalEvent';
 export * from './requirePersonalTask';
 export * from './requireOwnerUserOrTeamAdmin';
+export * from './requireOwnerPartOfEvent';

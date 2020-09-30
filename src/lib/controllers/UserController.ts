@@ -131,7 +131,6 @@ class UserController extends ModelController<typeof User> {
     async userJoinTeam(req: IRequest, res: Response, next: NextFunction) {
         try {
             const { owner, team } = req;
-            const { role } = req.body;
 
             const teamUsers = await team.getUsers();
             const userInTeam = teamUsers.find(
@@ -143,7 +142,7 @@ class UserController extends ModelController<typeof User> {
             if (!userInTeam) {
                 team.addUser(owner, {
                     through: {
-                        role: role,
+                        role: 'Player',
                         teamStatus: false,
                         playerStatus: true,
                     },
