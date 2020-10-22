@@ -1,5 +1,5 @@
 import { Response, NextFunction } from 'express';
-import { compare } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import { omit } from 'lodash';
 import { IRequest } from '@typings';
 import { User } from '@models';
@@ -154,6 +154,82 @@ class UserController extends ModelController<typeof User> {
              */
             await userInTeam.TeamUser.update({ playerStatus: true });
             return res.sendStatus(201);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async resetPassword(req: IRequest, res: Response, next: NextFunction) {
+        try {
+            const email: string = req.body.email;
+
+            if (email == null) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Missing argument',
+                });
+            }
+
+            const user: User = await User.findOne({ where: { email } });
+
+            if (user == null) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'No user found',
+                });
+            }
+
+            // user.resetHash = Md5.hashStr(email);
+            user.resetHash = email;
+            await user.save();
+            return res.sendStatus(200);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async changePassword(req: IRequest, res: Response, next: NextFunction) {
+        try {
+            const password = req.body.password;
+            const comfirmPassword = req.body.comfirmPassword;
+            const hash = req.body.token;
+
+            if (hash == null) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Missing argument',
+                });
+            }
+
+            const user: User = await User.findOne({
+                where: { resetHash: hash },
+            });
+
+            if (user == null) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Invalid token',
+                });
+            }
+
+            if (hash == user.resetHash && password == comfirmPassword) {
+                const hashed = await hash(password, 10);
+                user.password = hashed;
+                user.resetHash = '';
+                user.save;
+            } else {
+                if (user == null) {
+                    return res.status(404).json({
+                        success: false,
+                        error: 'Invalid token',
+                    });
+                }
+            }
+
+            await user.save();
+            return res.sendStatus(200);
         } catch (err) {
             return next(err);
         }
