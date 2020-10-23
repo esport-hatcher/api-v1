@@ -3,7 +3,8 @@ import { IRequest } from '@typings';
 import { logRequest } from '@utils';
 import { Team } from '@models';
 import { ModelController } from '@controllers';
-import { FORBIDDEN_FIELDS } from '@config';
+import { FORBIDDEN_FIELDS, lolApi } from '@config';
+import { Constants } from 'twisted';
 
 class TeamsController extends ModelController<typeof Team> {
     constructor() {
@@ -97,6 +98,20 @@ class TeamsController extends ModelController<typeof Team> {
     }
 
     @logRequest
+    async getTeamUserById(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { user } = req;
+            return res.status(200).json(user.get({ plain: true }));
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
     async addTeamUser(
         req: IRequest,
         res: Response,
@@ -150,9 +165,33 @@ class TeamsController extends ModelController<typeof Team> {
             }
             if (owner.id === user.id) {
                 user.TeamUser.color = req.body.color || user.TeamUser.color;
+                user.TeamUser.lolSummonerName =
+                    req.body.lolSummonerName || user.TeamUser.lolSummonerName;
+                user.TeamUser.lolRegion =
+                    req.body.lolRegion || user.TeamUser.lolRegion;
+                user.TeamUser.twitchUsername =
+                    req.body.twitchUsername || user.TeamUser.twitchUsername;
             }
             await user.TeamUser.save();
             return res.status(200).json(user.get({ plain: true }));
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async getStats(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { user } = req;
+            const stats = await lolApi.Summoner.getByName(
+                user.TeamUser.lolSummonerName,
+                Constants.Regions[user.TeamUser.lolRegion]
+            );
+            return res.status(200).json(stats);
         } catch (err) {
             return next(err);
         }

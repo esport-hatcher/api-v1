@@ -57,9 +57,14 @@ teamsRoutes.delete(
 
 teamsRoutes.get(
     '/:teamId/users',
-    requireAuth,
     requireOwnerTeamMember,
     teamController.getTeamUser
+);
+
+teamsRoutes.get(
+    '/:teamId/users/:userId',
+    requireOwnerTeamMember,
+    teamController.getTeamUserById
 );
 
 teamsRoutes.post(
@@ -73,5 +78,11 @@ teamsRoutes.patch(
     '/:teamId/users/:userId',
     requireOwnerUserOrTeamAdmin,
     teamController.patchTeamUser
+);
+
+teamsRoutes.get(
+    '/:teamId/users/:userId/stats',
+    requireOwnerUserOrTeamAdmin,
+    teamController.getStats
 );
 export { teamsRoutes };
