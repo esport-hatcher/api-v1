@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import { omit } from 'lodash';
 import { IRequest } from '@typings';
 import { logRequest, unprocessableEntity } from '@utils';
-import { Event, Team, TeamUser, User } from '@models';
+import { Event, Team, User } from '@models';
 import { ModelController } from '@controllers';
 import { FORBIDDEN_FIELDS, RECORDS_PER_PAGE } from '@config';
 
