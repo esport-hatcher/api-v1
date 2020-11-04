@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import { omit } from 'lodash';
 import { IRequest } from '@typings';
 import { logRequest, unprocessableEntity } from '@utils';
-import { Event, Team, User } from '@models';
+import { Event, Team, TeamUser, User } from '@models';
 import { ModelController } from '@controllers';
 import { FORBIDDEN_FIELDS, RECORDS_PER_PAGE } from '@config';
 
@@ -136,8 +136,10 @@ class EventController extends ModelController<typeof Event> {
     ): Promise<void | Response> {
         const { event, user } = req;
         try {
-            await event.addUser(user);
-            return res.sendStatus(201);
+            // tslint:disable-next-line: no-any
+            const [EventUser] = (await event.addUser(user)) as any;
+            const eventUser = { ...user.get({ plain: true }), EventUser };
+            return res.status(201).json(eventUser);
         } catch (err) {
             return next(err);
         }
