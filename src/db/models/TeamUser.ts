@@ -64,7 +64,7 @@ export const initTeamUser = (db: Sequelize) => {
                     'PBE'
                 ),
                 allowNull: false,
-                defaultValue: 'EUW1',
+                defaultValue: 'EU_WEST',
             },
             twitchUsername: {
                 type: DataTypes.STRING,

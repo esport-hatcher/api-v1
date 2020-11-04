@@ -85,4 +85,5 @@ teamsRoutes.get(
     requireOwnerUserOrTeamAdmin,
     teamController.getStats
 );
+
 export { teamsRoutes };

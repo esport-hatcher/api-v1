@@ -191,7 +191,8 @@ class TeamsController extends ModelController<typeof Team> {
                 user.TeamUser.lolSummonerName,
                 Constants.Regions[user.TeamUser.lolRegion]
             );
-            return res.status(200).json(stats);
+            const { id, accountId, puuid } = stats.response;
+            return res.status(200).json({ id, accountId, puuid });
         } catch (err) {
             return next(err);
         }
