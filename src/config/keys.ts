@@ -1,4 +1,5 @@
 import { LolApi } from 'twisted';
+import { TeemoApi } from 'teemojs';
 
 export const sqlHost = process.env.SQL_HOST;
 export const sqlUser = process.env.SQL_USER;
@@ -10,3 +11,6 @@ export const sequelizeLogs = Boolean(process.env.SEQUELIZE_LOGS);
 export const lolApi = new LolApi({
     key: 'RGAPI-77674235-a981-4a43-a593-5836f0423f30',
 });
+export const teemoLolApi = TeemoApi.createRiotApi(
+    'RGAPI-77674235-a981-4a43-a593-5836f0423f30'
+).proxy();

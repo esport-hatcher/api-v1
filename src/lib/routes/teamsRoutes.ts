@@ -62,9 +62,9 @@ teamsRoutes.get(
 );
 
 teamsRoutes.get(
-    '/:teamId/users/:userId',
-    requireOwnerTeamMember,
-    teamController.getTeamUserById
+    '/:teamId/users/stats',
+    requireTeamOwnerOrAdmin,
+    teamController.getStats
 );
 
 teamsRoutes.post(
@@ -83,7 +83,7 @@ teamsRoutes.patch(
 teamsRoutes.get(
     '/:teamId/users/:userId/stats',
     requireOwnerUserOrTeamAdmin,
-    teamController.getStats
+    teamController.getStatsById
 );
 
 export { teamsRoutes };
