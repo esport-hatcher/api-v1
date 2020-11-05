@@ -156,4 +156,12 @@ export const initUser = (db: Sequelize) => {
         await user.save();
         return Promise.resolve();
     });
+
+    User.beforeBulkCreate(async users => {
+        for (const user of users) {
+            const hashed = await hash(user.password, 10);
+            user.password = hashed;
+        }
+        return Promise.resolve();
+    });
 };

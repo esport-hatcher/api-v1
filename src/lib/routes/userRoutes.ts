@@ -29,12 +29,7 @@ userRoutes.get(
 );
 
 userRoutes.get('/me', requireAuth, userController.getMe);
-userRoutes.get(
-    '/:userId/teams',
-    requireAuth,
-    requireScopeOrSuperAdmin,
-    teamController.findAllByUser
-);
+
 userRoutes.get('/:userId', requireAuth, userController.findById);
 
 /**
@@ -77,6 +72,13 @@ userRoutes.post(
     userController.userJoinTeam
 );
 
+userRoutes.get(
+    '/:userId/teams',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    teamController.findAllByUser
+);
+
 /**
  * Patch routes
  */
@@ -101,6 +103,14 @@ userRoutes.delete(
 userRoutes.post(
     '/:userId/events',
     requireAuth,
+    [
+        body('title').trim().isLength({ min: 1 }),
+        body('description').trim().isLength({ min: 1 }),
+        body('place').trim().isLength({ min: 1, max: 50 }),
+        body('dateBegin').trim(),
+        body('dateEnd').trim(),
+    ],
+    requireValidation,
     requireScopeOrSuperAdmin,
     eventController.create
 );
