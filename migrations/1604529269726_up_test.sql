@@ -1,0 +1,1 @@
+create table esporthatcher (id bigint, name varchar(255));
