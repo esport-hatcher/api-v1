@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
 import { getLolStats, logRequest } from '@utils';
-import { Team } from '@models';
+import { Team, User } from '@models';
 import { ModelController } from '@controllers';
 import { FORBIDDEN_FIELDS } from '@config';
 import { Constants } from 'twisted';
@@ -48,7 +48,7 @@ class TeamsController extends ModelController<typeof Team> {
         const { user } = req;
 
         try {
-            const teams = await user.getTeams();
+            const teams = await user.getTeams({ include: [User] });
             return res.status(200).json(teams);
         } catch (err) {
             return next(err);
@@ -196,10 +196,7 @@ class TeamsController extends ModelController<typeof Team> {
                         Constants.Regions[teamUser.TeamUser.lolRegion];
                     return (
                         teamUser.TeamUser.lolSummonerName &&
-                        (await getLolStats(
-                            teamUser.TeamUser.lolSummonerName,
-                            region
-                        ))
+                        getLolStats(teamUser.TeamUser.lolSummonerName, region)
                     );
                 })
             );
