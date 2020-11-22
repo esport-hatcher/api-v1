@@ -76,6 +76,10 @@ teamsRoutes.patch(
     teamController.patchTeamUser
 );
 
-teamsRoutes.get('/:teamId/users/:userId/stats', teamController.getStatsById);
+teamsRoutes.get(
+    '/:teamId/users/:userId/stats',
+    requireOwnerUserOrTeamAdmin,
+    teamController.getStatsById
+);
 
 export { teamsRoutes };
