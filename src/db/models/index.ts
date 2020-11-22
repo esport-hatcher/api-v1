@@ -5,3 +5,4 @@ export * from './Event';
 export * from './Task';
 export * from './TaskUser';
 export * from './EventUser';
+export * from './Contact';

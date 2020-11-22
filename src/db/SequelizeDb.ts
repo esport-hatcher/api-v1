@@ -16,6 +16,7 @@ import {
     initTaskUser,
     EventUser,
     initEventUser,
+    initContact,
 } from '@models';
 
 class SequelizeDb {
@@ -79,6 +80,7 @@ class SequelizeDb {
         initEventUser(db);
         initTask(db);
         initTaskUser(db);
+        initContact(db);
     }
 
     /**

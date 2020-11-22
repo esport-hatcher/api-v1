@@ -5,3 +5,4 @@ export * from './userRoutes';
 export * from './eventRoutes';
 export * from './taskRoutes';
 export * from './basicRoutes';
+export * from './contactRoutes';

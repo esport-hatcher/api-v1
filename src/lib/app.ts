@@ -14,6 +14,7 @@ import {
     eventResolver,
     taskResolver,
     basicRoutes,
+    contactRoutes,
 } from '@routes';
 import { IError, IRequest } from '@typings';
 
@@ -33,6 +34,7 @@ app.use(basicRoutes);
 app.use('/users', userRoutes);
 app.use('/teams', teamsRoutes);
 app.use('/jobs', jobRoutes);
+app.use('/contact', contactRoutes);
 app.use('/teams/:teamId/events', eventRoutes);
 app.use('/teams/:teamId/tasks', taskRoutes);
 

@@ -14,7 +14,7 @@ export function logRequest(
 ) {
     const originalMethod = descriptor.value;
 
-    descriptor.value = async function(
+    descriptor.value = async function (
         req: IRequest,
         res: Response,
         next: NextFunction
