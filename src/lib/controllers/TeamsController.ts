@@ -169,8 +169,6 @@ class TeamsController extends ModelController<typeof Team> {
                     req.body.lolSummonerName || user.TeamUser.lolSummonerName;
                 user.TeamUser.lolRegion =
                     req.body.lolRegion || user.TeamUser.lolRegion;
-                user.TeamUser.twitchUsername =
-                    req.body.twitchUsername || user.TeamUser.twitchUsername;
             }
             await user.TeamUser.save();
             return res.status(200).json(user.get({ plain: true }));

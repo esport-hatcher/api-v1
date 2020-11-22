@@ -32,6 +32,7 @@ export interface IUserProps {
     country?: string;
     city?: string;
     phoneNumber?: string;
+    twitchUsername?: string;
 }
 export class User extends Model {
     public id!: number; // Note that the `null assertion` `!` is required in strict mode.
@@ -46,6 +47,7 @@ export class User extends Model {
     public password: string;
     public superAdmin: boolean;
     public hashtag: string;
+    public twitchUsername: string;
 
     // timestamps!
     public readonly createdAt!: Date;
@@ -136,6 +138,10 @@ export const initUser = (db: Sequelize) => {
                 allowNull: true,
             },
             phoneNumber: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            twitchUsername: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },

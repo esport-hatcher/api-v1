@@ -11,7 +11,6 @@ export class TeamUser extends Model {
     public color!: string;
     public lolSummonerName: string;
     public lolRegion: string;
-    public twitchUsername: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -65,10 +64,6 @@ export const initTeamUser = (db: Sequelize) => {
                 ),
                 allowNull: false,
                 defaultValue: 'EU_WEST',
-            },
-            twitchUsername: {
-                type: DataTypes.STRING,
-                allowNull: true,
             },
         },
         {
