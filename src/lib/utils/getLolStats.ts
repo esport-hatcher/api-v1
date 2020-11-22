@@ -1,4 +1,4 @@
-import { lolApi, teemoLolApi } from '@config';
+import { lolApi } from '@config';
 import { MatchQueryDTO } from 'twisted/dist/models-dto';
 
 const getWinrate = (wins: number, losses: number) => {
@@ -52,7 +52,6 @@ const getWinrate = (wins: number, losses: number) => {
 // };
 
 const getBestMasteryChampions = async (
-    lolSummonerName: string,
     summonerMasteries: any,
     accountId: string,
     lolRegion: any
@@ -118,7 +117,6 @@ export const getLolStats = async (lolSummonerName: string, lolRegion: any) => {
         lolRegion
     );
     const bestMasteryChampions = await getBestMasteryChampions(
-        lolSummonerName,
         summonerMasteries,
         accountId,
         lolRegion
