@@ -1,10 +1,6 @@
 import { BaseRouter } from '@services/router';
 import { contactController } from '@controllers';
-import {
-    requireAuth,
-    requireFiltersOrPagination,
-    requireTeamOwnerOrAdmin,
-} from '@middlewares';
+import { requireAuth, requireFiltersOrPagination } from '@middlewares';
 
 const contactRoutes = BaseRouter();
 
@@ -22,10 +18,12 @@ contactRoutes.post(
     contactController.create
 );
 
-contactRoutes.patch('/', requireTeamOwnerOrAdmin, contactController.updateById);
+contactRoutes.get('/:contactId', contactController.findById);
+
+contactRoutes.patch('/:contactId', requireAuth, contactController.updateById);
 
 contactRoutes.delete(
-    '/',
+    '/:contactId',
     requireAuth,
     requireFiltersOrPagination,
     contactController.deleteById
