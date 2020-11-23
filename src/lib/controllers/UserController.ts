@@ -181,7 +181,7 @@ class UserController extends ModelController<typeof User> {
             }
 
             // user.resetHash = Md5.hashStr(email);
-            user.resetHash = email;
+            user.resetHash = await hash(email, 10);
             await user.save();
             return res.sendStatus(200);
         } catch (err) {
@@ -194,9 +194,9 @@ class UserController extends ModelController<typeof User> {
         try {
             const password = req.body.password;
             const comfirmPassword = req.body.comfirmPassword;
-            const hash = req.body.token;
+            const token = req.body.token;
 
-            if (hash == null) {
+            if (token == null) {
                 return res.status(404).json({
                     success: false,
                     error: 'Missing argument',
@@ -204,7 +204,7 @@ class UserController extends ModelController<typeof User> {
             }
 
             const user: User = await User.findOne({
-                where: { resetHash: hash },
+                where: { resetHash: token },
             });
 
             if (user == null) {
@@ -214,7 +214,7 @@ class UserController extends ModelController<typeof User> {
                 });
             }
 
-            if (hash == user.resetHash && password == comfirmPassword) {
+            if (token == user.resetHash && password == comfirmPassword) {
                 const hashed = await hash(password, 10);
                 user.password = hashed;
                 user.resetHash = '';
