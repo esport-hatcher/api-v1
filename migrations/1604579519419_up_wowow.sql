@@ -1,1 +1,0 @@
-create table wowow (id bigint, name varchar(255));

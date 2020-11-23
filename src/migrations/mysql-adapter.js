@@ -80,10 +80,22 @@ module.exports = function (config, logger) {
             });
         },
         createDatabase: function (name) {
-            return execbis('create database ' + name);
+            return execbis('create database ' + name).then(function (result) {
+                if (!result) {
+                    throw result;
+                }
+
+                logger.log('Database `' + name + '` created');
+            });
         },
         dropDatabase: function (name) {
-            return execbis('drop database ' + name);
+            return execbis('drop database ' + name).then(function (result) {
+                if (!result) {
+                    throw result;
+                }
+
+                logger.log('Database `' + name + '` deleted');
+            });
         },
         dispose: function dispose() {
             return pool.end();

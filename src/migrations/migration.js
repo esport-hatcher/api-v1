@@ -42,6 +42,38 @@ function rollback(config, adapter) {
     );
 }
 
+function create(config, adapter) {
+    return MigrationActions.create(config, adapter).then(
+        function () {
+            return adapter.dispose();
+        },
+        function (error) {
+            function rethrowOriginalError() {
+                throw error;
+            }
+            return adapter
+                .dispose()
+                .then(rethrowOriginalError, rethrowOriginalError);
+        }
+    );
+}
+
+function drop(config, adapter) {
+    return MigrationActions.drop(config, adapter).then(
+        function () {
+            return adapter.dispose();
+        },
+        function (error) {
+            function rethrowOriginalError() {
+                throw error;
+            }
+            return adapter
+                .dispose()
+                .then(rethrowOriginalError, rethrowOriginalError);
+        }
+    );
+}
+
 module.exports = {
     setLogger: function (logger) {
         LOGGER = logger;
@@ -56,10 +88,10 @@ module.exports = {
 
         switch (args[0]) {
             case 'create':
-                MigrationActions.create(config, adapter);
+                create(config, adapter).then(onCliSuccess, onCliError);
                 break;
             case 'drop':
-                MigrationActions.drop(config, adapter);
+                drop(config, adapter).then(onCliSuccess, onCliError);
                 break;
             case 'generate':
                 MigrationActions.generate(config, LOGGER, args[1]);

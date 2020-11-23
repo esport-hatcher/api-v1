@@ -5,17 +5,15 @@ var chalk = require('chalk');
 
 module.exports = {
     create: function (config, adapter) {
-        adapter.createDatabase(config.db).then(function () {
+        return adapter.createDatabase(config.db).then(function () {
             return adapter;
         });
-        return adapter.dispose().then();
     },
 
     drop: function (config, adapter) {
-        adapter.dropDatabase(config.db).then(function () {
+        return adapter.dropDatabase(config.db).then(function () {
             return adapter;
         });
-        return adapter.dispose().then();
     },
 
     generate: function (config, logger, migrationName) {
@@ -109,15 +107,18 @@ module.exports = {
 
 function getPending(migrationsList, appliedMigrationIds, minMigrationTime) {
     var pending = [];
+    console.log(migrationsList);
+    console.log('========================');
+    console.log(appliedMigrationIds);
     migrationsList.forEach(function (migration) {
         var id = migration.match(/^(\d+)/)[0];
         if (
-            (!minMigrationTime || id >= minMigrationTime) &&
-            !~appliedMigrationIds.indexOf(id) &&
+            !appliedMigrationIds.indexOf(id) &&
             migration.match(/^\d+\_up.*$/)
         ) {
             pending.push(migration);
         }
     });
+
     return pending;
 }
