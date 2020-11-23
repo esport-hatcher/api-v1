@@ -9,6 +9,8 @@ export class TeamUser extends Model {
     public teamStatus!: boolean;
     public role!: TeamUserRole;
     public color!: string;
+    public lolSummonerName: string;
+    public lolRegion: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -40,6 +42,28 @@ export const initTeamUser = (db: Sequelize) => {
                 type: DataTypes.STRING,
                 allowNull: false,
                 defaultValue: getRandomLightColor(),
+            },
+            lolSummonerName: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            lolRegion: {
+                type: ENUM(
+                    'BRAZIL',
+                    'EU_EAST',
+                    'EU_WEST',
+                    'KOREA',
+                    'LAT_NORT',
+                    'LAT_SOUTH',
+                    'AMERICA_NORTH',
+                    'OCEANIA',
+                    'TURKEY',
+                    'RUSSIA',
+                    'JAPAN',
+                    'PBE'
+                ),
+                allowNull: false,
+                defaultValue: 'EU_WEST',
             },
         },
         {

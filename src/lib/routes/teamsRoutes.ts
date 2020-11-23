@@ -2,7 +2,6 @@ import { body } from 'express-validator/check';
 import { BaseRouter } from '@services/router';
 import {
     requireAuth,
-    requireAdmin,
     requireScopeOrSuperAdmin,
     requireValidation,
     requireTeamOwnerOrAdmin,
@@ -16,12 +15,7 @@ const teamsRoutes = BaseRouter();
 
 teamsRoutes.use(requireAuth);
 
-teamsRoutes.get(
-    '/',
-    requireAdmin,
-    requireFiltersOrPagination,
-    teamController.findAll
-);
+teamsRoutes.get('/', requireFiltersOrPagination, teamController.findAll);
 
 teamsRoutes.get('/:teamId', teamController.findById);
 
@@ -57,10 +51,11 @@ teamsRoutes.delete(
 
 teamsRoutes.get(
     '/:teamId/users',
-    requireAuth,
     requireOwnerTeamMember,
     teamController.getTeamUser
 );
+
+teamsRoutes.get('/:teamId/users/stats', teamController.getStats);
 
 teamsRoutes.post(
     '/:teamId/users/:userId',
@@ -74,4 +69,11 @@ teamsRoutes.patch(
     requireOwnerUserOrTeamAdmin,
     teamController.patchTeamUser
 );
+
+teamsRoutes.get(
+    '/:teamId/users/:userId/stats',
+    requireOwnerUserOrTeamAdmin,
+    teamController.getStatsById
+);
+
 export { teamsRoutes };
