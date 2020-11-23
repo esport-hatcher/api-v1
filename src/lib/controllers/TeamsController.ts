@@ -1,9 +1,10 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { logRequest } from '@utils';
+import { getLolStats, logRequest } from '@utils';
 import { Team, User } from '@models';
 import { ModelController } from '@controllers';
 import { FORBIDDEN_FIELDS } from '@config';
+import { Constants } from 'twisted';
 
 class TeamsController extends ModelController<typeof Team> {
     constructor() {
@@ -97,6 +98,20 @@ class TeamsController extends ModelController<typeof Team> {
     }
 
     @logRequest
+    async getTeamUserById(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { user } = req;
+            return res.status(200).json(user.get({ plain: true }));
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
     async addTeamUser(
         req: IRequest,
         res: Response,
@@ -150,9 +165,59 @@ class TeamsController extends ModelController<typeof Team> {
             }
             if (owner.id === user.id) {
                 user.TeamUser.color = req.body.color || user.TeamUser.color;
+                user.TeamUser.lolSummonerName =
+                    req.body.lolSummonerName || user.TeamUser.lolSummonerName;
+                user.TeamUser.lolRegion =
+                    req.body.lolRegion || user.TeamUser.lolRegion;
             }
             await user.TeamUser.save();
             return res.status(200).json(user.get({ plain: true }));
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async getStats(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { team } = req;
+            const teamUsers = await team.getUsers({
+                attributes: { exclude: FORBIDDEN_FIELDS },
+            });
+            const allStats = await Promise.all(
+                teamUsers.map(async teamUser => {
+                    const region =
+                        Constants.Regions[teamUser.TeamUser.lolRegion];
+                    return (
+                        teamUser.TeamUser.lolSummonerName &&
+                        getLolStats(teamUser.TeamUser.lolSummonerName, region)
+                    );
+                })
+            );
+            return res.status(200).json(allStats.filter(item => item));
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async getStatsById(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { user } = req;
+            const region = Constants.Regions[user.TeamUser.lolRegion];
+            const stats = await getLolStats(
+                user.TeamUser.lolSummonerName,
+                region
+            );
+            return res.status(200).json(stats);
         } catch (err) {
             return next(err);
         }
