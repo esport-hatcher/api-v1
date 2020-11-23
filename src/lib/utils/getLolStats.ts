@@ -123,6 +123,7 @@ export const getLolStats = async (lolSummonerName: string, lolRegion: any) => {
     );
     const rankedInfos = await getRankedInfos(id, lolRegion);
     return {
+        summonerName: lolSummonerName,
         id,
         accountId,
         puuid,
