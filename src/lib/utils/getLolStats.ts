@@ -74,11 +74,15 @@ const getBestMasteryChampions = async (
             const totalGames = (
                 await lolApi.Match.list(accountId, lolRegion, filter)
             ).response.totalGames;
+            const championData = await lolApi.DataDragon.getChampion(
+                item.championId
+            );
             return {
                 championName: champion.name,
                 championId: item.championId,
                 championLevel: item.championLevel,
                 championPoints: item.championPoints,
+                imageUrl: `http://ddragon.leagueoflegends.com/cdn/img/champion/tiles/${championData.id}_0.jpg`,
                 totalGames,
             };
         })
