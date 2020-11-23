@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
 import { logRequest } from '@utils';
-import { Team } from '@models';
+import { Team, User } from '@models';
 import { ModelController } from '@controllers';
 import { FORBIDDEN_FIELDS } from '@config';
 
@@ -47,7 +47,7 @@ class TeamsController extends ModelController<typeof Team> {
         const { user } = req;
 
         try {
-            const teams = await user.getTeams();
+            const teams = await user.getTeams({ include: [User] });
             return res.status(200).json(teams);
         } catch (err) {
             return next(err);
