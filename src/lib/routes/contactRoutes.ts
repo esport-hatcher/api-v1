@@ -18,7 +18,7 @@ contactRoutes.post(
     contactController.create
 );
 
-contactRoutes.get('/:contactId', contactController.findById);
+contactRoutes.get('/:contactId', requireAuth, contactController.findById);
 
 contactRoutes.patch('/:contactId', requireAuth, contactController.updateById);
 
