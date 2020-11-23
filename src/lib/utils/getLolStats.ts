@@ -1,5 +1,6 @@
 import { lolApi } from '@config';
 import { MatchQueryDTO } from 'twisted/dist/models-dto';
+import { User } from '@models';
 
 const getWinrate = (wins: number, losses: number) => {
     return Math.round((wins / (wins + losses)) * 100);
@@ -106,7 +107,11 @@ const getRankedInfos = async (id: string, lolRegion: any) => {
     );
 };
 
-export const getLolStats = async (lolSummonerName: string, lolRegion: any) => {
+export const getLolStats = async (
+    lolSummonerName: string,
+    lolRegion: any,
+    user: User
+) => {
     const accountInfos = await lolApi.Summoner.getByName(
         lolSummonerName,
         lolRegion
@@ -127,6 +132,12 @@ export const getLolStats = async (lolSummonerName: string, lolRegion: any) => {
     );
     const rankedInfos = await getRankedInfos(id, lolRegion);
     return {
+        user: {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            username: user.username,
+        },
         summonerName: lolSummonerName,
         id,
         accountId,
