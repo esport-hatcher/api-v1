@@ -2,7 +2,6 @@ import { body } from 'express-validator/check';
 import { BaseRouter } from '@services/router';
 import {
     requireAuth,
-    requireScopeOrSuperAdmin,
     requireValidation,
     requireTeamOwnerOrAdmin,
     requireFiltersOrPagination,
@@ -35,13 +34,13 @@ teamsRoutes.post(
 
 teamsRoutes.patch(
     '/:teamId',
-    requireScopeOrSuperAdmin,
+    requireTeamOwnerOrAdmin,
     teamController.updateById
 );
 
 teamsRoutes.delete(
     '/:teamId',
-    requireScopeOrSuperAdmin,
+    requireTeamOwnerOrAdmin,
     teamController.deleteById
 );
 
