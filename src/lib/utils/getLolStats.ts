@@ -148,11 +148,7 @@ function fetchUserInfos(
     accountData: IAccountData,
     matchData: ApiResponseDTO<MatchDto>
 ): MatchParticipantDTO {
-    for (
-        let i = 0;
-        i < matchData.response.participantIdentities.length - 1;
-        ++i
-    ) {
+    for (let i = 0; i < matchData.response.participantIdentities.length; ++i) {
         if (
             matchData.response.participantIdentities[i].player
                 .currentAccountId == accountData.accountId
@@ -237,6 +233,8 @@ function getDataMostOccurences(dataList: IMatchData[], field: string): string {
 }
 
 function calcAverageKda(advancedStats: Object): number {
+    // tslint:disable-next-line: no-console
+    console.log(advancedStats);
     return (
         Math.round(
             ((advancedStats['kills'] + advancedStats['assists']) /
@@ -271,6 +269,13 @@ async function statsv2(accountData: IAccountData): Promise<Object> {
             accountData,
             matchData
         );
+
+        // tslint:disable-next-line: no-console
+        console.log('Another game');
+        // tslint:disable-next-line: no-console
+        console.log(accountData);
+        // tslint:disable-next-line: no-console
+        console.log(matchData.response.participantIdentities);
 
         // Raw values
         newData.kills = playerInfos.stats.kills;
