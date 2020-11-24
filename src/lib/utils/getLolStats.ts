@@ -1,5 +1,11 @@
 import { lolApi } from '@config';
-import { MatchQueryDTO } from 'twisted/dist/models-dto';
+import {
+    MatchQueryDTO,
+    ApiResponseDTO,
+    MatchDto,
+    MatchParticipantDTO,
+    MatchTeamsDto,
+} from 'twisted/dist/models-dto';
 import { User } from '@models';
 
 const getWinrate = (wins: number, losses: number) => {
@@ -71,12 +77,210 @@ interface IAccountData {
     accountId?: string;
     puuid?: string;
     summonerLevel?: number;
+    // tslint:disable-next-line: no-any
+    region?: any;
 }
 
-const statsv2 = async (accountData: IAccountData, response: Object) => {
-    accountData;
-    response;
-};
+interface IMatchList {
+    gameId?: number;
+    platformId?: string;
+    champion?: number;
+    lane?: number;
+}
+
+interface IMatchData {
+    matchInfo?: IMatchList;
+    gameDuration?: number;
+    win?: boolean;
+    kills?: number;
+    deaths?: number;
+    assists?: number;
+    totalMinionsKilled?: number;
+    totalDamageDealt?: number;
+    totalHeal?: number;
+    longestTimeSpentLiving?: number;
+    visionScore?: number;
+    visionWardsBoughtInGame?: number;
+    goldEarned?: number;
+    champLevel?: number;
+    turretKills?: number;
+    inhibitorKills?: number;
+    levelPerMinutes?: number;
+}
+
+async function fetchPlayerRecentGames(
+    accountData: IAccountData
+): Promise<IMatchList[]> {
+    const matchFilter: MatchQueryDTO = {
+        queue: 420,
+        beginIndex: 0,
+        endIndex: 100,
+    };
+    const playerMatches = await lolApi.Match.list(
+        accountData.accountId,
+        accountData.region,
+        matchFilter
+    );
+
+    if (playerMatches.response.totalGames <= 9) {
+        return [];
+    }
+
+    const matchList: IMatchList[] = [];
+    playerMatches.response.matches.forEach(function (match, index) {
+        if (index < 10) {
+            const newMatch: IMatchList = {
+                gameId: match.gameId,
+                platformId: match.platformId,
+                champion: match.champion,
+            };
+
+            matchList.push(newMatch);
+        }
+    });
+
+    return matchList;
+}
+
+function fetchUserInfos(
+    accountData: IAccountData,
+    matchData: ApiResponseDTO<MatchDto>
+): MatchParticipantDTO {
+    for (
+        let i = 0;
+        i < matchData.response.participantIdentities.length - 1;
+        ++i
+    ) {
+        if (
+            matchData.response.participantIdentities[i].player
+                .currentAccountId == accountData.accountId
+        ) {
+            return matchData.response.participants[
+                matchData.response.participantIdentities[i].participantId - 1
+            ];
+        }
+    }
+
+    return {} as MatchParticipantDTO;
+}
+
+function fetchMatchResult(teams: MatchTeamsDto[], teamId: number): boolean {
+    for (let i = 0; i < teams.length; ++i) {
+        if (teamId == teams[i].teamId) {
+            return teams[i].win;
+        }
+    }
+
+    return false;
+}
+
+function calcAverage(matchList: IMatchData[]): Object {
+    const fields: string[] = [
+        'gameDuration',
+        'kills',
+        'deaths',
+        'assists',
+        'totalMinionsKilled',
+        'totalDamageDealt',
+        'totalHeal',
+        'longestTimeSpentLiving',
+        'visionScore',
+        'visionWardsBoughtInGame',
+        'goldEarned',
+        'champLevel',
+        'turretKills',
+        'inhibitorKills',
+        'levelPerMinutes',
+    ];
+    const analytics = {};
+
+    fields.forEach(function (field) {
+        let fieldAverage = 0;
+
+        matchList.forEach(function (match) {
+            fieldAverage += match[field];
+        });
+
+        analytics[field] =
+            Math.round((fieldAverage / matchList.length) * 10) / 10;
+    });
+
+    return analytics;
+}
+
+function calcAverageKda(advancedStats: Object): number {
+    return (
+        Math.round(
+            ((advancedStats['kills'] + advancedStats['assists']) /
+                advancedStats['deaths']) *
+                10
+        ) / 10
+    );
+}
+
+async function statsv2(accountData: IAccountData): Promise<Object> {
+    let response: Object = {};
+    const matchIds: IMatchList[] = await fetchPlayerRecentGames(accountData);
+
+    if (matchIds.length == 0) {
+        response = {
+            success: false,
+            error:
+                'Not enough data. Play at least 10 ranked Solo Queue to be eligible for advanced stats.',
+        };
+
+        return response;
+    }
+
+    const dataList: IMatchData[] = [];
+    for (let i = 0; i < matchIds.length; ++i) {
+        const newData: IMatchData = { matchInfo: matchIds[i] };
+        const matchData: ApiResponseDTO<MatchDto> = await lolApi.Match.get(
+            matchIds[i].gameId,
+            accountData.region
+        );
+        const playerInfos: MatchParticipantDTO = fetchUserInfos(
+            accountData,
+            matchData
+        );
+
+        // Raw values
+        newData.kills = playerInfos.stats.kills;
+        newData.deaths = playerInfos.stats.deaths;
+        newData.assists = playerInfos.stats.assists;
+        newData.totalMinionsKilled = playerInfos.stats.totalMinionsKilled;
+        newData.totalDamageDealt = playerInfos.stats.totalDamageDealt;
+        newData.totalHeal = playerInfos.stats.totalHeal;
+        newData.longestTimeSpentLiving =
+            playerInfos.stats.longestTimeSpentLiving;
+        newData.visionScore = playerInfos.stats.visionScore;
+        newData.visionWardsBoughtInGame =
+            playerInfos.stats.visionWardsBoughtInGame;
+        newData.goldEarned = playerInfos.stats.goldEarned;
+        newData.champLevel = playerInfos.stats.champLevel;
+        newData.turretKills = playerInfos.stats.turretKills;
+        newData.inhibitorKills = playerInfos.stats.inhibitorKills;
+
+        // Processed values
+        newData.gameDuration = matchData.response.gameDuration / 60;
+        newData.win = fetchMatchResult(
+            matchData.response.teams,
+            playerInfos.teamId
+        );
+        newData.levelPerMinutes =
+            Math.round((newData.champLevel / newData.gameDuration) * 10) / 10;
+
+        // Assign to data structure
+        dataList.push(newData);
+    }
+
+    // tslint:disable-next-line: no-console
+    console.log(dataList);
+    response = { ...calcAverage(dataList) };
+    response['kda'] = calcAverageKda(response);
+
+    return response;
+}
 
 export const getLolStats = async (
     lolSummonerName: string,
@@ -84,6 +288,7 @@ export const getLolStats = async (
     lolRegion: any,
     user: User
 ) => {
+    // Stats v1
     const accountInfos = await lolApi.Summoner.getByName(
         lolSummonerName,
         lolRegion
@@ -105,7 +310,7 @@ export const getLolStats = async (
     const rankedInfos = await getRankedInfos(id, lolRegion);
 
     // Response formatting
-    let response: Object = {
+    const response: Object = {
         user: {
             id: user.id,
             firstName: user.firstName,
@@ -127,9 +332,10 @@ export const getLolStats = async (
         accountId: accountInfos.response.accountId,
         puuid: accountInfos.response.puuid,
         summonerLevel: accountInfos.response.summonerLevel,
+        region: lolRegion,
     };
 
-    response = await statsv2(accountData, response);
+    response['advancedStats'] = await statsv2(accountData);
 
     return response;
 };
