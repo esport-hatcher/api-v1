@@ -52,11 +52,15 @@ const getWinrate = (wins: number, losses: number) => {
 // };
 
 const getBestMasteryChampions = async (
+    // tslint:disable-next-line: no-any
     summonerMasteries: any,
     accountId: string,
+    // tslint:disable-next-line: no-any
     lolRegion: any
 ) => {
+    // tslint:disable-next-line: no-return-await
     return await Promise.all(
+        // tslint:disable-next-line: no-any
         summonerMasteries.response.slice(0, 5).map(async (item: any) => {
             const champion = await lolApi.DataDragon.getChampion(
                 item.championId
@@ -85,6 +89,7 @@ const getBestMasteryChampions = async (
     );
 };
 
+// tslint:disable-next-line: no-any
 const getRankedInfos = async (id: string, lolRegion: any) => {
     return (await lolApi.League.bySummoner(id, lolRegion)).response.map(
         item => {
@@ -102,6 +107,7 @@ const getRankedInfos = async (id: string, lolRegion: any) => {
     );
 };
 
+// tslint:disable-next-line: no-any
 export const getLolStats = async (lolSummonerName: string, lolRegion: any) => {
     const accountInfos = await lolApi.Summoner.getByName(
         lolSummonerName,
