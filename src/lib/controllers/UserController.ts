@@ -101,6 +101,9 @@ class UserController extends ModelController<typeof User> {
             user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
             user.twitchUsername =
                 req.body.twitchUsername || user.twitchUsername;
+            user.lolSummonerName =
+                req.body.lolSummonerName || user.lolSummonerName;
+            user.lolRegion = req.body.lolRegion || user.lolRegion;
             await user.save();
             return res
                 .status(200)

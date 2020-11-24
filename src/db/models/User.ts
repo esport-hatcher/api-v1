@@ -4,6 +4,7 @@ import {
     Sequelize,
     BelongsToManyGetAssociationsMixin,
     BelongsToManyAddAssociationMixin,
+    ENUM,
 } from 'sequelize';
 import { hash } from 'bcryptjs';
 import { encode } from 'jwt-simple';
@@ -34,6 +35,8 @@ export interface IUserProps {
     phoneNumber?: string;
     resetHash?: string;
     twitchUsername?: string;
+    lolSummonerName?: string;
+    lolRegion?: string;
 }
 export class User extends Model {
     public id!: number; // Note that the `null assertion` `!` is required in strict mode.
@@ -50,6 +53,8 @@ export class User extends Model {
     public hashtag: string;
     public resetHash: string;
     public twitchUsername: string;
+    public lolSummonerName: string;
+    public lolRegion: string;
 
     // timestamps!
     public readonly createdAt!: Date;
@@ -150,6 +155,28 @@ export const initUser = (db: Sequelize) => {
             twitchUsername: {
                 type: DataTypes.STRING,
                 allowNull: true,
+            },
+            lolSummonerName: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            lolRegion: {
+                type: ENUM(
+                    'BRAZIL',
+                    'EU_EAST',
+                    'EU_WEST',
+                    'KOREA',
+                    'LAT_NORT',
+                    'LAT_SOUTH',
+                    'AMERICA_NORTH',
+                    'OCEANIA',
+                    'TURKEY',
+                    'RUSSIA',
+                    'JAPAN',
+                    'PBE'
+                ),
+                allowNull: false,
+                defaultValue: 'EU_WEST',
             },
         },
         {

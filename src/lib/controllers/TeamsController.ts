@@ -165,10 +165,6 @@ class TeamsController extends ModelController<typeof Team> {
             }
             if (owner.id === user.id) {
                 user.TeamUser.color = req.body.color || user.TeamUser.color;
-                user.TeamUser.lolSummonerName =
-                    req.body.lolSummonerName || user.TeamUser.lolSummonerName;
-                user.TeamUser.lolRegion =
-                    req.body.lolRegion || user.TeamUser.lolRegion;
             }
             await user.TeamUser.save();
             return res.status(200).json(user.get({ plain: true }));
@@ -190,15 +186,10 @@ class TeamsController extends ModelController<typeof Team> {
             });
             const allStats = await Promise.all(
                 teamUsers.map(async teamUser => {
-                    const region =
-                        Constants.Regions[teamUser.TeamUser.lolRegion];
+                    const region = Constants.Regions[teamUser.lolRegion];
                     return (
-                        teamUser.TeamUser.lolSummonerName &&
-                        getLolStats(
-                            teamUser.TeamUser.lolSummonerName,
-                            region,
-                            teamUser
-                        )
+                        teamUser.lolSummonerName &&
+                        getLolStats(teamUser.lolSummonerName, region, teamUser)
                     );
                 })
             );
@@ -216,12 +207,8 @@ class TeamsController extends ModelController<typeof Team> {
     ): Promise<void | Response> {
         try {
             const { user } = req;
-            const region = Constants.Regions[user.TeamUser.lolRegion];
-            const stats = await getLolStats(
-                user.TeamUser.lolSummonerName,
-                region,
-                user
-            );
+            const region = Constants.Regions[user.lolRegion];
+            const stats = await getLolStats(user.lolSummonerName, region, user);
             return res.status(200).json(stats);
         } catch (err) {
             return next(err);
