@@ -166,7 +166,7 @@ export const initUser = (db: Sequelize) => {
                     'EU_EAST',
                     'EU_WEST',
                     'KOREA',
-                    'LAT_NORT',
+                    'LAT_NORTH',
                     'LAT_SOUTH',
                     'AMERICA_NORTH',
                     'OCEANIA',
