@@ -85,7 +85,7 @@ interface IMatchList {
     gameId?: number;
     platformId?: string;
     champion?: number;
-    lane?: number;
+    lane?: string;
 }
 
 interface IMatchData {
@@ -106,6 +106,7 @@ interface IMatchData {
     turretKills?: number;
     inhibitorKills?: number;
     levelPerMinutes?: number;
+    csPerMinutes?: number;
 }
 
 async function fetchPlayerRecentGames(
@@ -133,6 +134,7 @@ async function fetchPlayerRecentGames(
                 gameId: match.gameId,
                 platformId: match.platformId,
                 champion: match.champion,
+                lane: match.lane,
             };
 
             matchList.push(newMatch);
@@ -191,6 +193,7 @@ function calcAverage(matchList: IMatchData[]): Object {
         'turretKills',
         'inhibitorKills',
         'levelPerMinutes',
+        'csPerMinutes',
     ];
     const analytics = {};
 
@@ -206,6 +209,31 @@ function calcAverage(matchList: IMatchData[]): Object {
     });
 
     return analytics;
+}
+
+function getDataMostOccurences(dataList: IMatchData[], field: string): string {
+    const countTable: Object = {};
+
+    for (let i = 0; i < dataList.length; ++i) {
+        if (countTable[dataList[i].matchInfo[field]] != null) {
+            ++countTable[dataList[i].matchInfo[field]];
+        } else {
+            countTable[dataList[i].matchInfo[field]] = 1;
+        }
+    }
+
+    let topElement = null;
+    Object.keys(countTable).forEach(function (element) {
+        if (topElement == null) {
+            topElement = element;
+        }
+
+        if (countTable[element] > countTable[topElement]) {
+            topElement = element;
+        }
+    });
+
+    return topElement;
 }
 
 function calcAverageKda(advancedStats: Object): number {
@@ -269,15 +297,24 @@ async function statsv2(accountData: IAccountData): Promise<Object> {
         );
         newData.levelPerMinutes =
             Math.round((newData.champLevel / newData.gameDuration) * 10) / 10;
+        newData.csPerMinutes =
+            Math.round(
+                (newData.totalMinionsKilled / newData.gameDuration) * 10
+            ) / 10;
 
         // Assign to data structure
         dataList.push(newData);
     }
 
-    // tslint:disable-next-line: no-console
-    console.log(dataList);
+    // Processed advanced data
     response = { ...calcAverage(dataList) };
     response['kda'] = calcAverageKda(response);
+    response['role'] = getDataMostOccurences(dataList, 'lane');
+
+    const preferedChamp = await lolApi.DataDragon.getChampion(
+        parseInt(getDataMostOccurences(dataList, 'champion'))
+    );
+    response['preferedChampion'] = preferedChamp.name;
 
     return response;
 }
