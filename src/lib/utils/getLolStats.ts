@@ -6,52 +6,6 @@ const getWinrate = (wins: number, losses: number) => {
     return Math.round((wins / (wins + losses)) * 100);
 };
 
-// const getWinsLosses = async (
-//     gameIds: number[],
-//     lolSummonerName: string,
-//     lolRegion: any,
-//     championName: string
-// ) => {
-//     const win_loss = [0, 0];
-//     const champion_winrates = {};
-
-//     await Promise.all(
-//         gameIds.map(async matchId => {
-//             let participantId = 0;
-//             const match = await teemoLolApi.matchV4.getMatch(lolRegion, {
-//                 path: [matchId],
-//             });
-//             match['participantIdentities'].forEach(player => {
-//                 if (player['player']['summonerName'] === lolSummonerName)
-//                     participantId = player['participantId'];
-//             });
-//             if (participantId <= 5) {
-//                 participantId = 0;
-//             } else {
-//                 participantId = 1;
-//             }
-//             if (match['teams'][participantId]['win'] == 'Win') {
-//                 win_loss[0] += 1;
-//                 if (championName in champion_winrates) {
-//                     champion_winrates[championName][0] += 1;
-//                 } else {
-//                     champion_winrates[championName] = [1, 0, 0];
-//                 }
-//             } else {
-//                 win_loss[1] += 1;
-//                 if (championName in champion_winrates) {
-//                     champion_winrates[championName][1] += 1;
-//                 } else {
-//                     champion_winrates[championName] = [0, 1, 0];
-//                 }
-//             }
-//             champion_winrates[championName][2] += 1;
-//         })
-//     );
-
-//     return win_loss;
-// };
-
 const getBestMasteryChampions = async (
     // tslint:disable-next-line: no-any
     summonerMasteries: any,
@@ -112,8 +66,21 @@ const getRankedInfos = async (id: string, lolRegion: any) => {
     );
 };
 
+interface IAccountData {
+    id?: string;
+    accountId?: string;
+    puuid?: string;
+    summonerLevel?: number;
+}
+
+const statsv2 = async (accountData: IAccountData, response: Object) => {
+    accountData;
+    response;
+};
+
 export const getLolStats = async (
     lolSummonerName: string,
+    // tslint:disable-next-line: no-any
     lolRegion: any,
     user: User
 ) => {
@@ -136,7 +103,9 @@ export const getLolStats = async (
         lolRegion
     );
     const rankedInfos = await getRankedInfos(id, lolRegion);
-    return {
+
+    // Response formatting
+    let response: Object = {
         user: {
             id: user.id,
             firstName: user.firstName,
@@ -151,4 +120,16 @@ export const getLolStats = async (
         bestMasteryChampions,
         rankedInfos,
     };
+
+    // Stats v2
+    const accountData: IAccountData = {
+        id: accountInfos.response.id,
+        accountId: accountInfos.response.accountId,
+        puuid: accountInfos.response.puuid,
+        summonerLevel: accountInfos.response.summonerLevel,
+    };
+
+    response = await statsv2(accountData, response);
+
+    return response;
 };
