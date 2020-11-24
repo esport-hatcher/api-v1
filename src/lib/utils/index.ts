@@ -7,3 +7,4 @@ export * from './validators';
 export * from './modelPropsGenerator';
 export * from './uploader';
 export * from './getRandomColor';
+export * from './getLolStats';

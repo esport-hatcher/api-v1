@@ -33,6 +33,7 @@ export interface IUserProps {
     city?: string;
     phoneNumber?: string;
     resetHash?: string;
+    twitchUsername?: string;
 }
 export class User extends Model {
     public id!: number; // Note that the `null assertion` `!` is required in strict mode.
@@ -48,6 +49,7 @@ export class User extends Model {
     public superAdmin: boolean;
     public hashtag: string;
     public resetHash: string;
+    public twitchUsername: string;
 
     // timestamps!
     public readonly createdAt!: Date;
@@ -142,6 +144,10 @@ export const initUser = (db: Sequelize) => {
                 allowNull: true,
             },
             resetHash: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            twitchUsername: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },

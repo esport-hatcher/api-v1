@@ -42,7 +42,7 @@
 			"@db": ["db/index.ts"]
 		}
 	},
-	"include": ["./src/**/*", "environment.js"],
+	"include": ["./src/**/*", "environment.js", "migrate.js"],
 	"exclude": ["node_modules", "./node_modules",
 		"./node_modules/*",
 		"./node_modules/@types/node/index.d.ts"]
