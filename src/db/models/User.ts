@@ -32,6 +32,7 @@ export interface IUserProps {
     country?: string;
     city?: string;
     phoneNumber?: string;
+    resetHash?: string;
     twitchUsername?: string;
 }
 export class User extends Model {
@@ -47,6 +48,7 @@ export class User extends Model {
     public password: string;
     public superAdmin: boolean;
     public hashtag: string;
+    public resetHash: string;
     public twitchUsername: string;
 
     // timestamps!
@@ -138,6 +140,10 @@ export const initUser = (db: Sequelize) => {
                 allowNull: true,
             },
             phoneNumber: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            resetHash: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
