@@ -194,7 +194,11 @@ class TeamsController extends ModelController<typeof Team> {
                         Constants.Regions[teamUser.TeamUser.lolRegion];
                     return (
                         teamUser.TeamUser.lolSummonerName &&
-                        getLolStats(teamUser.TeamUser.lolSummonerName, region)
+                        getLolStats(
+                            teamUser.TeamUser.lolSummonerName,
+                            region,
+                            teamUser
+                        )
                     );
                 })
             );
@@ -215,7 +219,8 @@ class TeamsController extends ModelController<typeof Team> {
             const region = Constants.Regions[user.TeamUser.lolRegion];
             const stats = await getLolStats(
                 user.TeamUser.lolSummonerName,
-                region
+                region,
+                user
             );
             return res.status(200).json(stats);
         } catch (err) {

@@ -56,6 +56,18 @@ teamsRoutes.get(
 
 teamsRoutes.get('/:teamId/users/stats', teamController.getStats);
 
+teamsRoutes.get(
+    '/:teamId/users/:userId/stats',
+    requireOwnerUserOrTeamAdmin,
+    teamController.getStatsById
+);
+
+teamsRoutes.get(
+    '/:teamId/users/:userId',
+    requireOwnerTeamMember,
+    teamController.getTeamUserById
+);
+
 teamsRoutes.post(
     '/:teamId/users/:userId',
     requireValidation,
@@ -66,12 +78,6 @@ teamsRoutes.patch(
     '/:teamId/users/:userId',
     requireOwnerUserOrTeamAdmin,
     teamController.patchTeamUser
-);
-
-teamsRoutes.get(
-    '/:teamId/users/:userId/stats',
-    requireOwnerUserOrTeamAdmin,
-    teamController.getStatsById
 );
 
 export { teamsRoutes };

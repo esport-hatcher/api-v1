@@ -65,6 +65,14 @@ userRoutes.post(
     userController.checkIfEmailIsAvailable
 );
 
+userRoutes.post('/reset-password', userController.resetPassword);
+
+userRoutes.post(
+    '/change-password',
+    requireValidation,
+    userController.changePassword
+);
+
 userRoutes.post(
     '/:userId/teams/:teamId',
     requireValidation,

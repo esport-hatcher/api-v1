@@ -1,5 +1,6 @@
 import { lolApi } from '@config';
 import { MatchQueryDTO } from 'twisted/dist/models-dto';
+import { User } from '@models';
 
 const getWinrate = (wins: number, losses: number) => {
     return Math.round((wins / (wins + losses)) * 100);
@@ -52,11 +53,15 @@ const getWinrate = (wins: number, losses: number) => {
 // };
 
 const getBestMasteryChampions = async (
+    // tslint:disable-next-line: no-any
     summonerMasteries: any,
     accountId: string,
+    // tslint:disable-next-line: no-any
     lolRegion: any
 ) => {
+    // tslint:disable-next-line: no-return-await
     return await Promise.all(
+        // tslint:disable-next-line: no-any
         summonerMasteries.response.slice(0, 5).map(async (item: any) => {
             const champion = await lolApi.DataDragon.getChampion(
                 item.championId
@@ -74,17 +79,22 @@ const getBestMasteryChampions = async (
             const totalGames = (
                 await lolApi.Match.list(accountId, lolRegion, filter)
             ).response.totalGames;
+            const championData = await lolApi.DataDragon.getChampion(
+                item.championId
+            );
             return {
                 championName: champion.name,
                 championId: item.championId,
                 championLevel: item.championLevel,
                 championPoints: item.championPoints,
+                imageUrl: `http://ddragon.leagueoflegends.com/cdn/img/champion/tiles/${championData.id}_0.jpg`,
                 totalGames,
             };
         })
     );
 };
 
+// tslint:disable-next-line: no-any
 const getRankedInfos = async (id: string, lolRegion: any) => {
     return (await lolApi.League.bySummoner(id, lolRegion)).response.map(
         item => {
@@ -102,7 +112,11 @@ const getRankedInfos = async (id: string, lolRegion: any) => {
     );
 };
 
-export const getLolStats = async (lolSummonerName: string, lolRegion: any) => {
+export const getLolStats = async (
+    lolSummonerName: string,
+    lolRegion: any,
+    user: User
+) => {
     const accountInfos = await lolApi.Summoner.getByName(
         lolSummonerName,
         lolRegion
@@ -123,6 +137,13 @@ export const getLolStats = async (lolSummonerName: string, lolRegion: any) => {
     );
     const rankedInfos = await getRankedInfos(id, lolRegion);
     return {
+        user: {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            username: user.username,
+        },
+        summonerName: lolSummonerName,
         id,
         accountId,
         puuid,
