@@ -6,6 +6,7 @@ import {
     requireValidation,
     requireFiltersOrPagination,
     requireOwnerUserOrTeamAdmin,
+    requireTeamOwnerOrAdmin,
     requireOwnerTeamMember,
 } from '@middlewares';
 import { teamController } from '@controllers';
@@ -40,7 +41,8 @@ teamsRoutes.patch(
 
 teamsRoutes.delete(
     '/:teamId',
-    requireScopeOrSuperAdmin,
+    requireValidation,
+    requireTeamOwnerOrAdmin,
     teamController.deleteById
 );
 
