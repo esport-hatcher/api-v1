@@ -148,11 +148,7 @@ function fetchUserInfos(
     accountData: IAccountData,
     matchData: ApiResponseDTO<MatchDto>
 ): MatchParticipantDTO {
-    for (
-        let i = 0;
-        i < matchData.response.participantIdentities.length - 1;
-        ++i
-    ) {
+    for (let i = 0; i < matchData.response.participantIdentities.length; ++i) {
         if (
             matchData.response.participantIdentities[i].player
                 .currentAccountId == accountData.accountId
