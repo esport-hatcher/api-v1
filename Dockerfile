@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:12
 
 RUN yarn global add pm2
 
