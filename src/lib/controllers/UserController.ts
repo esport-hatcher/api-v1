@@ -1,5 +1,5 @@
 import { Response, NextFunction } from 'express';
-import { compare } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import { omit } from 'lodash';
 import { IRequest } from '@typings';
 import { User } from '@models';
@@ -99,6 +99,11 @@ class UserController extends ModelController<typeof User> {
             user.firstName = req.body.firstName || user.firstName;
             user.lastName = req.body.lastName || user.lastName;
             user.phoneNumber = req.body.phoneNumber || user.phoneNumber;
+            user.twitchUsername =
+                req.body.twitchUsername || user.twitchUsername;
+            user.lolSummonerName =
+                req.body.lolSummonerName || user.lolSummonerName;
+            user.lolRegion = req.body.lolRegion || user.lolRegion;
             await user.save();
             return res
                 .status(200)
@@ -131,7 +136,6 @@ class UserController extends ModelController<typeof User> {
     async userJoinTeam(req: IRequest, res: Response, next: NextFunction) {
         try {
             const { owner, team } = req;
-            const { role } = req.body;
 
             const teamUsers = await team.getUsers();
             const userInTeam = teamUsers.find(
@@ -143,7 +147,7 @@ class UserController extends ModelController<typeof User> {
             if (!userInTeam) {
                 team.addUser(owner, {
                     through: {
-                        role: role,
+                        role: 'Player',
                         teamStatus: false,
                         playerStatus: true,
                     },
@@ -155,6 +159,82 @@ class UserController extends ModelController<typeof User> {
              */
             await userInTeam.TeamUser.update({ playerStatus: true });
             return res.sendStatus(201);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async resetPassword(req: IRequest, res: Response, next: NextFunction) {
+        try {
+            const email: string = req.body.email;
+
+            if (email == null) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Missing argument',
+                });
+            }
+
+            const user: User = await User.findOne({ where: { email } });
+
+            if (user == null) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'No user found',
+                });
+            }
+
+            // user.resetHash = Md5.hashStr(email);
+            user.resetHash = await hash(email, 10);
+            await user.save();
+            return res.sendStatus(200);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async changePassword(req: IRequest, res: Response, next: NextFunction) {
+        try {
+            const password = req.body.password;
+            const comfirmPassword = req.body.comfirmPassword;
+            const token = req.body.token;
+
+            if (token == null) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Missing argument',
+                });
+            }
+
+            const user: User = await User.findOne({
+                where: { resetHash: token },
+            });
+
+            if (user == null) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Invalid token',
+                });
+            }
+
+            if (token == user.resetHash && password == comfirmPassword) {
+                const hashed = await hash(password, 10);
+                user.password = hashed;
+                user.resetHash = '';
+                user.save;
+            } else {
+                if (user == null) {
+                    return res.status(404).json({
+                        success: false,
+                        error: 'Invalid token',
+                    });
+                }
+            }
+
+            await user.save();
+            return res.sendStatus(200);
         } catch (err) {
             return next(err);
         }

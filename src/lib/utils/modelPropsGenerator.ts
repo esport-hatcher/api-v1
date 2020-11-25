@@ -59,8 +59,8 @@ export const getRandomTeamUser = async (teams: Team[], users: User[]) => {
         {
             through: {
                 role: helpers.randomize(['Admin', 'Staff', 'Player', 'Owner']),
-                playerStatus: helpers.randomize(['true', 'false']),
-                teamStatus: helpers.randomize(['true', 'false']),
+                playerStatus: true,
+                teamStatus: true,
             },
         }
     );

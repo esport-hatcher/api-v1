@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import { omit } from 'lodash';
 import { IRequest } from '@typings';
 import { logRequest, unprocessableEntity } from '@utils';
-import { Event } from '@models';
+import { Event, Team, User } from '@models';
 import { ModelController } from '@controllers';
 import { FORBIDDEN_FIELDS, RECORDS_PER_PAGE } from '@config';
 
@@ -70,6 +70,25 @@ class EventController extends ModelController<typeof Event> {
     }
 
     @logRequest
+    async findById(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { event } = req;
+
+            const populatedEvent = await Event.findByPk(event.id, {
+                include: [Team, User],
+                plain: true,
+            });
+            return res.status(200).json(populatedEvent);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
     async findAllByUser(
         req: IRequest,
         res: Response,
@@ -117,8 +136,10 @@ class EventController extends ModelController<typeof Event> {
     ): Promise<void | Response> {
         const { event, user } = req;
         try {
-            await event.addUser(user);
-            return res.sendStatus(201);
+            // tslint:disable-next-line: no-any
+            const [EventUser] = (await event.addUser(user)) as any;
+            const eventUser = { ...user.get({ plain: true }), EventUser };
+            return res.status(201).json(eventUser);
         } catch (err) {
             return next(err);
         }

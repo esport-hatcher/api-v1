@@ -2,8 +2,6 @@ import { body } from 'express-validator/check';
 import { BaseRouter } from '@services/router';
 import {
     requireAuth,
-    requireAdmin,
-    requireScopeOrSuperAdmin,
     requireValidation,
     requireTeamOwnerOrAdmin,
     requireFiltersOrPagination,
@@ -16,12 +14,7 @@ const teamsRoutes = BaseRouter();
 
 teamsRoutes.use(requireAuth);
 
-teamsRoutes.get(
-    '/',
-    requireAdmin,
-    requireFiltersOrPagination,
-    teamController.findAll
-);
+teamsRoutes.get('/', requireFiltersOrPagination, teamController.findAll);
 
 teamsRoutes.get('/:teamId', teamController.findById);
 
@@ -41,13 +34,13 @@ teamsRoutes.post(
 
 teamsRoutes.patch(
     '/:teamId',
-    requireScopeOrSuperAdmin,
+    requireTeamOwnerOrAdmin,
     teamController.updateById
 );
 
 teamsRoutes.delete(
     '/:teamId',
-    requireScopeOrSuperAdmin,
+    requireTeamOwnerOrAdmin,
     teamController.deleteById
 );
 
@@ -57,9 +50,22 @@ teamsRoutes.delete(
 
 teamsRoutes.get(
     '/:teamId/users',
-    requireAuth,
     requireOwnerTeamMember,
     teamController.getTeamUser
+);
+
+teamsRoutes.get('/:teamId/users/stats', teamController.getStats);
+
+teamsRoutes.get(
+    '/:teamId/users/:userId/stats',
+    requireOwnerUserOrTeamAdmin,
+    teamController.getStatsById
+);
+
+teamsRoutes.get(
+    '/:teamId/users/:userId',
+    requireOwnerTeamMember,
+    teamController.getTeamUserById
 );
 
 teamsRoutes.post(
@@ -74,4 +80,5 @@ teamsRoutes.patch(
     requireOwnerUserOrTeamAdmin,
     teamController.patchTeamUser
 );
+
 export { teamsRoutes };

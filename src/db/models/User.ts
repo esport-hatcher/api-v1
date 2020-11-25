@@ -4,6 +4,7 @@ import {
     Sequelize,
     BelongsToManyGetAssociationsMixin,
     BelongsToManyAddAssociationMixin,
+    ENUM,
 } from 'sequelize';
 import { hash } from 'bcryptjs';
 import { encode } from 'jwt-simple';
@@ -32,6 +33,10 @@ export interface IUserProps {
     country?: string;
     city?: string;
     phoneNumber?: string;
+    resetHash?: string;
+    twitchUsername?: string;
+    lolSummonerName?: string;
+    lolRegion?: string;
 }
 export class User extends Model {
     public id!: number; // Note that the `null assertion` `!` is required in strict mode.
@@ -46,6 +51,10 @@ export class User extends Model {
     public password: string;
     public superAdmin: boolean;
     public hashtag: string;
+    public resetHash: string;
+    public twitchUsername: string;
+    public lolSummonerName: string;
+    public lolRegion: string;
 
     // timestamps!
     public readonly createdAt!: Date;
@@ -139,6 +148,36 @@ export const initUser = (db: Sequelize) => {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
+            resetHash: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            twitchUsername: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            lolSummonerName: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            lolRegion: {
+                type: ENUM(
+                    'BRAZIL',
+                    'EU_EAST',
+                    'EU_WEST',
+                    'KOREA',
+                    'LAT_NORTH',
+                    'LAT_SOUTH',
+                    'AMERICA_NORTH',
+                    'OCEANIA',
+                    'TURKEY',
+                    'RUSSIA',
+                    'JAPAN',
+                    'PBE'
+                ),
+                allowNull: false,
+                defaultValue: 'EU_WEST',
+            },
         },
         {
             tableName: 'Users',
@@ -154,6 +193,14 @@ export const initUser = (db: Sequelize) => {
     User.afterCreate(async user => {
         user.hashtag = createHashtag(user.id);
         await user.save();
+        return Promise.resolve();
+    });
+
+    User.beforeBulkCreate(async users => {
+        for (const user of users) {
+            const hashed = await hash(user.password, 10);
+            user.password = hashed;
+        }
         return Promise.resolve();
     });
 };

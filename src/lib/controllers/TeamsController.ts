@@ -1,9 +1,10 @@
 import { Response, NextFunction } from 'express';
 import { IRequest } from '@typings';
-import { logRequest } from '@utils';
-import { Team } from '@models';
+import { getLolStats, logRequest } from '@utils';
+import { Team, User } from '@models';
 import { ModelController } from '@controllers';
 import { FORBIDDEN_FIELDS } from '@config';
+import { Constants } from 'twisted';
 
 class TeamsController extends ModelController<typeof Team> {
     constructor() {
@@ -47,7 +48,7 @@ class TeamsController extends ModelController<typeof Team> {
         const { user } = req;
 
         try {
-            const teams = await user.getTeams();
+            const teams = await user.getTeams({ include: [User] });
             return res.status(200).json(teams);
         } catch (err) {
             return next(err);
@@ -91,6 +92,20 @@ class TeamsController extends ModelController<typeof Team> {
                 attributes: { exclude: FORBIDDEN_FIELDS },
             });
             return res.status(200).json(teamUsers);
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async getTeamUserById(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { user } = req;
+            return res.status(200).json(user.get({ plain: true }));
         } catch (err) {
             return next(err);
         }
@@ -153,6 +168,48 @@ class TeamsController extends ModelController<typeof Team> {
             }
             await user.TeamUser.save();
             return res.status(200).json(user.get({ plain: true }));
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async getStats(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { team } = req;
+            const teamUsers = await team.getUsers({
+                attributes: { exclude: FORBIDDEN_FIELDS },
+            });
+            const allStats = await Promise.all(
+                teamUsers.map(async teamUser => {
+                    const region = Constants.Regions[teamUser.lolRegion];
+                    return (
+                        teamUser.lolSummonerName &&
+                        getLolStats(teamUser.lolSummonerName, region, teamUser)
+                    );
+                })
+            );
+            return res.status(200).json(allStats.filter(item => item));
+        } catch (err) {
+            return next(err);
+        }
+    }
+
+    @logRequest
+    async getStatsById(
+        req: IRequest,
+        res: Response,
+        next: NextFunction
+    ): Promise<void | Response> {
+        try {
+            const { user } = req;
+            const region = Constants.Regions[user.lolRegion];
+            const stats = await getLolStats(user.lolSummonerName, region, user);
+            return res.status(200).json(stats);
         } catch (err) {
             return next(err);
         }

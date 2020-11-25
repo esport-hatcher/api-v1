@@ -13,6 +13,7 @@ import {
     requireFiltersOrPagination,
     requirePersonalEvent,
     requirePersonalTask,
+    requireOwnerPartOfEvent,
 } from '@middlewares';
 
 const userRoutes = BaseRouter();
@@ -28,12 +29,7 @@ userRoutes.get(
 );
 
 userRoutes.get('/me', requireAuth, userController.getMe);
-userRoutes.get(
-    '/:userId/teams',
-    requireAuth,
-    requireScopeOrSuperAdmin,
-    teamController.findAllByUser
-);
+
 userRoutes.get('/:userId', requireAuth, userController.findById);
 
 /**
@@ -69,12 +65,26 @@ userRoutes.post(
     userController.checkIfEmailIsAvailable
 );
 
+userRoutes.post('/reset-password', userController.resetPassword);
+
+userRoutes.post(
+    '/change-password',
+    requireValidation,
+    userController.changePassword
+);
+
 userRoutes.post(
     '/:userId/teams/:teamId',
-    [body('role').trim().withMessage('Please enter a role')],
     requireValidation,
     requireAuth,
     userController.userJoinTeam
+);
+
+userRoutes.get(
+    '/:userId/teams',
+    requireAuth,
+    requireScopeOrSuperAdmin,
+    teamController.findAllByUser
 );
 
 /**
@@ -101,6 +111,14 @@ userRoutes.delete(
 userRoutes.post(
     '/:userId/events',
     requireAuth,
+    [
+        body('title').trim().isLength({ min: 1 }),
+        body('description').trim().isLength({ min: 1 }),
+        body('place').trim().isLength({ min: 1, max: 50 }),
+        body('dateBegin').trim(),
+        body('dateEnd').trim(),
+    ],
+    requireValidation,
     requireScopeOrSuperAdmin,
     eventController.create
 );
@@ -117,7 +135,7 @@ userRoutes.get(
     '/:userId/events/:eventId',
     requireAuth,
     requireScopeOrSuperAdmin,
-    requirePersonalEvent,
+    requireOwnerPartOfEvent,
     eventController.findById
 );
 
