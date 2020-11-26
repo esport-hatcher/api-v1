@@ -129,7 +129,7 @@ async function fetchPlayerRecentGames(
 
     const matchList: IMatchList[] = [];
     playerMatches.response.matches.forEach(function (match, index) {
-        if (index < 10) {
+        if (index < 5) {
             const newMatch: IMatchList = {
                 gameId: match.gameId,
                 platformId: match.platformId,
@@ -257,7 +257,7 @@ async function statsv2(accountData: IAccountData): Promise<Object> {
     }
 
     const dataList: IMatchData[] = [];
-    for (let i = 0; i < matchIds.length; ++i) {
+    for (let i = 0; i < 1; i++) {
         const newData: IMatchData = { matchInfo: matchIds[i] };
         const matchData: ApiResponseDTO<MatchDto> = await lolApi.Match.get(
             matchIds[i].gameId,
