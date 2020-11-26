@@ -257,7 +257,7 @@ async function statsv2(accountData: IAccountData): Promise<Object> {
     }
 
     const dataList: IMatchData[] = [];
-    for (let i = 0; i < matchIds.length; ++i) {
+    for (let i = 0; i < 1; i++) {
         const newData: IMatchData = { matchInfo: matchIds[i] };
         const matchData: ApiResponseDTO<MatchDto> = await lolApi.Match.get(
             matchIds[i].gameId,
