@@ -10,6 +10,8 @@ export const jwtSecret = process.env.JWT_SECRET;
 export const sequelizeLogs = Boolean(process.env.SEQUELIZE_LOGS);
 export const lolApi = new LolApi({
     key: 'RGAPI-77674235-a981-4a43-a593-5836f0423f30',
+    rateLimitRetry: true,
+    rateLimitRetryAttempts: 5,
 });
 export const teemoLolApi = TeemoApi.createRiotApi(
     'RGAPI-77674235-a981-4a43-a593-5836f0423f30'
