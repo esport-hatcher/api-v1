@@ -129,7 +129,7 @@ async function fetchPlayerRecentGames(
 
     const matchList: IMatchList[] = [];
     playerMatches.response.matches.forEach(function (match, index) {
-        if (index < 10) {
+        if (index < 5) {
             const newMatch: IMatchList = {
                 gameId: match.gameId,
                 platformId: match.platformId,
