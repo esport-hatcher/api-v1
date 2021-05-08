@@ -43,7 +43,7 @@
     "husky": "^4.2.5",
     "jwt-simple": "^0.5.5",
     "lint-staged": "^10.1.7",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "module-alias": "^2.2.0",
     "mysql2": "^2.1.0",
     "node": "^14.0.0",
